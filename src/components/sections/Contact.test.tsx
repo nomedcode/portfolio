@@ -81,16 +81,17 @@ describe("Contact", () => {
     expect(iconFills("0a66c2").light).toBe("#0a66c2");
   });
 
-  test("the Email logo is Gmail red on a white badge, so a colour logo holds on the blue button", () => {
+  test("the Email logo is the four-colour Gmail mark, drawn straight on the button with no badge behind it", () => {
     render(<Contact />);
-    const svg = screen
-      .getByRole("link", { name: "Email me" })
-      .querySelector("svg") as SVGElement;
-    const badge = svg.parentElement as HTMLElement;
-    expect(badge).toHaveClass("bg-white", "rounded-full");
-    expect(svg.style.getPropertyValue("--icon-l")).toBe("#ea4335");
-    expect(svg).toHaveClass("text-(color:--icon-l)");
-    expect(contrastRatio("#ffffff", "#ea4335")).toBeGreaterThanOrEqual(3);
+    const link = screen.getByRole("link", { name: "Email me" });
+    const svg = link.querySelector("svg") as SVGElement;
+    expect(svg.parentElement).toBe(link);
+    expect(link.querySelector(".bg-white")).toBeNull();
+    expect(svg).toHaveAttribute("aria-hidden", "true");
+    expect(svg).toHaveAttribute("viewBox", "52 42 88 66");
+    const fills = [...svg.querySelectorAll("path")].map((p) => p.getAttribute("fill"));
+    // the 2020 mark: blue, green and yellow sides, red envelope, dark-red fold
+    expect(fills).toEqual(["#4285f4", "#34a853", "#fbbc04", "#ea4335", "#c5221f"]);
   });
 
   test("the GitHub and LinkedIn outline reaches 3:1 against the raised surface in both themes", () => {

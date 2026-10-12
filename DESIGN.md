@@ -199,7 +199,7 @@ Large, soft, and consistent. Big cards use a 28px radius and small cards 18px; e
 
 ### Buttons
 - **Shape:** full pill (9999px).
-- **Primary:** Signal Blue fill, white text, 16px by 32px padding (the Email action). Its Gmail logo is drawn in Gmail red on a white 28px badge, because red sinks into the blue.
+- **Primary:** Signal Blue fill, white text, 16px by 32px padding (the Email action). Its leading logo is the four-colour 2020 Gmail mark, drawn straight on the blue with no badge; its blue side is the one low-contrast part, and the red, green and yellow pieces carry the shape.
 - **Outline:** 1px Signal Blue border and text, 10% blue wash on hover (Download CV in Contact).
 - **Neutral:** 1px Mist Subtle border (Dusk in dark, 3:1 or better on the raised Contact surface; Hairline vanishes there), Ink text, hairline wash at 60% on hover (social links). Their logos keep the brand colour (GitHub near-black and LinkedIn blue), moved only as far as 3:1 needs per theme.
 - **Press:** every control scales to 0.97 over 100ms. Under reduced motion it dips to 70% opacity instead.
