@@ -45,18 +45,49 @@ describe("iconFills", () => {
     expect(usedIcons.length).toBeGreaterThanOrEqual(45);
   });
 
-  test("every icon reaches 3:1 on both surfaces of both themes", () => {
+  test("every icon reaches 3:1 on both surfaces of both themes (a rim carries it where the fill cannot)", () => {
     const failures: string[] = [];
     for (const { slug, icon } of usedIcons) {
       const fills = iconFills(icon.hex);
       for (const theme of ["light", "dark"] as const) {
+        const mark = theme === "light" && fills.rim ? fills.rim : fills[theme];
         for (const surface of SURFACES[theme]) {
-          const ratio = contrastRatio(fills[theme], surface);
-          if (ratio < 3) failures.push(`${slug} ${theme} ${fills[theme]} on ${surface}: ${ratio.toFixed(2)}`);
+          const ratio = contrastRatio(mark, surface);
+          if (ratio < 3) failures.push(`${slug} ${theme} ${mark} on ${surface}: ${ratio.toFixed(2)}`);
         }
       }
     }
     expect(failures).toEqual([]);
+  });
+
+  test("yellow keeps its colour on light and takes an ink rim, because a dark yellow is only olive or mustard", () => {
+    for (const hex of ["F7DF1E", "FFD21E"]) {
+      const brand = `#${hex.toLowerCase()}`;
+      const fills = iconFills(hex);
+      expect(fills.light, hex).toBe(brand);
+      expect(fills.rim, hex).toBe(FOREGROUND.light);
+      // the rim is what meets 3:1 against the surfaces, and it stands clear of the yellow it edges
+      for (const surface of SURFACES.light) {
+        expect(contrastRatio(fills.rim!, surface)).toBeGreaterThanOrEqual(3);
+      }
+      expect(contrastRatio(fills.rim!, brand)).toBeGreaterThanOrEqual(3);
+      // yellow is already bright enough on dark, so no rim there
+      expect(fills.dark).toBe(brand);
+    }
+  });
+
+  test("only yellows are rimmed; every other brand is still fitted by lightness alone", () => {
+    for (const { slug, icon } of usedIcons) {
+      const h = hue(`#${icon.hex.toLowerCase()}`);
+      const rimmed = iconFills(icon.hex).rim !== null;
+      if (rimmed) expect(h, slug).toBeGreaterThanOrEqual(40);
+      if (rimmed) expect(h, slug).toBeLessThanOrEqual(65);
+    }
+    expect(iconFills("61DAFB").rim).toBeNull();
+    expect(iconFills("00ADD8").rim).toBeNull();
+    expect(iconFills("000000").rim).toBeNull();
+    // a yellow that already passes needs no rim
+    expect(iconFills("806600").rim).toBeNull();
   });
 
   test("colours that already pass are the exact brand colour", () => {
@@ -99,13 +130,11 @@ describe("iconFills", () => {
     expect(iconFills("000000").light).toBe("#000000");
   });
 
-  test("the known offenders are fixed: Prisma and C++ on dark, JavaScript and React on light", () => {
+  test("the known offenders are fixed: Prisma and C++ on dark, React on light", () => {
     const prisma = iconFills("2D3748");
     expect(contrastRatio(prisma.dark, "#1f1f20")).toBeGreaterThanOrEqual(3);
     const cpp = iconFills("00599C");
     expect(contrastRatio(cpp.dark, "#1f1f20")).toBeGreaterThanOrEqual(3);
-    const js = iconFills("F7DF1E");
-    expect(contrastRatio(js.light, "#f5f5f7")).toBeGreaterThanOrEqual(3);
     const react = iconFills("61DAFB");
     expect(contrastRatio(react.light, "#f5f5f7")).toBeGreaterThanOrEqual(3);
   });

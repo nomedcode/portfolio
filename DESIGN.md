@@ -154,7 +154,7 @@ A cool neutral ladder with one blue. Light and dark themes are each composed, no
 ### Named Rules
 **The One Blue Rule.** Signal Blue and Beacon Blue are the only chroma the interface itself uses. Everything else is neutral; brand logos bring their own color.
 
-**The Three-to-One Logo Rule.** Skill logos keep their brand hue but are never painted below 3:1 against the surface they sit on. Near-black marks take the text color in dark mode.
+**The Three-to-One Logo Rule.** Skill logos keep their brand hue but are never painted below 3:1 against the surface they sit on. Near-black marks take the text color in dark mode. Yellow is the one exception to darkening, because a dark yellow is only olive or mustard: on the light theme JavaScript and Hugging Face stay brand yellow and carry the 3:1 in an Ink outline instead (JavaScript's cut-out "JS" shows an Ink tile behind it, so it reads as black letters on yellow). Dark needs no outline.
 
 ## Typography
 
