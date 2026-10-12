@@ -109,16 +109,14 @@ export function Hero({ photo }: { photo?: string }) {
               ) : (
                 <span
                   aria-hidden="true"
-                  className="flex h-full w-full items-center justify-center text-3xl font-semibold text-white/60 md:text-4xl"
-                  style={{ letterSpacing: "-0.02em" }}
+                  className="flex h-full w-full items-center justify-center text-3xl font-semibold tracking-title text-white/60 md:text-4xl"
                 >
                   {initialsOf(profile.fullName)}
                 </span>
               )}
             </div>
             <h1
-              className="hero-rise w-full max-w-5xl text-5xl font-semibold [animation-delay:100ms] md:text-7xl"
-              style={{ letterSpacing: "-0.03em", lineHeight: 1.05 }}
+              className="hero-rise w-full max-w-5xl text-5xl font-semibold leading-[1.05] tracking-display [animation-delay:100ms] md:text-7xl"
             >
               Hi, I&apos;m {profile.fullName}
             </h1>

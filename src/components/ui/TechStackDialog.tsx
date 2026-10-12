@@ -117,8 +117,7 @@ export function TechStackDialog({
         <div className="flex items-center justify-between border-b border-line p-6">
           <h2
             id="techstack-heading"
-            className="text-2xl font-semibold tracking-tight text-fg"
-            style={{ letterSpacing: "-0.02em" }}
+            className="text-2xl font-semibold tracking-title text-fg"
           >
             Skills
           </h2>
@@ -145,7 +144,7 @@ export function TechStackDialog({
                 key={cat.id}
                 className="rounded-card-sm border border-line bg-raised p-6"
               >
-                <h3 className="mb-4 text-lg font-semibold tracking-tight text-fg">
+                <h3 className="mb-4 text-lg font-semibold tracking-title text-fg">
                   {cat.name}
                 </h3>
                 <m.ul

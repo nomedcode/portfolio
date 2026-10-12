@@ -28,7 +28,7 @@ export function Certificates() {
               className="h-32 w-32 shrink-0 sm:h-40 sm:w-40"
             />
             <div className="flex flex-col items-center gap-2 sm:items-start">
-              <h3 className="text-xl font-semibold tracking-tight text-fg md:text-2xl">
+              <h3 className="text-xl font-semibold tracking-title text-fg md:text-2xl">
                 {credlyBadge.name}
               </h3>
               <ul className="mt-1 flex flex-wrap justify-center gap-2 sm:justify-start">

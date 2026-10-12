@@ -20,8 +20,7 @@ export function Contact() {
         <Reveal>
           <h2
             id="contact-heading"
-            className="text-4xl font-semibold tracking-tight md:text-6xl"
-            style={{ letterSpacing: "-0.03em", lineHeight: 1.05 }}
+            className="text-4xl font-semibold leading-[1.05] tracking-display md:text-6xl"
           >
             Let&apos;s build something.
           </h2>

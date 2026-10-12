@@ -96,8 +96,7 @@ export function SkillsBanner() {
               <div className="shrink-0">
                 <h2
                   id="skills-heading"
-                  className="text-4xl font-semibold tracking-tight text-fg md:text-5xl"
-                  style={{ letterSpacing: "-0.02em" }}
+                  className="text-4xl font-semibold tracking-heading text-fg md:text-5xl"
                 >
                   Skills
                 </h2>

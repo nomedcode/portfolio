@@ -24,7 +24,7 @@ export function Education() {
                 </dt>
                 <dd className="flex flex-col gap-2">
                   <GraduationCap className="h-5 w-5 text-accent dark:text-accent-dark" aria-hidden />
-                  <p className="text-lg font-semibold tracking-tight">
+                  <p className="text-lg font-semibold tracking-title">
                     {e.degree}
                   </p>
                   <p className="text-muted">{e.school}</p>

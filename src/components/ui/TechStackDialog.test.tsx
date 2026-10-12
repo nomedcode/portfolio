@@ -86,4 +86,15 @@ describe("TechStackDialog motion", () => {
     expect(style).toContain("opacity: 0");
     expect(style).not.toMatch(/transform|translate|scale/);
   });
+
+  test("its title and category headings use the title tracking, not an inline value", () => {
+    const { dialog } = renderDialog();
+    const h2 = dialog.querySelector("h2") as HTMLElement;
+    expect(h2).toHaveClass("tracking-title");
+    expect(h2.getAttribute("style") ?? "").not.toContain("letter-spacing");
+    for (const h3 of dialog.querySelectorAll("h3")) {
+      expect(h3).toHaveClass("tracking-title");
+      expect(h3).not.toHaveClass("tracking-tight");
+    }
+  });
 });

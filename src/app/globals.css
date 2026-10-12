@@ -16,6 +16,10 @@
   --radius-card-sm: 18px;
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
     var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  /* Tracking gets looser as type gets smaller; body text stays at 0. Display is 60px and up, heading 48px, title 18 to 36px. */
+  --tracking-display: -0.03em;
+  --tracking-heading: -0.02em;
+  --tracking-title: -0.01em;
 }
 
 :root {

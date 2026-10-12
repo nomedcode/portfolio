@@ -85,8 +85,7 @@ export function Projects() {
         <Reveal>
           <h2
             id="projects-heading"
-            className="text-center text-4xl font-semibold tracking-tight text-fg md:text-5xl"
-            style={{ letterSpacing: "-0.02em" }}
+            className="text-center text-4xl font-semibold tracking-heading text-fg md:text-5xl"
           >
             Projects
           </h2>
@@ -120,10 +119,7 @@ export function Projects() {
               className="relative h-[440px] w-[78vw] shrink-0 snap-start overflow-hidden rounded-card ring-1 ring-inset ring-white/10 sm:w-[340px] md:h-[480px]"
               style={{ background: gradient }}
             >
-              <p
-                className="p-6 text-2xl font-semibold leading-tight text-white md:text-[28px]"
-                style={{ letterSpacing: "-0.01em" }}
-              >
+              <p className="p-6 text-2xl font-semibold leading-tight tracking-title text-white md:text-[28px]">
                 <span className="sr-only">Project {i + 1}: </span>
                 Coming soon
               </p>
