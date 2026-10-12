@@ -45,13 +45,13 @@ export function Nav() {
         <a href="#top" className="press hit-area text-sm font-semibold text-fg">
           {profile.name}
         </a>
-        <div className="hidden items-center gap-4 md:flex">
+        <div className="hidden items-center gap-1 md:flex">
           {sections.map((s) => (
             <a
               key={s.id}
               href={`#${s.id}`}
               aria-current={active === s.id ? "location" : undefined}
-              className="press hit-area rounded-md px-1.5 py-1 text-xs font-medium text-fg underline-offset-4 hover:underline aria-[current=location]:bg-line/70 forced-colors:aria-[current=location]:underline"
+              className="press hit-area rounded-full px-3 py-1.5 text-xs font-medium text-fg underline-offset-4 hover:bg-line/60 aria-[current=location]:bg-line/70 aria-[current=location]:ring-1 aria-[current=location]:ring-inset aria-[current=location]:ring-line forced-colors:aria-[current=location]:underline"
             >
               {s.label}
             </a>

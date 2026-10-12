@@ -60,7 +60,6 @@ typography:
 rounded:
   card: "28px"
   card-sm: "18px"
-  control: "6px"
   pill: "9999px"
 spacing:
   xs: "8px"
@@ -89,8 +88,8 @@ components:
   nav-link:
     textColor: "{colors.ink}"
     typography: "{typography.nav}"
-    rounded: "{rounded.control}"
-    padding: "4px 6px"
+    rounded: "{rounded.pill}"
+    padding: "6px 12px"
   nav-link-current:
     backgroundColor: "{colors.hairline}"
     textColor: "{colors.ink}"
@@ -206,8 +205,8 @@ Large, soft, and consistent. Big cards use a 28px radius and small cards 18px; e
 - **Press:** every control scales to 0.97 over 100ms. Under reduced motion it dips to 70% opacity instead.
 
 ### Navigation
-- **Style:** fixed 48px glass bar; brand left, section links centered, Download CV and the theme toggle right. Links are 12px medium in full-contrast text with an underline on hover.
-- **Current section:** the link for the section under the reading line gets a Hairline pill at 70% (an underline under forced colors) and `aria-current="location"`. Nothing is current over the hero.
+- **Style:** fixed 48px glass bar; brand left, section links centered, Download CV and the theme toggle right. Links are 12px medium pills in full-contrast text; on hover they take the same hairline wash at 60% as the Download CV button.
+- **Current section:** the link for the section under the reading line gets a Hairline pill at 70% with a 1px inset Hairline ring, so it never reads as hover (an underline under forced colors), and `aria-current="location"`. Nothing is current over the hero.
 - **Mobile:** a hamburger opens a solid panel under the bar that drops 8px in over 200ms (plain fade under reduced motion), scrolls when short, and closes on Escape or any press outside the header.
 
 ### Chips

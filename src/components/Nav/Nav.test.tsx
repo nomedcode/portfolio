@@ -27,6 +27,17 @@ describe("Nav", () => {
     }
   });
 
+  test("desktop section links hover like the Download CV button: a rounded wash, not an underline", () => {
+    render(<Nav />);
+    const cv = screen.getByRole("link", { name: "Download CV" });
+    expect(cv).toHaveClass("rounded-full", "hover:bg-line/60");
+    for (const s of sections) {
+      const link = screen.getAllByRole("link", { name: s.label })[0];
+      expect(link).toHaveClass("rounded-full", "hover:bg-line/60");
+      expect(link).not.toHaveClass("hover:underline");
+    }
+  });
+
   test("offers the CV download beside the theme toggle", () => {
     render(<Nav />);
     const cv = screen.getByRole("link", { name: "Download CV" });
@@ -181,11 +192,12 @@ describe("Nav current section", () => {
     );
   });
 
-  test("the current desktop link has a visual state besides colour, with an underline fallback for forced colours", () => {
+  test("the current desktop link has a fill and a ring, so it never reads as hover, with an underline fallback for forced colours", () => {
     render(<Nav />);
     enter("education");
     const link = document.querySelector("[aria-current]") as HTMLElement;
     expect(link.className).toContain("aria-[current=location]:bg-line/70");
+    expect(link.className).toContain("aria-[current=location]:ring-1");
     expect(link.className).toContain(
       "forced-colors:aria-[current=location]:underline"
     );
