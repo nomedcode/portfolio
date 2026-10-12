@@ -51,6 +51,44 @@ describe("Nav", () => {
     expect(toggle).toHaveFocus();
   });
 
+  test("mobile menu slides in with the shared menu-in animation", async () => {
+    const user = userEvent.setup();
+    render(<Nav />);
+    await user.click(screen.getByRole("button", { name: "Toggle menu" }));
+    expect(document.getElementById("mobile-menu")).toHaveClass("menu-in");
+  });
+
+  test("tapping outside the header closes the menu without stealing focus", async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <Nav />
+        <main>
+          <p>page content</p>
+        </main>
+      </>
+    );
+    const toggle = screen.getByRole("button", { name: "Toggle menu" });
+    await user.click(toggle);
+    expect(toggle).toHaveAttribute("aria-expanded", "true");
+    await user.click(screen.getByText("page content"));
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+    expect(document.getElementById("mobile-menu")).toBeNull();
+    expect(toggle).not.toHaveFocus();
+  });
+
+  test("tapping inside the open panel or on the toggle does not count as outside", async () => {
+    const user = userEvent.setup();
+    render(<Nav />);
+    const toggle = screen.getByRole("button", { name: "Toggle menu" });
+    await user.click(toggle);
+    const panel = document.getElementById("mobile-menu") as HTMLElement;
+    await user.click(panel);
+    expect(toggle).toHaveAttribute("aria-expanded", "true");
+    await user.click(toggle);
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+  });
+
   test("mobile menu toggle opens the section links", async () => {
     const user = userEvent.setup();
     render(<Nav />);

@@ -2,7 +2,7 @@
 
 import { m, type Variants } from "framer-motion";
 import { X } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import { skillCategories } from "@/lib/content";
 import { getSkillIcon, isDarkBrandColor } from "@/lib/skillIcons";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
@@ -28,6 +28,23 @@ export function TechStackDialog({
   const closeRef = useRef<HTMLButtonElement>(null);
   const reduce = useReducedMotion();
 
+  // Scale out of the Skills card instead of the screen centre, so the dialog reads as that card opening.
+  // Scaling about the centre keeps the rect centre fixed, so measure from centres and offsetWidth/Height (not scaled).
+  useLayoutEffect(() => {
+    const dialog = dialogRef.current;
+    const opener = returnFocusRef.current;
+    if (reduce || !dialog || !opener) return;
+    const d = dialog.getBoundingClientRect();
+    const o = opener.getBoundingClientRect();
+    const w = dialog.offsetWidth || d.width;
+    const h = dialog.offsetHeight || d.height;
+    // A far-away card would fling the dialog; keep the origin within half a dialog of its box.
+    const clamp = (v: number, size: number) =>
+      Math.min(Math.max(v, -size / 2), size * 1.5);
+    const x = o.left + o.width / 2 - (d.left + d.width / 2) + w / 2;
+    const y = o.top + o.height / 2 - (d.top + d.height / 2) + h / 2;
+    dialog.style.transformOrigin = `${clamp(x, w)}px ${clamp(y, h)}px`;
+  }, [reduce, returnFocusRef]);
   useEffect(() => {
     const opener = returnFocusRef.current;
     closeRef.current?.focus();
@@ -67,9 +84,9 @@ export function TechStackDialog({
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 md:p-8">
       <m.div
         className="absolute inset-0 bg-black/50"
-        initial={reduce ? undefined : { opacity: 0 }}
-        animate={reduce ? undefined : { opacity: 1 }}
-        exit={reduce ? undefined : { opacity: 0 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
         aria-hidden
         onClick={onClose}
@@ -80,10 +97,22 @@ export function TechStackDialog({
         aria-modal="true"
         aria-labelledby="techstack-heading"
         className="relative flex max-h-[85dvh] w-full max-w-3xl flex-col overflow-hidden rounded-card border border-line bg-page"
-        initial={reduce ? undefined : { opacity: 0, scale: 0.95, y: 12 }}
-        animate={reduce ? undefined : { opacity: 1, scale: 1, y: 0 }}
-        exit={reduce ? undefined : { opacity: 0, scale: 0.95, y: 12 }}
-        transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+        initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.85 }}
+        animate={reduce ? { opacity: 1 } : { opacity: 1, scale: 1 }}
+        exit={
+          reduce
+            ? { opacity: 0, transition: { duration: 0.15 } }
+            : {
+                opacity: 0,
+                scale: 0.85,
+                transition: { duration: 0.2, ease: "easeIn" },
+              }
+        }
+        transition={
+          reduce
+            ? { duration: 0.15 }
+            : { type: "spring", bounce: 0, duration: 0.4 }
+        }
       >
         <div className="flex items-center justify-between border-b border-line p-6">
           <h2

@@ -156,4 +156,28 @@ describe("Projects", () => {
     await user.click(next);
     expect(scrollBy.mock.calls[0][0].behavior).toBe("auto");
   });
+
+  test("cards start hidden and rise with a slight scale by default", () => {
+    render(<Projects />);
+    const style = screen.getAllByRole("listitem")[0].getAttribute("style");
+    expect(style).toContain("opacity: 0");
+    expect(style).toContain("translateY(24px)");
+  });
+
+  test("under reduced motion cards paint the same hidden first frame (matches the server HTML); the fade-only change lives in the transition", () => {
+    const { unmount } = render(<Projects />);
+    const normal = screen
+      .getAllByRole("listitem")
+      .map((card) => card.getAttribute("style"));
+    unmount();
+    const originalMatchMedia = window.matchMedia;
+    vi.spyOn(window, "matchMedia").mockImplementation((query) => ({
+      ...originalMatchMedia(query),
+      matches: query === "(prefers-reduced-motion: reduce)",
+    }));
+    render(<Projects />);
+    expect(
+      screen.getAllByRole("listitem").map((card) => card.getAttribute("style"))
+    ).toEqual(normal);
+  });
 });

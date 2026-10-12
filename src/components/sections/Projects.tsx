@@ -2,8 +2,9 @@
 
 import { m, type Variants } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useCallback, useRef, useSyncExternalStore } from "react";
+import { useCallback, useMemo, useRef, useSyncExternalStore } from "react";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { motionTransition } from "@/lib/motion";
 import { Reveal } from "@/components/ui/Reveal";
 
 const EDGE = 4;
@@ -19,24 +20,26 @@ const islands = [
   "linear-gradient(160deg, #0d1f1a 0%, #1b4332 100%)",
 ];
 
-const listVariants: Variants = {
+const listVariants = (reduce: boolean): Variants => ({
   hidden: {},
-  show: { transition: { staggerChildren: 0.08 } },
-};
+  show: { transition: { staggerChildren: reduce ? 0 : 0.08 } },
+});
 
-const cardVariants: Variants = {
+const cardVariants = (reduce: boolean): Variants => ({
   hidden: { opacity: 0, y: 24, scale: 0.96 },
   show: {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { duration: 0.5, ease: "easeOut" },
+    transition: motionTransition(reduce, { duration: 0.5, ease: "easeOut" }),
   },
-};
+});
 
 export function Projects() {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
+  const list = useMemo(() => listVariants(reduce), [reduce]);
+  const card = useMemo(() => cardVariants(reduce), [reduce]);
 
   const subscribe = useCallback((callback: () => void) => {
     const el = scrollerRef.current;
@@ -102,8 +105,8 @@ export function Projects() {
         <m.ul
           role="list"
           aria-label="Upcoming projects"
-          variants={listVariants}
-          initial={reduce ? "show" : "hidden"}
+          variants={list}
+          initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-15%" }}
           className="flex w-max gap-4 px-[max(1.5rem,calc((100%_-_72rem)/2_+_1.5rem))]"
@@ -113,7 +116,7 @@ export function Projects() {
               key={gradient}
               data-gallery-card
               data-reveal
-              variants={cardVariants}
+              variants={card}
               className="relative h-[440px] w-[78vw] shrink-0 snap-start overflow-hidden rounded-card ring-1 ring-inset ring-white/10 sm:w-[340px] md:h-[480px]"
               style={{ background: gradient }}
             >

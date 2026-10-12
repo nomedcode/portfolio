@@ -1,6 +1,6 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { cloudSkills, skillCategories } from "@/lib/content";
 import { SkillsBanner } from "./SkillsBanner";
 
@@ -14,6 +14,35 @@ function expectedLogoCount() {
 }
 
 describe("Skills banner", () => {
+  test("preview logos start hidden and pop in from a point by default", () => {
+    render(<SkillsBanner />);
+    const style = document
+      .querySelector("[data-preview-logo]")
+      ?.getAttribute("style");
+    expect(style).toContain("opacity: 0");
+    expect(style).toContain("scale(0)");
+  });
+
+  test("under reduced motion the logos paint the same hidden first frame (matches the server HTML); the fade-only change lives in the transition", () => {
+    const { unmount } = render(<SkillsBanner />);
+    const normal = [
+      ...document.querySelectorAll("[data-preview-logo]"),
+    ].map((logo) => logo.getAttribute("style"));
+    unmount();
+    const originalMatchMedia = window.matchMedia;
+    const spy = vi.spyOn(window, "matchMedia").mockImplementation((query) => ({
+      ...originalMatchMedia(query),
+      matches: query === "(prefers-reduced-motion: reduce)",
+    }));
+    render(<SkillsBanner />);
+    expect(
+      [...document.querySelectorAll("[data-preview-logo]")].map((logo) =>
+        logo.getAttribute("style")
+      )
+    ).toEqual(normal);
+    spy.mockRestore();
+  });
+
   test("renders one banner card with the Skills label and every skill logo", () => {
     render(<SkillsBanner />);
     expect(screen.getByRole("heading", { name: "Skills" })).toBeInTheDocument();

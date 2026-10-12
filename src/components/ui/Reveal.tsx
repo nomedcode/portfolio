@@ -3,6 +3,7 @@
 import { m } from "framer-motion";
 import type { ReactNode } from "react";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { motionTransition } from "@/lib/motion";
 
 export function Reveal({
   children,
@@ -15,14 +16,6 @@ export function Reveal({
 }) {
   const reduce = useReducedMotion();
 
-  if (reduce) {
-    return (
-      <div className={className} data-reveal>
-        {children}
-      </div>
-    );
-  }
-
   return (
     <m.div
       className={className}
@@ -30,7 +23,11 @@ export function Reveal({
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-15%" }}
-      transition={{ duration: 0.6, ease: "easeOut", delay }}
+      transition={motionTransition(reduce, {
+        duration: 0.6,
+        ease: "easeOut",
+        delay,
+      })}
     >
       {children}
     </m.div>

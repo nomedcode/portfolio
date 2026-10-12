@@ -7,6 +7,7 @@ import { ThemeToggle } from "./ThemeToggle";
 
 export function Nav() {
   const [open, setOpen] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -16,12 +17,23 @@ export function Nav() {
       setOpen(false);
       toggleRef.current?.focus();
     };
+    // A press anywhere outside the header closes the menu; focus stays where the user put it.
+    const onPointerDown = (e: PointerEvent) => {
+      if (!headerRef.current?.contains(e.target as Node)) setOpen(false);
+    };
     document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("pointerdown", onPointerDown);
+    };
   }, [open]);
 
   return (
-    <header className="material-light fixed inset-x-0 top-0 z-50">
+    <header
+      ref={headerRef}
+      className="material-light fixed inset-x-0 top-0 z-50"
+    >
       <nav
         aria-label="Main"
         className="mx-auto flex h-12 max-w-6xl items-center justify-between px-6"
@@ -71,7 +83,7 @@ export function Nav() {
       {open && (
         <div
           id="mobile-menu"
-          className="border-t border-line bg-page px-6 py-4 md:hidden"
+          className="menu-in border-t border-line bg-page px-6 py-4 md:hidden"
         >
           <ul className="flex flex-col gap-3">
             {sections.map((s) => (

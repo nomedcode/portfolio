@@ -7,25 +7,30 @@ import { VscAzure } from "react-icons/vsc";
 import { useMemo, useRef, useState } from "react";
 import { cloudSkills, skillCategories } from "@/lib/content";
 import { getSkillIcon, isDarkBrandColor } from "@/lib/skillIcons";
+import { motionTransition } from "@/lib/motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { Reveal } from "@/components/ui/Reveal";
 const TechStackDialog = dynamic(() =>
   import("@/components/ui/TechStackDialog").then((m) => m.TechStackDialog)
 );
 
-const cloudVariants: Variants = {
+const cloudVariants = (reduce: boolean): Variants => ({
   hidden: {},
-  show: { transition: { staggerChildren: 0.02 } },
-};
+  show: { transition: { staggerChildren: reduce ? 0 : 0.02 } },
+});
 
-const logoVariants: Variants = {
+const logoVariants = (reduce: boolean): Variants => ({
   hidden: { opacity: 0, scale: 0 },
   show: {
     opacity: 1,
     scale: 1,
-    transition: { type: "spring", bounce: 0, duration: 0.4 },
+    transition: motionTransition(reduce, {
+      type: "spring",
+      bounce: 0,
+      duration: 0.4,
+    }),
   },
-};
+});
 
 function TileIcon({ id, className }: { id: string; className?: string }) {
   if (id === "aws") {
@@ -53,7 +58,8 @@ export function SkillsBanner() {
   const [open, setOpen] = useState(false);
   const openerRef = useRef<HTMLButtonElement | null>(null);
   const reduce = useReducedMotion();
-
+  const cloud = useMemo(() => cloudVariants(reduce), [reduce]);
+  const logo = useMemo(() => logoVariants(reduce), [reduce]);
   const previewIcons = useMemo(() => {
     const seen = new Set<string>();
     const list: string[] = [];
@@ -100,8 +106,8 @@ export function SkillsBanner() {
                 </p>
               </div>
               <m.ul
-                variants={cloudVariants}
-                initial={reduce ? "show" : "hidden"}
+                variants={cloud}
+                initial="hidden"
                 whileInView="show"
                 viewport={{ once: true, margin: "-15%" }}
                 aria-hidden="true"
@@ -111,7 +117,7 @@ export function SkillsBanner() {
                 {previewIcons.map((id) => (
                   <m.li
                     key={id}
-                    variants={logoVariants}
+                    variants={logo}
                     data-preview-logo
                     className="flex h-7 w-7 items-center justify-center"
                   >
