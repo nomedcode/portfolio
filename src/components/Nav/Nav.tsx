@@ -60,7 +60,7 @@ export function Nav() {
             className="press hit-area mr-1 gap-1.5 rounded-full border border-line px-3 py-1.5 text-xs font-medium text-fg hover:bg-line/60"
           >
             <Download className="h-3.5 w-3.5" aria-hidden />
-            <span className="hidden sm:inline">Download CV</span>
+            <span className="hidden sm:inline md:max-lg:hidden">Download CV</span>
           </a>
           <ThemeToggle />
           <button
@@ -83,7 +83,7 @@ export function Nav() {
       {open && (
         <div
           id="mobile-menu"
-          className="menu-in border-t border-line bg-page px-6 py-4 md:hidden"
+          className="menu-in max-h-[calc(100dvh-3.25rem)] overflow-y-auto overscroll-contain border-t border-line bg-page px-6 py-4 md:hidden"
         >
           <ul className="flex flex-col gap-3">
             {sections.map((s) => (

@@ -89,6 +89,27 @@ describe("Nav", () => {
     expect(toggle).toHaveAttribute("aria-expanded", "false");
   });
 
+  test("mobile menu is capped to the space under the header and scrolls on short screens", async () => {
+    const user = userEvent.setup();
+    render(<Nav />);
+    await user.click(screen.getByRole("button", { name: "Toggle menu" }));
+    const panel = document.getElementById("mobile-menu");
+    // 3.25rem = the 48px bar + its 1px border + slack; without the cap a short landscape phone clips the last links.
+    expect(panel).toHaveClass(
+      "max-h-[calc(100dvh-3.25rem)]",
+      "overflow-y-auto",
+      "overscroll-contain"
+    );
+  });
+
+  test("the CV button drops its label at tablet widths to keep the bar uncrowded", () => {
+    render(<Nav />);
+    const cv = screen.getByRole("link", { name: "Download CV" });
+    const label = cv.querySelector("span") as HTMLElement;
+    expect(label).toHaveTextContent("Download CV");
+    expect(label).toHaveClass("hidden", "sm:inline", "md:max-lg:hidden");
+  });
+
   test("mobile menu toggle opens the section links", async () => {
     const user = userEvent.setup();
     render(<Nav />);
