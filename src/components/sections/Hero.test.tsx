@@ -4,6 +4,7 @@ import {
   fireEvent,
   render,
   screen,
+  within,
 } from "@testing-library/react";
 import { readFileSync } from "node:fs";
 import path from "node:path";
@@ -93,18 +94,43 @@ describe("Hero", () => {
     expect(hero.querySelector("[data-hero-content]")).toHaveClass("pb-32");
   });
 
-  test("rises in on load, headline then role then about line", () => {
+  test("rises in on load: portrait, then headline, role and about line", () => {
     render(<Hero />);
+    const portrait = document.querySelector("[data-hero-portrait]") as HTMLElement;
     const heading = screen.getByRole("heading", { level: 1 });
     const roleBlock = document.querySelector("[data-hero-role]")
       ?.parentElement as HTMLElement;
     const about = screen.getByText(profile.about);
-    for (const el of [heading, roleBlock, about]) {
+    for (const el of [portrait, heading, roleBlock, about]) {
       expect(el).toHaveClass("hero-rise");
     }
-    expect(heading).not.toHaveClass("[animation-delay:100ms]");
-    expect(roleBlock).toHaveClass("[animation-delay:100ms]");
-    expect(about).toHaveClass("[animation-delay:200ms]");
+    expect(portrait).not.toHaveClass("[animation-delay:100ms]");
+    expect(heading).toHaveClass("[animation-delay:100ms]");
+    expect(roleBlock).toHaveClass("[animation-delay:200ms]");
+    expect(about).toHaveClass("[animation-delay:300ms]");
+  });
+
+  test("shows the photo in a round frame above the headline when one is provided", () => {
+    render(<Hero photo="/photo.png" />);
+    const img = screen.getByRole("img", {
+      name: "Portrait of Fa'iq Haidar Prasetya",
+    });
+    expect(img.getAttribute("src")).toContain("photo.png");
+    expect(img).toHaveAttribute("loading", "eager");
+    expect(img).toHaveClass("object-cover");
+    const frame = document.querySelector("[data-hero-portrait]") as HTMLElement;
+    expect(frame).toContainElement(img);
+    expect(frame).toHaveClass("rounded-full", "overflow-hidden");
+    follows(frame, screen.getByRole("heading", { level: 1 }));
+  });
+
+  test("without a photo it shows a decorative initials placeholder in the same frame", () => {
+    render(<Hero />);
+    const frame = document.querySelector("[data-hero-portrait]") as HTMLElement;
+    expect(frame).toHaveClass("rounded-full", "overflow-hidden");
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+    const initials = within(frame).getByText("FP");
+    expect(initials).toHaveAttribute("aria-hidden", "true");
   });
 
   test("hero-rise is a CSS animation that reduced motion switches off", () => {

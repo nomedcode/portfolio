@@ -1,4 +1,6 @@
 import { render, screen } from "@testing-library/react";
+import { existsSync } from "node:fs";
+import path from "node:path";
 import { describe, expect, test } from "vitest";
 import Home from "./page";
 
@@ -48,6 +50,15 @@ describe("Assembled page", () => {
     expect(
       certs!.compareDocumentPosition(awards!) & Node.DOCUMENT_POSITION_FOLLOWING
     ).toBeTruthy();
+  });
+
+  test("hero shows public/photo.png when the file exists and the placeholder when it does not", () => {
+    const hasPhoto = existsSync(path.join(process.cwd(), "public", "photo.png"));
+    render(<Home />);
+    expect(screen.queryAllByRole("img", { name: /^Portrait of / })).toHaveLength(
+      hasPhoto ? 1 : 0
+    );
+    expect(document.querySelector("[data-hero-portrait]")).not.toBeNull();
   });
 
   test("nav exposes the theme toggle", () => {

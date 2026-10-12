@@ -2,6 +2,7 @@
 
 import { m, useScroll, useTransform } from "framer-motion";
 import { ArrowDown, Pause, Play } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { profile } from "@/lib/content";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
@@ -9,7 +10,13 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 const ROLE_MS = 3000;
 const ROLE_TRANSITION_MS = 450;
 
-export function Hero() {
+// First and last word, e.g. "Fa'iq Haidar Prasetya" -> "FP".
+function initialsOf(fullName: string) {
+  const words = fullName.trim().split(/\s+/);
+  return (words[0][0] + (words.length > 1 ? words[words.length - 1][0] : "")).toUpperCase();
+}
+
+export function Hero({ photo }: { photo?: string }) {
   const [index, setIndex] = useState(0);
   const [isRoleExiting, setIsRoleExiting] = useState(false);
   const [paused, setPaused] = useState(false);
@@ -85,13 +92,37 @@ export function Hero() {
           className="relative flex min-h-svh flex-col items-center justify-center gap-6 px-6 pb-32 pt-20 text-center"
         >
           <div className="relative flex w-full flex-col items-center gap-6">
+            {/* ponytail: the frame is a build-time choice (page.tsx checks public/photo.png); a photo that 404s at runtime would show a broken image instead of the initials. */}
+            <div
+              data-hero-portrait
+              className="hero-rise relative h-28 w-28 shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-white/20 to-white/5 ring-1 ring-white/20 shadow-[0_0_64px_-16px_rgba(41,151,255,0.55)] md:h-36 md:w-36"
+            >
+              {photo ? (
+                <Image
+                  src={photo}
+                  alt={`Portrait of ${profile.fullName}`}
+                  width={500}
+                  height={500}
+                  loading="eager"
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <span
+                  aria-hidden="true"
+                  className="flex h-full w-full items-center justify-center text-3xl font-semibold text-white/60 md:text-4xl"
+                  style={{ letterSpacing: "-0.02em" }}
+                >
+                  {initialsOf(profile.fullName)}
+                </span>
+              )}
+            </div>
             <h1
-              className="hero-rise w-full max-w-5xl text-5xl font-semibold md:text-7xl"
+              className="hero-rise w-full max-w-5xl text-5xl font-semibold [animation-delay:100ms] md:text-7xl"
               style={{ letterSpacing: "-0.03em", lineHeight: 1.05 }}
             >
               Hi, I&apos;m {profile.fullName}
             </h1>
-            <div className="hero-rise relative grid w-full max-w-5xl [animation-delay:100ms]">
+            <div className="hero-rise relative grid w-full max-w-5xl [animation-delay:200ms]">
               <div aria-hidden="true" className="invisible col-start-1 row-start-1">
                 {profile.roles.map((role) => (
                   <span key={role}>{role}</span>
@@ -120,7 +151,7 @@ export function Hero() {
                 </m.span>
               </p>
             </div>
-            <p className="hero-rise w-full max-w-2xl text-base text-white/60 [animation-delay:200ms] md:text-lg">
+            <p className="hero-rise w-full max-w-2xl text-base text-white/60 [animation-delay:300ms] md:text-lg">
               {profile.about}
             </p>
           </div>
