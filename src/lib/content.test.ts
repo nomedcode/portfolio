@@ -92,7 +92,7 @@ describe("credly badge", () => {
       "Google Cloud Computing Foundations Certificate"
     );
     expect(credlyBadge.issuer).toBe("Google Cloud");
-    expect(credlyBadge.image).toMatch(/^https:\/\/images\.credly\.com\//);
+    expect(credlyBadge.image).toMatch(/^\/badges\/.+\.png$/);
     expect(credlyBadge.url).toBe(
       "https://www.credly.com/badges/d0139198-6bd8-436e-9169-b098d5b1a6e7/public_url"
     );

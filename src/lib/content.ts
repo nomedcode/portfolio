@@ -192,8 +192,7 @@ export const credlyBadge: CredlyBadge = {
   id: "d0139198-6bd8-436e-9169-b098d5b1a6e7",
   name: "Google Cloud Computing Foundations Certificate",
   issuer: "Google Cloud",
-  image:
-    "https://images.credly.com/images/4dda8ae4-99ee-476c-bca3-6f0adbab42fe/image.png",
+  image: "/badges/google-cloud-computing-foundations.png",
   url: "https://www.credly.com/badges/d0139198-6bd8-436e-9169-b098d5b1a6e7/public_url",
   skills: [
     "Google Cloud",

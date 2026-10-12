@@ -11,9 +11,17 @@ import { motionTransition } from "@/lib/motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { BrandIcon } from "@/components/ui/BrandIcon";
 import { Reveal } from "@/components/ui/Reveal";
-const TechStackDialog = dynamic(() =>
-  import("@/components/ui/TechStackDialog").then((m) => m.TechStackDialog)
-);
+
+// One import() site feeds both the dynamic component and the warm-up. Two separate import() calls become two
+// separate chunks, so the warm-up would fetch a copy the click never uses.
+const loadDialog = () =>
+  import("@/components/ui/TechStackDialog").then((m) => m.TechStackDialog);
+const TechStackDialog = dynamic(loadDialog);
+
+// Fetch the dialog chunk before the click: on hover, focus, press and once the icon cloud scrolls into view.
+function warmDialog() {
+  void loadDialog();
+}
 
 const cloudVariants = (reduce: boolean): Variants => ({
   hidden: {},
@@ -99,6 +107,7 @@ export function SkillsBanner() {
                 variants={cloud}
                 initial="hidden"
                 whileInView="show"
+                onViewportEnter={warmDialog}
                 viewport={{ once: true, margin: "-15%" }}
                 aria-hidden="true"
                 data-preview-list
@@ -120,6 +129,9 @@ export function SkillsBanner() {
               type="button"
               aria-label="View all skills"
               aria-haspopup="dialog"
+              onPointerEnter={warmDialog}
+              onFocus={warmDialog}
+              onPointerDown={warmDialog}
               onClick={(e) => {
                 openerRef.current = e.currentTarget;
                 setOpen(true);

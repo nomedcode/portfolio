@@ -23,8 +23,8 @@ export function Certificates() {
             <Image
               src={credlyBadge.image}
               alt={credlyBadge.name}
-              width={600}
-              height={600}
+              width={320}
+              height={320}
               className="h-32 w-32 shrink-0 sm:h-40 sm:w-40"
             />
             <div className="flex flex-col items-center gap-2 sm:items-start">

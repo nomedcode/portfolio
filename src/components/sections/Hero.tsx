@@ -101,8 +101,8 @@ export function Hero({ photo }: { photo?: string }) {
                 <Image
                   src={photo}
                   alt={`Portrait of ${profile.fullName}`}
-                  width={500}
-                  height={500}
+                  width={320}
+                  height={320}
                   loading="eager"
                   className="h-full w-full object-cover"
                 />
