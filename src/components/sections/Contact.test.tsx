@@ -1,8 +1,21 @@
 import { render, screen } from "@testing-library/react";
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import { describe, expect, test } from "vitest";
 import { profile, sections } from "@/lib/content";
+import { contrastRatio, iconFills } from "@/lib/iconColor";
 import { Contact } from "./Contact";
 import { Footer } from "./Footer";
+
+const css = readFileSync(path.resolve(__dirname, "../../app/globals.css"), "utf8");
+
+// Value of a --c-* token inside the :root (light) or .dark block of globals.css.
+function token(theme: "light" | "dark", name: string) {
+  const block = css.match(
+    theme === "light" ? /:root\s*\{([^}]*)\}/ : /\n\.dark\s*\{([^}]*)\}/
+  )?.[1];
+  return block?.match(new RegExp(`--c-${name}:\\s*(#[0-9a-fA-F]{6})`))?.[1] as string;
+}
 
 describe("Contact", () => {
   test("renders the CTA heading and a mailto button", () => {
@@ -47,6 +60,55 @@ describe("Contact", () => {
     expect(
       screen.queryByRole("link", { name: /Instagram/ })
     ).not.toBeInTheDocument();
+  });
+
+  test("draws the GitHub and LinkedIn logos in their brand colours, fitted to each theme", () => {
+    render(<Contact />);
+    for (const [label, hex] of [
+      ["GitHub", "181717"],
+      ["LinkedIn", "0a66c2"],
+    ] as const) {
+      const svg = screen
+        .getByRole("link", { name: label })
+        .querySelector("svg") as SVGElement;
+      const fills = iconFills(hex);
+      expect(svg).toHaveAttribute("aria-hidden", "true");
+      expect(svg).toHaveClass("text-(color:--icon-l)", "dark:text-(color:--icon-d)");
+      expect(svg.style.getPropertyValue("--icon-l")).toBe(fills.light);
+      expect(svg.style.getPropertyValue("--icon-d")).toBe(fills.dark);
+    }
+    // LinkedIn keeps its blue, not a grey stand-in
+    expect(iconFills("0a66c2").light).toBe("#0a66c2");
+  });
+
+  test("the Email logo is Gmail red on a white badge, so a colour logo holds on the blue button", () => {
+    render(<Contact />);
+    const svg = screen
+      .getByRole("link", { name: "Email me" })
+      .querySelector("svg") as SVGElement;
+    const badge = svg.parentElement as HTMLElement;
+    expect(badge).toHaveClass("bg-white", "rounded-full");
+    expect(svg.style.getPropertyValue("--icon-l")).toBe("#ea4335");
+    expect(svg).toHaveClass("text-(color:--icon-l)");
+    expect(contrastRatio("#ffffff", "#ea4335")).toBeGreaterThanOrEqual(3);
+  });
+
+  test("the GitHub and LinkedIn outline reaches 3:1 against the raised surface in both themes", () => {
+    render(<Contact />);
+    for (const s of profile.socials) {
+      const link = screen.getByRole("link", { name: s.label });
+      expect(link).toHaveClass("border");
+      const colour = [...link.classList]
+        .find((c) => /^border-[a-z]+$/.test(c) && c !== "border-transparent")
+        ?.replace("border-", "") as string;
+      expect(colour, `${s.label} border colour class`).toBeTruthy();
+      for (const theme of ["light", "dark"] as const) {
+        expect(
+          contrastRatio(token(theme, colour), token(theme, "raised")),
+          `${s.label} outline in ${theme}`
+        ).toBeGreaterThanOrEqual(3);
+      }
+    }
   });
 });
 
