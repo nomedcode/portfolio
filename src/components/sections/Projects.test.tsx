@@ -89,6 +89,13 @@ describe("Projects", () => {
     expect(document.getElementById("projects")).toHaveClass("md:py-32");
   });
 
+  test("leaves the same 64px under its heading as SectionHeading (mb-16) does", () => {
+    const { container } = render(<Projects />);
+    const scroller = container.querySelector("[data-gallery]") as HTMLElement;
+    expect(scroller).toHaveClass("mt-16");
+    expect(scroller).not.toHaveClass("mt-12");
+  });
+
   test("gallery arrows exist with the left one disabled at the start", () => {
     render(<Projects />);
     expect(

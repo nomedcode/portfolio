@@ -97,7 +97,7 @@ export function Projects() {
         role="region"
         aria-label="Projects gallery"
         tabIndex={0}
-        className="gallery-scroll mt-12 snap-x snap-mandatory overflow-x-auto scroll-px-[max(1.5rem,calc((100%_-_72rem)/2_+_1.5rem))] focus-visible:-outline-offset-2"
+        className="gallery-scroll mt-16 snap-x snap-mandatory overflow-x-auto scroll-px-[max(1.5rem,calc((100%_-_72rem)/2_+_1.5rem))] focus-visible:-outline-offset-2"
       >
         <m.ul
           role="list"
