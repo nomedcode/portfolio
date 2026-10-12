@@ -48,3 +48,6 @@ next-env.d.ts
 /AGENTS.md
 /CLAUDE.md
 /skills-lock.json
+
+# impeccable tooling sidecar (regenerated from DESIGN.md)
+/.impeccable/
