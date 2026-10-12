@@ -1,6 +1,6 @@
 # Portfolio
 
-Personal portfolio of Fa'iq Haidar Prasetya, a Computer Science (Cloud Technology) student at BINUS University. It presents projects, skills, certificates, awards, education and contact details in a single, fast, accessible page.
+Personal portfolio of me, a Computer Science (Cloud Technology Stream) student at BINUS University. 
 
 ## Tech stack
 
