@@ -86,12 +86,12 @@ export function Hero() {
         >
           <div className="relative flex w-full flex-col items-center gap-6">
             <h1
-              className="w-full max-w-5xl text-5xl font-semibold md:text-7xl"
+              className="hero-rise w-full max-w-5xl text-5xl font-semibold md:text-7xl"
               style={{ letterSpacing: "-0.03em", lineHeight: 1.05 }}
             >
               Hi, I&apos;m {profile.fullName}
             </h1>
-            <div className="relative grid w-full max-w-5xl">
+            <div className="hero-rise relative grid w-full max-w-5xl [animation-delay:100ms]">
               <div aria-hidden="true" className="invisible col-start-1 row-start-1">
                 {profile.roles.map((role) => (
                   <span key={role}>{role}</span>
@@ -120,7 +120,7 @@ export function Hero() {
                 </m.span>
               </p>
             </div>
-            <p className="w-full max-w-2xl text-base text-white/60 md:text-lg">
+            <p className="hero-rise w-full max-w-2xl text-base text-white/60 [animation-delay:200ms] md:text-lg">
               {profile.about}
             </p>
           </div>

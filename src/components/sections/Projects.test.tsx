@@ -34,11 +34,20 @@ describe("Projects", () => {
     ).not.toBeInTheDocument();
   });
 
-  test("keeps the one-line context under the heading", () => {
+  test("has no description paragraph under the heading", () => {
     render(<Projects />);
     expect(
-      screen.getByText(/I'm building a few things in the cloud/)
-    ).toBeInTheDocument();
+      screen.queryByText(/I'm building a few things in the cloud/)
+    ).not.toBeInTheDocument();
+    const heading = screen.getByRole("heading", { name: "Projects" });
+    expect(heading.nextElementSibling).toBeNull();
+  });
+
+  test("fades the heading in on scroll like every other section", () => {
+    render(<Projects />);
+    expect(
+      screen.getByRole("heading", { name: "Projects" }).parentElement
+    ).toHaveAttribute("data-reveal");
   });
 
   test("renders five coming-soon islands in a horizontal snap scroller", () => {

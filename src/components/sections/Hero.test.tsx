@@ -5,6 +5,8 @@ import {
   render,
   screen,
 } from "@testing-library/react";
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import { afterEach, describe, expect, test, vi } from "vitest";
 import { profile } from "@/lib/content";
 import { Hero } from "./Hero";
@@ -89,6 +91,33 @@ describe("Hero", () => {
     expect(hero).toHaveClass("min-h-svh");
     expect(hero).not.toHaveClass("h-svh");
     expect(hero.querySelector("[data-hero-content]")).toHaveClass("pb-32");
+  });
+
+  test("rises in on load, headline then role then about line", () => {
+    render(<Hero />);
+    const heading = screen.getByRole("heading", { level: 1 });
+    const roleBlock = document.querySelector("[data-hero-role]")
+      ?.parentElement as HTMLElement;
+    const about = screen.getByText(profile.about);
+    for (const el of [heading, roleBlock, about]) {
+      expect(el).toHaveClass("hero-rise");
+    }
+    expect(heading).not.toHaveClass("[animation-delay:100ms]");
+    expect(roleBlock).toHaveClass("[animation-delay:100ms]");
+    expect(about).toHaveClass("[animation-delay:200ms]");
+  });
+
+  test("hero-rise is a CSS animation that reduced motion switches off", () => {
+    const css = readFileSync(
+      path.resolve(__dirname, "../../app/globals.css"),
+      "utf8"
+    );
+    expect(css).toMatch(/@keyframes hero-rise/);
+    expect(css).toMatch(/\.hero-rise\s*\{[^}]*animation:[^;}]*hero-rise/);
+    const reduced = css.match(
+      /@media \(prefers-reduced-motion: reduce\)\s*\{([\s\S]*?)\n\}/
+    );
+    expect(reduced?.[1]).toMatch(/\.hero-rise\s*\{\s*animation:\s*none/);
   });
 
   test("scopes a light focus ring to the always-dark hero", () => {

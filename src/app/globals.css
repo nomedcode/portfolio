@@ -57,6 +57,17 @@ html {
   .press:active {
     transform: none;
   }
+  .hero-rise {
+    animation: none;
+  }
+}
+
+/* Same rise as Reveal (20px, 0.6s ease-out) but pure CSS, so the hero plays on first paint and never waits for hydration. */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
 }
 
 @layer base {
@@ -71,6 +82,10 @@ html {
 }
 
 @layer components {
+  /* The shorthand resets animation-delay; the per-element [animation-delay:..] utilities win because the utilities layer comes after components. */
+  .hero-rise {
+    animation: hero-rise 600ms ease-out backwards;
+  }
   .press {
     transition: transform 100ms ease-out;
   }

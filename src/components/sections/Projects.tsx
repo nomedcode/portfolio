@@ -4,6 +4,7 @@ import { m, type Variants } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useCallback, useRef, useSyncExternalStore } from "react";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { Reveal } from "@/components/ui/Reveal";
 
 const EDGE = 4;
 const GAP = 16;
@@ -78,17 +79,15 @@ export function Projects() {
       className="scroll-mt-24 bg-page py-24 md:py-32"
     >
       <div className="mx-auto max-w-6xl px-6">
-        <h2
-          id="projects-heading"
-          className="text-center text-4xl font-semibold tracking-tight text-fg md:text-5xl"
-          style={{ letterSpacing: "-0.02em" }}
-        >
-          Projects
-        </h2>
-        <p className="mx-auto mt-4 max-w-md text-balance text-center text-sm text-muted md:text-base">
-          I&apos;m building a few things in the cloud. I&apos;ll write them up
-          here as they&apos;re ready.
-        </p>
+        <Reveal>
+          <h2
+            id="projects-heading"
+            className="text-center text-4xl font-semibold tracking-tight text-fg md:text-5xl"
+            style={{ letterSpacing: "-0.02em" }}
+          >
+            Projects
+          </h2>
+        </Reveal>
       </div>
 
       {/* The scroller is focusable so keyboard users can arrow through it; the inset ring is not clipped by the viewport edge. */}
