@@ -221,9 +221,9 @@ export const education: EducationItem[] = [
   },
   {
     id: "aws-restart",
-    school: "Orbit Future Academy",
+    school: "Orbit Future Academy x Amazon Web Services",
     degree: "AWS re/Start Learner — Batch 16",
-    period: "2024",
+    period: "09-2026 — 11-2026",
     coursework: [
       "AWS Core Services",
       "Linux & Networking",
