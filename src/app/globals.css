@@ -115,11 +115,6 @@ html {
     backdrop-filter: blur(20px) saturate(180%);
     border-top: 1px solid rgba(255, 255, 255, 0.4);
   }
-  .material-dark {
-    background: rgba(22, 22, 23, 0.6);
-    backdrop-filter: blur(20px) saturate(180%);
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-  }
 }
 
 .dark .material-light {
@@ -134,10 +129,6 @@ html {
     background: var(--c-page);
     backdrop-filter: none;
   }
-  .material-dark {
-    background: var(--c-deep);
-    backdrop-filter: none;
-  }
 }
 
 @media (prefers-contrast: more) {
@@ -149,8 +140,5 @@ html {
     backdrop-filter: none;
     border-top: 0;
     border-bottom: 1px solid var(--c-muted);
-  }
-  .material-dark {
-    border-top: 1px solid var(--c-line);
   }
 }

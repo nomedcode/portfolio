@@ -12,7 +12,6 @@ import {
   siFigma,
   siFlutter,
   siFramer,
-  siGit,
   siGooglegemini,
   siGooglecloud,
   siGraphql,
@@ -45,7 +44,6 @@ import {
   siTypescript,
   siV0,
   siVercel,
-  siVitest,
   siVuedotjs,
   siGithubactions,
   siGithubcopilot,
@@ -67,7 +65,6 @@ const icons: Record<string, SimpleIcon> = {
   tailwindcss: siTailwindcss,
   framer: siFramer,
   greensock: siGreensock,
-  vitest: siVitest,
   kotlin: siKotlin,
   jetpackcompose: siJetpackcompose,
   expo: siExpo,
@@ -104,7 +101,6 @@ const icons: Record<string, SimpleIcon> = {
   vercel: siVercel,
   netlify: siNetlify,
   cloudflare: siCloudflare,
-  git: siGit,
 };
 
 export function getSkillIcon(slug: string): SimpleIcon | undefined {
