@@ -72,8 +72,7 @@ export function Hero({ photo }: { photo?: string }) {
   return (
     <section
       ref={sectionRef}
-      id="top"
-      role="region"
+      id="top"
       aria-label="Introduction"
       className="relative min-h-svh overflow-hidden bg-deep text-white [--c-ring:#2997ff]"
     >
@@ -120,10 +119,16 @@ export function Hero({ photo }: { photo?: string }) {
             >
               Hi, I&apos;m {profile.fullName}
             </h1>
-            <div className="hero-rise relative grid w-full max-w-5xl [animation-delay:200ms]">
-              <div aria-hidden="true" className="invisible col-start-1 row-start-1">
+            <div className="hero-rise relative grid w-fit max-w-full [animation-delay:200ms]">
+              {/* All roles share one grid cell: the widest sets the width, one line sets the height, and the pause button hangs off that edge. */}
+              <div
+                aria-hidden="true"
+                className="invisible col-start-1 row-start-1 grid text-lg font-medium md:text-xl"
+              >
                 {profile.roles.map((role) => (
-                  <span key={role}>{role}</span>
+                  <span key={role} className="col-start-1 row-start-1">
+                    {role}
+                  </span>
                 ))}
               </div>
               <p
@@ -148,6 +153,20 @@ export function Hero({ photo }: { photo?: string }) {
                   {activeRole}
                 </m.span>
               </p>
+              {!reduce && (
+                <button
+                  type="button"
+                  aria-label={paused ? "Play role rotation" : "Pause role rotation"}
+                  onClick={() => setPaused((p) => !p)}
+                  className="press hit-area absolute left-full top-1/2 ml-1 -translate-y-1/2 rounded-full p-2 text-white/70 hover:bg-white/10 hover:text-white"
+                >
+                  {paused ? (
+                    <Play className="h-4 w-4" aria-hidden />
+                  ) : (
+                    <Pause className="h-4 w-4" aria-hidden />
+                  )}
+                </button>
+              )}
             </div>
             <p className="hero-rise w-full max-w-2xl text-base text-white/60 [animation-delay:300ms] md:text-lg">
               {profile.about}
@@ -156,33 +175,14 @@ export function Hero({ photo }: { photo?: string }) {
         </div>
       </m.div>
 
-      <div className="absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2">
-        <p className="text-xs uppercase tracking-widest text-white/60">
-          LEARN MORE
-        </p>
-        <button
-          type="button"
-          aria-label="Learn more"
-          onClick={scrollToProjects}
-          className="press hit-area rounded-full p-2 text-white/70 hover:bg-white/10 hover:text-white"
-        >
-          <ArrowDown className="h-5 w-5" aria-hidden />
-        </button>
-      </div>
-      {!reduce && (
-        <button
-          type="button"
-          aria-label={paused ? "Play role rotation" : "Pause role rotation"}
-          onClick={() => setPaused((p) => !p)}
-          className="press hit-area absolute bottom-6 right-6 rounded-full p-2 text-white/70 hover:bg-white/10 hover:text-white"
-        >
-          {paused ? (
-            <Play className="h-5 w-5" aria-hidden />
-          ) : (
-            <Pause className="h-5 w-5" aria-hidden />
-          )}
-        </button>
-      )}
+      <button
+        type="button"
+        onClick={scrollToProjects}
+        className="press hit-area absolute bottom-8 left-1/2 -translate-x-1/2 flex-col gap-2 rounded-2xl px-4 py-2 text-white/70 hover:bg-white/10 hover:text-white"
+      >
+        <span className="text-xs uppercase tracking-widest">Learn more</span>
+        <ArrowDown className="h-5 w-5" aria-hidden />
+      </button>
     </section>
   );
 }

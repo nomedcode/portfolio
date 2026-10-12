@@ -59,7 +59,8 @@ describe("Skills banner", () => {
     render(<SkillsBanner />);
     expect(screen.getByRole("heading", { name: "Skills" })).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "Skills." })).not.toBeInTheDocument();
-    expect(screen.getByText("Click to see all")).toBeInTheDocument();
+    expect(screen.getByText("View all skills")).toBeInTheDocument();
+    expect(screen.queryByText(/click|tap/i)).not.toBeInTheDocument();
     const preview = document.querySelector("[data-preview-list]");
     expect(preview).toHaveAttribute("aria-hidden", "true");
     expect(preview?.tagName).toBe("UL");

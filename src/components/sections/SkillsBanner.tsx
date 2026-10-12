@@ -100,7 +100,7 @@ export function SkillsBanner() {
                   Skills
                 </h2>
                 <p className="mt-3 text-sm text-muted">
-                  Click to see all
+                  View all skills
                 </p>
               </div>
               <m.ul

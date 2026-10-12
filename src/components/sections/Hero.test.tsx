@@ -75,7 +75,7 @@ describe("Hero", () => {
         "svg.lucide-arrow-down"
       )
     ).toBeInTheDocument();
-    expect(screen.getByText("LEARN MORE", { selector: "p" })).toBeInTheDocument();
+    expect(screen.queryByText("LEARN MORE", { selector: "p" })).not.toBeInTheDocument();
     expect(screen.queryByText("Scroll", { exact: true })).not.toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Pause role rotation" })
@@ -153,13 +153,43 @@ describe("Hero", () => {
     );
   });
 
-  test("places the LEARN MORE label above the arrow-down button", () => {
+  test("the Learn more label is part of its button, stacked above the arrow, so one control carries one name", () => {
     render(<Hero />);
-    const label = screen.getByText("LEARN MORE", { selector: "p" });
     const button = screen.getByRole("button", { name: "Learn more" });
-    expect(
-      label.compareDocumentPosition(button) & Node.DOCUMENT_POSITION_FOLLOWING
-    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    const label = within(button).getByText("Learn more");
+    const arrow = button.querySelector("svg.lucide-arrow-down") as Element;
+    expect(label).toHaveClass("uppercase");
+    expect(button).not.toHaveAttribute("aria-label");
+    follows(label, arrow);
+  });
+
+  test("the pause control sits with the rotating role it stops, not in a far corner", () => {
+    render(<Hero />);
+    const roleBlock = document.querySelector("[data-hero-role]")
+      ?.parentElement as HTMLElement;
+    const pause = screen.getByRole("button", { name: "Pause role rotation" });
+    expect(roleBlock).toContainElement(pause);
+    expect(pause).not.toHaveClass("bottom-6", "right-6");
+  });
+
+  test("the hidden width sizer uses the visible role's type size, so the pause button stays put as roles change", () => {
+    render(<Hero />);
+    const visible = document.querySelector("[data-hero-role]") as HTMLElement;
+    const sizer = document.querySelector(
+      "[data-hero-role]"
+    )?.parentElement?.querySelector("[aria-hidden='true']") as HTMLElement;
+    for (const cls of ["text-lg", "md:text-xl", "font-medium"]) {
+      expect(visible).toHaveClass(cls);
+      expect(sizer).toHaveClass(cls);
+    }
+    expect([...sizer.children].map((c) => c.textContent)).toEqual(profile.roles);
+  });
+
+  test("the hero is a labelled section, not a section with a redundant region role", () => {
+    render(<Hero />);
+    const hero = screen.getByRole("region", { name: "Introduction" });
+    expect(hero.tagName).toBe("SECTION");
+    expect(hero).not.toHaveAttribute("role");
   });
 
   test("renders the rotating role below the headline and above the about line", () => {
