@@ -86,20 +86,20 @@ function fit(
 }
 
 /** True for a saturated yellow, the one hue family whose dark shades stop looking like the brand (olive, mustard). */
-function isYellow(hex: string): boolean {
+export function isYellow(hex: string): boolean {
   const [h, s] = toHsl(hex);
   return s >= NEUTRAL_SATURATION && h >= YELLOW_HUE[0] && h <= YELLOW_HUE[1];
 }
 
 /**
  * The fill to paint a brand logo with in each theme, as lowercase #rrggbb. `hex` is a simple-icons hex (no #).
- * `rim` is set for a yellow that cannot reach 3:1 on a light surface: it keeps its colour there and the logo is
- * outlined in `rim` (the light-theme text colour) instead of being darkened until it turns olive. Dark needs no rim.
+ * Yellow is the one exception to the 3:1 fit on light surfaces: a yellow dark enough to reach 3:1 on white is
+ * olive or mustard (JavaScript, Hugging Face), so it keeps its exact brand colour there, as the original site did.
  */
-export function iconFills(hex: string): { light: string; dark: string; rim: string | null } {
+export function iconFills(hex: string): { light: string; dark: string } {
   const brand = `#${hex.toLowerCase()}`;
-  const light = fit(brand, SURFACES.light, "darker", FOREGROUND.light);
-  const dark = fit(brand, SURFACES.dark, "lighter", FOREGROUND.dark);
-  if (light !== brand && isYellow(brand)) return { light: brand, dark, rim: FOREGROUND.light };
-  return { light, dark, rim: null };
+  return {
+    light: isYellow(brand) ? brand : fit(brand, SURFACES.light, "darker", FOREGROUND.light),
+    dark: fit(brand, SURFACES.dark, "lighter", FOREGROUND.dark),
+  };
 }

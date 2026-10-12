@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, test } from "vitest";
 import { cloudSkills, skillCategories } from "./content";
-import { contrastRatio, FOREGROUND, iconFills, SURFACES } from "./iconColor";
+import { contrastRatio, FOREGROUND, iconFills, isYellow, SURFACES } from "./iconColor";
 import { getSkillIcon } from "./skillIcons";
 
 const usedIcons = [
@@ -45,49 +45,46 @@ describe("iconFills", () => {
     expect(usedIcons.length).toBeGreaterThanOrEqual(45);
   });
 
-  test("every icon reaches 3:1 on both surfaces of both themes (a rim carries it where the fill cannot)", () => {
+  test("every icon reaches 3:1 on both surfaces of both themes, except yellow on light (see below)", () => {
     const failures: string[] = [];
     for (const { slug, icon } of usedIcons) {
       const fills = iconFills(icon.hex);
       for (const theme of ["light", "dark"] as const) {
-        const mark = theme === "light" && fills.rim ? fills.rim : fills[theme];
+        if (theme === "light" && isYellow(`#${icon.hex.toLowerCase()}`)) continue;
         for (const surface of SURFACES[theme]) {
-          const ratio = contrastRatio(mark, surface);
-          if (ratio < 3) failures.push(`${slug} ${theme} ${mark} on ${surface}: ${ratio.toFixed(2)}`);
+          const ratio = contrastRatio(fills[theme], surface);
+          if (ratio < 3) failures.push(`${slug} ${theme} ${fills[theme]} on ${surface}: ${ratio.toFixed(2)}`);
         }
       }
     }
     expect(failures).toEqual([]);
   });
 
-  test("yellow keeps its colour on light and takes an ink rim, because a dark yellow is only olive or mustard", () => {
+  test("yellow is the one exception: it keeps its exact brand colour on light, because a dark yellow is only olive or mustard", () => {
     for (const hex of ["F7DF1E", "FFD21E"]) {
       const brand = `#${hex.toLowerCase()}`;
-      const fills = iconFills(hex);
-      expect(fills.light, hex).toBe(brand);
-      expect(fills.rim, hex).toBe(FOREGROUND.light);
-      // the rim is what meets 3:1 against the surfaces, and it stands clear of the yellow it edges
-      for (const surface of SURFACES.light) {
-        expect(contrastRatio(fills.rim!, surface)).toBeGreaterThanOrEqual(3);
-      }
-      expect(contrastRatio(fills.rim!, brand)).toBeGreaterThanOrEqual(3);
-      // yellow is already bright enough on dark, so no rim there
-      expect(fills.dark).toBe(brand);
+      expect(isYellow(brand), hex).toBe(true);
+      expect(iconFills(hex), hex).toEqual({ light: brand, dark: brand });
     }
   });
 
-  test("only yellows are rimmed; every other brand is still fitted by lightness alone", () => {
+  test("only yellows are exempt; every other brand is still fitted to 3:1 by lightness alone", () => {
     for (const { slug, icon } of usedIcons) {
-      const h = hue(`#${icon.hex.toLowerCase()}`);
-      const rimmed = iconFills(icon.hex).rim !== null;
-      if (rimmed) expect(h, slug).toBeGreaterThanOrEqual(40);
-      if (rimmed) expect(h, slug).toBeLessThanOrEqual(65);
+      const brand = `#${icon.hex.toLowerCase()}`;
+      if (!isYellow(brand)) {
+        // a non-yellow that fails on light is moved, never left below 3:1
+        const light = iconFills(icon.hex).light;
+        for (const surface of SURFACES.light) {
+          expect(contrastRatio(light, surface), slug).toBeGreaterThanOrEqual(3);
+        }
+      }
     }
-    expect(iconFills("61DAFB").rim).toBeNull();
-    expect(iconFills("00ADD8").rim).toBeNull();
-    expect(iconFills("000000").rim).toBeNull();
-    // a yellow that already passes needs no rim
-    expect(iconFills("806600").rim).toBeNull();
+    // the neighbours of yellow are still fitted
+    expect(iconFills("61DAFB").light).not.toBe("#61dafb"); // React cyan
+    expect(iconFills("FF6F00").light).not.toBe("#ff6f00"); // TensorFlow orange
+    expect(isYellow("#ff6f00")).toBe(false);
+    // black and slate are not yellow
+    expect(isYellow("#000000")).toBe(false);
   });
 
   test("colours that already pass are the exact brand colour", () => {
