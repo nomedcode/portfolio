@@ -1,7 +1,7 @@
 "use client";
 
 import { m, useScroll, useTransform } from "framer-motion";
-import { ArrowDown, Pause, Play } from "lucide-react";
+import { ArrowDown } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { profile } from "@/lib/content";
@@ -19,7 +19,6 @@ function initialsOf(fullName: string) {
 export function Hero({ photo }: { photo?: string }) {
   const [index, setIndex] = useState(0);
   const [isRoleExiting, setIsRoleExiting] = useState(false);
-  const [paused, setPaused] = useState(false);
   const reduce = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
   const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -28,7 +27,7 @@ export function Hero({ photo }: { photo?: string }) {
   const activeRole = profile.roles[reduce ? 0 : index];
 
   useEffect(() => {
-    if (reduce || paused) return;
+    if (reduce) return;
 
     const advanceRole = () => {
       if (document.hidden || transitionActiveRef.current) return;
@@ -53,7 +52,7 @@ export function Hero({ photo }: { photo?: string }) {
       transitionActiveRef.current = false;
       setIsRoleExiting(false);
     };
-  }, [count, reduce, paused]);
+  }, [count, reduce]);
 
   const scrollToProjects = () => {
     document.getElementById("projects")?.scrollIntoView({
@@ -119,8 +118,8 @@ export function Hero({ photo }: { photo?: string }) {
             >
               Hi, I&apos;m {profile.fullName}
             </h1>
-            <div className="hero-rise relative grid w-fit max-w-full [animation-delay:200ms]">
-              {/* All roles share one grid cell: the widest sets the width, one line sets the height, and the pause button hangs off that edge. */}
+            <div className="hero-rise grid w-fit max-w-full [animation-delay:200ms]">
+              {/* All roles share one grid cell: the widest sets the width and one line sets the height, so the block never jumps as roles change. */}
               <div
                 aria-hidden="true"
                 className="invisible col-start-1 row-start-1 grid text-lg font-medium md:text-xl"
@@ -153,20 +152,6 @@ export function Hero({ photo }: { photo?: string }) {
                   {activeRole}
                 </m.span>
               </p>
-              {!reduce && (
-                <button
-                  type="button"
-                  aria-label={paused ? "Play role rotation" : "Pause role rotation"}
-                  onClick={() => setPaused((p) => !p)}
-                  className="press hit-area absolute left-full top-1/2 ml-1 -translate-y-1/2 rounded-full p-2 text-white/70 hover:bg-white/10 hover:text-white"
-                >
-                  {paused ? (
-                    <Play className="h-4 w-4" aria-hidden />
-                  ) : (
-                    <Pause className="h-4 w-4" aria-hidden />
-                  )}
-                </button>
-              )}
             </div>
             <p className="hero-rise w-full max-w-2xl text-base text-white/60 [animation-delay:300ms] md:text-lg">
               {profile.about}

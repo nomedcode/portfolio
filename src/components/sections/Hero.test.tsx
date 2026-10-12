@@ -1,7 +1,6 @@
 import {
   act,
   cleanup,
-  fireEvent,
   render,
   screen,
   within,
@@ -78,8 +77,8 @@ describe("Hero", () => {
     expect(screen.queryByText("LEARN MORE", { selector: "p" })).not.toBeInTheDocument();
     expect(screen.queryByText("Scroll", { exact: true })).not.toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: "Pause role rotation" })
-    ).toBeInTheDocument();
+      screen.queryByRole("button", { name: /role rotation/ })
+    ).not.toBeInTheDocument();
     expect(screen.queryByText("Future", { exact: true })).not.toBeInTheDocument();
     expect(
       screen.queryByText("Bandung, Indonesia", { exact: true })
@@ -163,16 +162,14 @@ describe("Hero", () => {
     follows(label, arrow);
   });
 
-  test("the pause control sits with the rotating role it stops, not in a far corner", () => {
+  test("the role line has no control of its own", () => {
     render(<Hero />);
     const roleBlock = document.querySelector("[data-hero-role]")
       ?.parentElement as HTMLElement;
-    const pause = screen.getByRole("button", { name: "Pause role rotation" });
-    expect(roleBlock).toContainElement(pause);
-    expect(pause).not.toHaveClass("bottom-6", "right-6");
+    expect(within(roleBlock).queryAllByRole("button")).toHaveLength(0);
   });
 
-  test("the hidden width sizer uses the visible role's type size, so the pause button stays put as roles change", () => {
+  test("the hidden width sizer uses the visible role's type size, so the line keeps its width as roles change", () => {
     render(<Hero />);
     const visible = document.querySelector("[data-hero-role]") as HTMLElement;
     const sizer = document.querySelector(
@@ -313,24 +310,6 @@ describe("Hero", () => {
     expect(rotatingRole("DevOps Engineer")).toBeInTheDocument();
   });
 
-  test("pause control stops role rotation and play resumes it", async () => {
-    vi.useFakeTimers({
-      toFake: ["setInterval", "clearInterval", "setTimeout", "clearTimeout"],
-    });
-    render(<Hero />);
-    fireEvent.click(screen.getByRole("button", { name: "Pause role rotation" }));
-    await act(async () => {
-      vi.advanceTimersByTime(9000);
-    });
-    expect(rotatingRole("Cloud Engineer")).toBeInTheDocument();
-
-    fireEvent.click(screen.getByRole("button", { name: "Play role rotation" }));
-    await act(async () => {
-      vi.advanceTimersByTime(3450);
-    });
-    expect(rotatingRole("DevOps Engineer")).toBeInTheDocument();
-  });
-
   test("clears its role rotation interval on unmount without errors", () => {
     vi.useFakeTimers({
       toFake: ["setInterval", "clearInterval", "setTimeout", "clearTimeout"],
@@ -339,7 +318,7 @@ describe("Hero", () => {
     expect(() => unmount()).not.toThrow();
   });
 
-  test("keeps the first role static and hides rotation controls for reduced motion", async () => {
+  test("keeps the first role static for reduced motion", async () => {
     vi.useFakeTimers({
       toFake: ["setInterval", "clearInterval", "setTimeout", "clearTimeout"],
     });
