@@ -122,11 +122,17 @@ describe("education", () => {
     }
   });
 
-  test("AWS re/Start is run by Orbit Future Academy with Amazon Web Services, 09-2026 to 11-2026", () => {
+  test("AWS re/Start is run by Orbit Future Academy with Amazon Web Services, Sept 2026 to Nov 2026", () => {
     const restart = education.find((e) => e.id === "aws-restart");
     expect(restart?.school).toBe("Orbit Future Academy x Amazon Web Services");
     expect(restart?.degree).toBe("AWS re/Start Learner — Batch 16");
-    expect(restart?.period).toBe("09-2026 — 11-2026");
+    expect(restart?.period).toBe("Sept 2026 — Nov 2026");
+  });
+
+  test("BINUS runs Sept 2024 to Sept 2028", () => {
+    expect(education.find((e) => e.id === "binus")?.period).toBe(
+      "Sept 2024 — Sept 2028"
+    );
   });
 });
 

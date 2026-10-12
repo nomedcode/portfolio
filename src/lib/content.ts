@@ -210,7 +210,7 @@ export const education: EducationItem[] = [
     id: "binus",
     school: "BINUS University",
     degree: "Undergraduate Computer Science — Cloud Technology",
-    period: "2024 — 2028",
+    period: "Sept 2024 — Sept 2028",
     gpa: "3.06",
     coursework: [
       "Software Development Operations in Cloud Environments",
@@ -223,7 +223,7 @@ export const education: EducationItem[] = [
     id: "aws-restart",
     school: "Orbit Future Academy x Amazon Web Services",
     degree: "AWS re/Start Learner — Batch 16",
-    period: "09-2026 — 11-2026",
+    period: "Sept 2026 — Nov 2026",
     coursework: [
       "AWS Core Services",
       "Linux & Networking",
