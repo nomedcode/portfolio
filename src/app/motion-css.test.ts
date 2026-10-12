@@ -29,4 +29,26 @@ describe("reduced-motion CSS", () => {
       /\.menu-in\s*\{[^}]*animation-name:\s*menu-fade/
     );
   });
-});
+
+  test("the Skills card keeps the 100ms press and adds its own 200ms lift, instead of one rule overriding the other", () => {
+    expect(css).toMatch(
+      /\.press-lift\s*\{[^}]*transition:\s*transform\s+100ms[^;}]*,\s*translate\s+200ms/
+    );
+    expect(reducedBlock()).toMatch(/\.press-lift\s*\{[^}]*transition:\s*opacity\s+100ms/);
+    // the lift class has to come after .press so it wins the tie
+    expect(css.indexOf(".press-lift")).toBeGreaterThan(css.indexOf(".press {"));
+  });
+
+  test("a theme switch fades colours for a moment, and only when motion is allowed", () => {
+    expect(css).toMatch(
+      /\.theme-fade,\s*\.theme-fade \*[^{]*\{[^}]*transition:[^;}]*background-color\s+200ms[^;}]*color\s+200ms[^;}]*!important/
+    );
+    expect(reducedBlock()).toMatch(/\.theme-fade[^{]*\{[^}]*transition:\s*none\s*!important/);
+  });
+
+  test("the light glass header is opaque enough not to turn grey over the dark hero", () => {
+    const alpha = Number(
+      css.match(/\.material-light\s*\{[^}]*background:\s*rgba\(255,\s*255,\s*255,\s*([\d.]+)\)/)?.[1]
+    );
+    expect(alpha).toBeGreaterThanOrEqual(0.75);
+  });});

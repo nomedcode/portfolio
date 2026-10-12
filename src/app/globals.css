@@ -58,6 +58,9 @@ html {
   .press {
     transition: opacity 100ms ease-out;
   }
+  .press-lift {
+    transition: opacity 100ms ease-out;
+  }
   .press:active {
     transform: none;
     opacity: 0.7;
@@ -67,6 +70,24 @@ html {
   }
   .menu-in {
     animation-name: menu-fade;
+  }
+  .theme-fade,
+  .theme-fade *,
+  .theme-fade *::before,
+  .theme-fade *::after {
+    transition: none !important;
+  }
+}
+
+/* A theme switch fades surface, text and border colours for a moment instead of cutting. ThemeToggle adds the
+   class for 250ms; the rule lives under no-preference so reduced motion never sees it. */
+@media (prefers-reduced-motion: no-preference) {
+  .theme-fade,
+  .theme-fade *,
+  .theme-fade *::before,
+  .theme-fade *::after {
+    transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease,
+      fill 200ms ease, stroke 200ms ease !important;
   }
 }
 
@@ -117,6 +138,10 @@ html {
   .press:active {
     transform: scale(0.97);
   }
+  /* Press scales (transform, 100ms) while a hover lift moves (translate, 200ms): different properties, one rule. */
+  .press-lift {
+    transition: transform 100ms ease-out, translate 200ms ease-out;
+  }
   .hit-area {
     display: inline-flex;
     align-items: center;
@@ -136,7 +161,7 @@ html {
     display: none;
   }
   .material-light {
-    background: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.78);
     backdrop-filter: blur(20px) saturate(180%);
     border-top: 1px solid rgba(255, 255, 255, 0.4);
   }

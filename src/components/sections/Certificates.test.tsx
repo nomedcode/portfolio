@@ -57,4 +57,8 @@ describe("Certificates", () => {
     const { container } = render(<Certificates />);
     expect(container.querySelector("a")).toHaveClass("bg-raised", "border-line");
   });
-});
+
+  test("the credential link focuses with the shared ring, not a one-off accent outline", () => {
+    render(<Certificates />);
+    expect(screen.getByRole("link").className).not.toContain("outline-accent");
+  });});

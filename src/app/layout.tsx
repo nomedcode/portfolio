@@ -1,15 +1,12 @@
-import type { Metadata, Viewport } from "next";
+import type { Viewport } from "next";
 import { Inter } from "next/font/google";
-import { profile } from "@/lib/content";
+import { siteMetadata } from "@/lib/siteMetadata";
 import { themeInitScript } from "@/lib/themeInit";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
-export const metadata: Metadata = {
-  title: `${profile.fullName} — Portfolio`,
-  description: `Projects, skills, awards, certificates, and education of ${profile.fullName}.`,
-};
+export const metadata = siteMetadata;
 
 // ponytail: follows OS scheme only; the manual theme toggle won't recolor browser chrome.
 export const viewport: Viewport = {

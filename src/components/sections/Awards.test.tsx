@@ -51,4 +51,10 @@ describe("Awards", () => {
     const reveals = container.querySelectorAll("[data-reveal]");
     expect(reveals.length).toBeGreaterThanOrEqual(awards.length);
   });
-});
+
+  test("cards pad like the Certificates card: 32px, 40px from desktop width", () => {
+    const { container } = render(<Awards />);
+    for (const card of container.querySelectorAll("article")) {
+      expect(card).toHaveClass("p-8", "md:p-10");
+    }
+  });});

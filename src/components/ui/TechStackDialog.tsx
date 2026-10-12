@@ -145,7 +145,7 @@ export function TechStackDialog({
                 key={cat.id}
                 className="rounded-card-sm border border-line bg-raised p-6"
               >
-                <h3 className="mb-4 text-lg font-semibold tracking-title text-fg">
+                <h3 className="mb-4 text-lg font-semibold leading-snug tracking-title text-fg">
                   {cat.name}
                 </h3>
                 <m.ul

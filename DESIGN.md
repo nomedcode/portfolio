@@ -37,7 +37,7 @@ typography:
     fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', Inter, ui-sans-serif, system-ui, sans-serif"
     fontSize: "18px to 28px"
     fontWeight: 600
-    lineHeight: "1.25 (project cards) to 1.56 (18px titles)"
+    lineHeight: "1.25 (project cards) to 1.4"
     letterSpacing: "-0.01em"
   body:
     fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', Inter, ui-sans-serif, system-ui, sans-serif"
@@ -166,7 +166,7 @@ A cool neutral ladder with one blue. Light and dark themes are each composed, no
 ### Hierarchy
 - **Display** (600, 72px, 48px below 768px, line-height 1.05, tracking -0.03em): the hero headline and the Contact heading (60px).
 - **Headline** (600, 48px, 36px below 768px, tracking -0.02em): every section heading.
-- **Title** (600, 18px to 28px, tracking -0.01em): card titles, dialog title, project cards, the portrait monogram.
+- **Title** (600, 18px to 28px, tracking -0.01em, leading-snug on the 18px ones): card titles, dialog title, project cards, the portrait monogram.
 - **Body** (400, 16px to 20px, line-height 1.4 to 1.56): about text and card copy, in secondary text colors; prose stays within about 70 characters.
 - **Nav** (500, 12px, normal tracking): the header links and the Download CV button.
 - **Label** (400, 12px, uppercase, tracking 0.1em): the Learn more prompt.
@@ -184,7 +184,7 @@ Breakpoints follow content: 640px (CV label appears), 768px (desktop nav, larger
 
 ## Elevation & Depth
 
-Tonal layering, with one translucent layer. Cards sit on the page or raised tone separated by a 1px hairline, not by shadows. The header is the only glass: 60% of the surface tone with a 20px blur and 180% saturation, a hairline on the edge that meets content, and solid fallbacks under reduced transparency and higher contrast. The dialog sits on a black 50% scrim.
+Tonal layering, with one translucent layer. Cards sit on the page or raised tone separated by a 1px hairline, not by shadows. The header is the only glass: 78% of the surface tone in the light theme (60% in dark) with a 20px blur and 180% saturation, a hairline on the edge that meets content, and solid fallbacks under reduced transparency and higher contrast. The dialog sits on a black 50% scrim.
 
 ### Shadow Vocabulary
 - **Portrait glow** (`box-shadow: 0 0 64px -16px rgba(41, 151, 255, 0.55)`): the single soft glow, behind the hero portrait.
@@ -216,7 +216,7 @@ Large, soft, and consistent. Big cards use a 28px radius and small cards 18px; e
 ### Cards / Containers
 - **Corner style:** 28px for the Skills banner, Education list and project islands; 18px for Awards, Certificates and the dialog's category cards.
 - **Background:** page or raised tone, alternating with the section behind it. Project islands are dark gradients with white 24px to 28px titles.
-- **Internal padding:** 32px, 48px from 768px up on the large cards.
+- **Internal padding:** 32px; from 768px up, 48px on the large cards and 40px on the small ones.
 
 ### Dialog
 - **Style:** the Skills dialog is a 28px-radius page-tone sheet, up to 768px wide and 85% of the viewport tall, with a scrolling, keyboard-focusable body. It scales from 0.85 out of the Skills card (a spring of 0.4s with no bounce), leaves faster than it arrives, and only fades under reduced motion.
@@ -229,7 +229,7 @@ Large, soft, and consistent. Big cards use a 28px radius and small cards 18px; e
 ### Do:
 - **Do** keep the page container at 72rem with 24px sides and sections at 96px (128px wide) with a 64px heading gap.
 - **Do** use Signal Blue (#0066cc) or Beacon Blue (#2997ff) for actions and focus, and nothing else chromatic.
-- **Do** animate only transform and opacity, enter with the Reveal rise (20px over 0.6s, once, at 15% inside the viewport), and give every animation a reduced-motion path that fades in 200ms or less.
+- **Do** let a theme switch fade surface, text and border colours for 250ms (`theme-fade`, skipped under reduced motion). Otherwise animate only transform and opacity, enter with the Reveal rise (20px over 0.6s, once, at 15% inside the viewport), and give every animation a reduced-motion path that fades in 200ms or less.
 - **Do** write labels as the outcome ("View all skills"), not the gesture ("Click to see all").
 - **Do** keep images in `public/` small: the build ships them as they are.
 

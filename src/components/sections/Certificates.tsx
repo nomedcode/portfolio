@@ -18,7 +18,7 @@ export function Certificates() {
             href={credlyBadge.url}
             target="_blank"
             rel="noreferrer"
-            className="press group flex w-full max-w-3xl flex-col items-center gap-8 rounded-card-sm border border-line bg-raised p-8 text-center focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent sm:flex-row sm:text-left md:p-10"
+            className="press group flex w-full max-w-3xl flex-col items-center gap-8 rounded-card-sm border border-line bg-raised p-8 text-center focus-visible:outline-2 focus-visible:outline-offset-4 sm:flex-row sm:text-left md:p-10"
           >
             <Image
               src={credlyBadge.image}

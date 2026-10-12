@@ -76,6 +76,10 @@ describe("tracking ramp", () => {
         `${el.tagName.toLowerCase()} "${el.textContent?.slice(0, 30)}" is ${size}px`
       ).toContain(`tracking-${role}`);
       expect(el.className).not.toContain("tracking-tight");
+      // text-lg alone brings a 1.56 line height, which is loose for a title that wraps
+      if (el.className.split(/\s+/).includes("text-lg")) {
+        expect(el.className, `${el.textContent?.slice(0, 20)} needs a leading class`).toMatch(/\bleading-/);
+      }
     }
   });
 });

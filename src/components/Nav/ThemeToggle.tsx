@@ -1,7 +1,10 @@
 "use client";
 
 import { Moon, Sun } from "lucide-react";
-import { useSyncExternalStore } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
+
+const FADE_MS = 250;
 
 function subscribe(callback: () => void) {
   const observer = new MutationObserver(callback);
@@ -18,9 +21,27 @@ export function ThemeToggle() {
     () => document.documentElement.classList.contains("dark"),
     () => false
   );
+  const reduce = useReducedMotion();
+  const fadeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(
+    () => () => {
+      if (fadeTimer.current) clearTimeout(fadeTimer.current);
+      document.documentElement.classList.remove("theme-fade");
+    },
+    []
+  );
 
   const toggle = () => {
-    document.documentElement.classList.toggle("dark");
+    const root = document.documentElement;
+    if (!reduce) {
+      // The class turns on a short colour transition for everything; restarting the timer keeps a quick double
+      // press from leaving it behind.
+      root.classList.add("theme-fade");
+      if (fadeTimer.current) clearTimeout(fadeTimer.current);
+      fadeTimer.current = setTimeout(() => root.classList.remove("theme-fade"), FADE_MS);
+    }
+    root.classList.toggle("dark");
     try {
       window.localStorage.setItem("theme", dark ? "light" : "dark");
     } catch {}

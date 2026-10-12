@@ -76,6 +76,15 @@ describe("Skills banner", () => {
     ).toHaveLength(expectedLogoCount());
   });
 
+  test("the card takes its press and lift timing from CSS and its focus ring from the shared token", () => {
+    render(<SkillsBanner />);
+    const card = document.querySelector("[data-banner-card]") as HTMLElement;
+    expect(card).toHaveClass("press", "press-lift");
+    expect(card.className).not.toMatch(/transition-|duration-/);
+    const opener = screen.getByRole("button", { name: "View all skills" });
+    expect(opener.className).not.toContain("outline-accent");
+  });
+
   test("banner card enters through the shared Reveal wrapper", () => {
     render(<SkillsBanner />);
     const card = document.querySelector("[data-banner-card]");

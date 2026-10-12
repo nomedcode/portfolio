@@ -89,7 +89,7 @@ export function SkillsBanner() {
         <Reveal>
           <div
             data-banner-card
-            className="press relative rounded-card border border-line bg-page p-8 transition-transform duration-200 motion-safe:hover:-translate-y-1 md:p-12"
+            className="press press-lift relative rounded-card border border-line bg-page p-8 motion-safe:hover:-translate-y-1 md:p-12"
           >
             <div className="pointer-events-none flex flex-col gap-10 md:flex-row md:items-center md:justify-between md:gap-16">
               <div className="shrink-0">
@@ -136,7 +136,7 @@ export function SkillsBanner() {
                 openerRef.current = e.currentTarget;
                 setOpen(true);
               }}
-              className="absolute inset-0 rounded-card focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-accent"
+              className="absolute inset-0 rounded-card focus-visible:outline-2 focus-visible:-outline-offset-4"
             />
           </div>
         </Reveal>

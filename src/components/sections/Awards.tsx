@@ -15,9 +15,9 @@ export function Awards() {
         <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,18rem),1fr))] gap-6">
           {awards.map((a, i) => (
             <Reveal key={a.id} delay={i * 0.05} className="h-full">
-              <article className="flex h-full flex-col gap-3 rounded-card-sm bg-page p-8">
+              <article className="flex h-full flex-col gap-3 rounded-card-sm bg-page p-8 md:p-10">
                 <Trophy className="h-6 w-6 text-accent dark:text-accent-dark" aria-hidden />
-                <h3 className="text-lg font-semibold tracking-title">
+                <h3 className="text-lg font-semibold leading-snug tracking-title">
                   {a.title}
                 </h3>
                 <p className="text-sm text-subtle">
