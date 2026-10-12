@@ -1,9 +1,24 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, test } from "vitest";
+import { render, screen, waitFor, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { afterEach, describe, expect, test, vi } from "vitest";
 import { Projects } from "./Projects";
 
+afterEach(() => {
+  vi.restoreAllMocks();
+});
+
+function setScroll(
+  el: HTMLElement,
+  metrics: { scrollWidth: number; clientWidth: number; scrollLeft: number }
+) {
+  for (const [key, value] of Object.entries(metrics)) {
+    Object.defineProperty(el, key, { value, configurable: true });
+  }
+  el.dispatchEvent(new Event("scroll"));
+}
+
 describe("Projects", () => {
-  test("uses the section label as the only section heading", () => {
+  test("uses the section label as the only heading", () => {
     render(<Projects />);
     expect(
       screen.getByRole("heading", { level: 2, name: "Projects" })
@@ -13,30 +28,116 @@ describe("Projects", () => {
       "md:text-5xl",
       "text-center"
     );
-    expect(
-      screen.queryByRole("heading", { name: "Portfolio" })
-    ).not.toBeInTheDocument();
+    expect(screen.getAllByRole("heading")).toHaveLength(1);
     expect(
       screen.queryByText("Kenali projectku lebih dalam.")
     ).not.toBeInTheDocument();
   });
 
-  test("shows a coming-soon placeholder instead of the old gallery", () => {
+  test("keeps the one-line context under the heading", () => {
     render(<Projects />);
     expect(
-      screen.getByText(/coming soon/i, { selector: "h3" })
+      screen.getByText(/I'm building a few things in the cloud/)
     ).toBeInTheDocument();
-    expect(screen.getByText("Work In Progress")).toBeInTheDocument();
-    expect(screen.queryByRole("list")).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole("button", { name: /Scroll projects/ })
-    ).not.toBeInTheDocument();
+  });
+
+  test("renders five coming-soon islands in a horizontal snap scroller", () => {
+    const { container } = render(<Projects />);
+    const scroller = container.querySelector("[data-gallery]") as HTMLElement;
+    expect(scroller).toHaveClass("overflow-x-auto", "snap-x", "snap-mandatory");
+    const list = within(scroller).getByRole("list", {
+      name: "Upcoming projects",
+    });
+    const cards = within(list).getAllByRole("listitem");
+    expect(cards).toHaveLength(5);
+    for (const card of cards) {
+      expect(card).toHaveTextContent("Coming soon");
+      expect(card).toHaveClass("snap-start", "shrink-0", "h-[440px]");
+      expect(card).toHaveAttribute("data-gallery-card");
+      // The layout's noscript rule keys on data-reveal, so cards stay visible without JS.
+      expect(card).toHaveAttribute("data-reveal");
+    }
     expect(screen.queryByRole("link")).not.toBeInTheDocument();
+  });
+
+  test("each island has a distinct accessible name for screen readers", () => {
+    render(<Projects />);
+    const cards = screen.getAllByRole("listitem");
+    expect(cards[0]).toHaveTextContent("Project 1: Coming soon");
+    expect(cards[4]).toHaveTextContent("Project 5: Coming soon");
+  });
+
+  test("the scroller is a named, keyboard-focusable region", () => {
+    render(<Projects />);
+    const region = screen.getByRole("region", { name: "Projects gallery" });
+    expect(region).toHaveAttribute("tabindex", "0");
+    expect(region).toHaveAttribute("data-gallery");
   });
 
   test("keeps the standard padding rhythm like every other section", () => {
     render(<Projects />);
     expect(document.getElementById("projects")).toHaveClass("py-24");
     expect(document.getElementById("projects")).toHaveClass("md:py-32");
+  });
+
+  test("gallery arrows exist with the left one disabled at the start", () => {
+    render(<Projects />);
+    expect(
+      screen.getByRole("button", { name: "Scroll projects left" })
+    ).toBeDisabled();
+    expect(
+      screen.getByRole("button", { name: "Scroll projects right" })
+    ).toBeInTheDocument();
+  });
+
+  test("right arrow scrolls the gallery by one card", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<Projects />);
+    const scroller = container.querySelector("[data-gallery]") as HTMLElement;
+    setScroll(scroller, { scrollWidth: 2000, clientWidth: 500, scrollLeft: 0 });
+    const next = screen.getByRole("button", { name: "Scroll projects right" });
+    await waitFor(() => expect(next).toBeEnabled());
+    const scrollBy = vi.fn();
+    scroller.scrollBy = scrollBy;
+    await user.click(next);
+    expect(scrollBy).toHaveBeenCalledTimes(1);
+    expect(scrollBy.mock.calls[0][0].left).toBeGreaterThan(0);
+    expect(scrollBy.mock.calls[0][0].behavior).toBe("smooth");
+  });
+
+  test("left arrow scrolls back once the gallery has moved", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<Projects />);
+    const scroller = container.querySelector("[data-gallery]") as HTMLElement;
+    setScroll(scroller, {
+      scrollWidth: 2000,
+      clientWidth: 500,
+      scrollLeft: 400,
+    });
+    const prev = screen.getByRole("button", { name: "Scroll projects left" });
+    await waitFor(() => expect(prev).toBeEnabled());
+    const scrollBy = vi.fn();
+    scroller.scrollBy = scrollBy;
+    await user.click(prev);
+    expect(scrollBy).toHaveBeenCalledTimes(1);
+    expect(scrollBy.mock.calls[0][0].left).toBeLessThan(0);
+  });
+
+  test("arrows scroll without smooth animation under reduced motion", async () => {
+    const originalMatchMedia = window.matchMedia;
+    vi.spyOn(window, "matchMedia").mockImplementation((query) => ({
+      ...originalMatchMedia(query),
+      matches: query === "(prefers-reduced-motion: reduce)",
+    }));
+    const user = userEvent.setup();
+    const { container } = render(<Projects />);
+    const scroller = container.querySelector("[data-gallery]") as HTMLElement;
+    setScroll(scroller, { scrollWidth: 2000, clientWidth: 500, scrollLeft: 0 });
+    const next = screen.getByRole("button", { name: "Scroll projects right" });
+    await waitFor(() => expect(next).toBeEnabled());
+    const scrollBy = vi.fn();
+    scroller.scrollBy = scrollBy;
+    await user.click(next);
+    expect(scrollBy.mock.calls[0][0].behavior).toBe("auto");
   });
 });
