@@ -6,9 +6,10 @@ import { FaAws } from "react-icons/fa6";
 import { VscAzure } from "react-icons/vsc";
 import { useMemo, useRef, useState } from "react";
 import { cloudSkills, skillCategories } from "@/lib/content";
-import { getSkillIcon, isDarkBrandColor } from "@/lib/skillIcons";
+import { getSkillIcon } from "@/lib/skillIcons";
 import { motionTransition } from "@/lib/motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { BrandIcon } from "@/components/ui/BrandIcon";
 import { Reveal } from "@/components/ui/Reveal";
 const TechStackDialog = dynamic(() =>
   import("@/components/ui/TechStackDialog").then((m) => m.TechStackDialog)
@@ -41,17 +42,7 @@ function TileIcon({ id, className }: { id: string; className?: string }) {
   }
   const icon = getSkillIcon(id);
   if (!icon) return null;
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      aria-hidden
-      className={`${className} ${
-        isDarkBrandColor(icon.hex) ? "dark:invert" : ""
-      }`}
-    >
-      <path d={icon.path} fill={`#${icon.hex}`} />
-    </svg>
-  );
+  return <BrandIcon icon={icon} className={className} />;
 }
 
 export function SkillsBanner() {

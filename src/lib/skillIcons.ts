@@ -106,10 +106,3 @@ const icons: Record<string, SimpleIcon> = {
 export function getSkillIcon(slug: string): SimpleIcon | undefined {
   return icons[slug];
 }
-
-export function isDarkBrandColor(hex: string): boolean {
-  const r = parseInt(hex.slice(0, 2), 16) / 255;
-  const g = parseInt(hex.slice(2, 4), 16) / 255;
-  const b = parseInt(hex.slice(4, 6), 16) / 255;
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b < 0.2;
-}

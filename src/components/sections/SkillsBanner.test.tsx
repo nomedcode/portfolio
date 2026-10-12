@@ -14,6 +14,18 @@ function expectedLogoCount() {
 }
 
 describe("Skills banner", () => {
+  test("preview logos use the shared per-theme brand fill, never a dark-mode invert", () => {
+    render(<SkillsBanner />);
+    const svgs = document.querySelectorAll("[data-preview-logo] svg");
+    expect(svgs.length).toBeGreaterThan(40);
+    expect(document.querySelectorAll("svg.dark\\:invert")).toHaveLength(0);
+    // aws and azure come from react-icons and follow the text colour; the rest carry the variables
+    const withFills = [...svgs].filter((s) =>
+      (s as SVGElement).style.getPropertyValue("--icon-l")
+    );
+    expect(withFills.length).toBeGreaterThanOrEqual(svgs.length - 2);
+  });
+
   test("preview logos start hidden and pop in from a point by default", () => {
     render(<SkillsBanner />);
     const style = document

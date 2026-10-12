@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { getSkillIcon, isDarkBrandColor } from "./skillIcons";
+import { getSkillIcon } from "./skillIcons";
 
 describe("skillIcons", () => {
   test("resolves the cloud banner tiles", () => {
@@ -7,9 +7,7 @@ describe("skillIcons", () => {
     expect(getSkillIcon("terraform")).toBeTruthy();
   });
 
-  test("only near-black brand logos count as dark", () => {
-    expect(isDarkBrandColor(getSkillIcon("nextdotjs")!.hex)).toBe(true);
-    expect(isDarkBrandColor(getSkillIcon("terraform")!.hex)).toBe(false);
-    expect(isDarkBrandColor(getSkillIcon("framer")!.hex)).toBe(false);
+  test("returns undefined for an unknown slug", () => {
+    expect(getSkillIcon("not-a-real-icon")).toBeUndefined();
   });
 });

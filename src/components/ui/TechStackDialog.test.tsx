@@ -87,6 +87,17 @@ describe("TechStackDialog motion", () => {
     expect(style).not.toMatch(/transform|translate|scale/);
   });
 
+  test("chip logos use the shared per-theme brand fill, never a dark-mode invert", () => {
+    const { dialog } = renderDialog();
+    const svgs = dialog.querySelectorAll("[data-skill-chip] svg");
+    expect(svgs.length).toBeGreaterThan(40);
+    expect(dialog.querySelectorAll("svg.dark\\:invert")).toHaveLength(0);
+    for (const svg of svgs) {
+      expect((svg as SVGElement).style.getPropertyValue("--icon-l")).toMatch(/^#[0-9a-f]{6}$/);
+      expect((svg as SVGElement).style.getPropertyValue("--icon-d")).toMatch(/^#[0-9a-f]{6}$/);
+    }
+  });
+
   test("its title and category headings use the title tracking, not an inline value", () => {
     const { dialog } = renderDialog();
     const h2 = dialog.querySelector("h2") as HTMLElement;

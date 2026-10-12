@@ -4,8 +4,9 @@ import { m, type Variants } from "framer-motion";
 import { X } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { skillCategories } from "@/lib/content";
-import { getSkillIcon, isDarkBrandColor } from "@/lib/skillIcons";
+import { getSkillIcon } from "@/lib/skillIcons";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { BrandIcon } from "./BrandIcon";
 
 const listVariants: Variants = {
   hidden: {},
@@ -163,17 +164,7 @@ export function TechStackDialog({
                         data-skill-chip
                         className="flex items-center gap-2 rounded-full border border-line px-3.5 py-1.5 text-sm"
                       >
-                        {icon && (
-                          <svg
-                            viewBox="0 0 24 24"
-                            aria-hidden
-                            className={`h-4 w-4 ${
-                              isDarkBrandColor(icon.hex) ? "dark:invert" : ""
-                            }`}
-                          >
-                            <path d={icon.path} fill={`#${icon.hex}`} />
-                          </svg>
-                        )}
+                        {icon && <BrandIcon icon={icon} className="h-4 w-4" />}
                         {s.name}
                       </m.li>
                     );
