@@ -105,4 +105,34 @@ describe("Skills banner", () => {
       { timeout: 2000 }
     );
   });
+
+  test("dialog scroller is a named, keyboard-focusable region", async () => {
+    const user = userEvent.setup();
+    render(<SkillsBanner />);
+    await user.click(screen.getByRole("button", { name: "View all skills" }));
+    const dialog = await screen.findByRole("dialog");
+    const scroller = within(dialog).getByRole("region", {
+      name: "Skills by category",
+    });
+    expect(scroller).toHaveAttribute("tabindex", "0");
+    expect(scroller).toHaveClass("overflow-y-auto");
+  });
+
+  test("Tab cycles Close then the scroller and wraps inside the dialog", async () => {
+    const user = userEvent.setup();
+    render(<SkillsBanner />);
+    await user.click(screen.getByRole("button", { name: "View all skills" }));
+    const dialog = await screen.findByRole("dialog");
+    const close = within(dialog).getByRole("button", { name: "Close" });
+    const scroller = within(dialog).getByRole("region", {
+      name: "Skills by category",
+    });
+    expect(close).toHaveFocus();
+    await user.tab();
+    expect(scroller).toHaveFocus();
+    await user.tab();
+    expect(close).toHaveFocus();
+    await user.tab({ shift: true });
+    expect(scroller).toHaveFocus();
+  });
 });

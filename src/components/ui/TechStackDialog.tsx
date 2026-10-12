@@ -41,7 +41,7 @@ export function TechStackDialog({
       }
       if (e.key === "Tab") {
         const focusables = dialogRef.current?.querySelectorAll<HTMLElement>(
-          "button, a[href]"
+          "button, a[href], [tabindex='0']"
         );
         if (!focusables || focusables.length === 0) return;
         const first = focusables[0];
@@ -103,7 +103,13 @@ export function TechStackDialog({
             <X className="h-5 w-5" aria-hidden />
           </button>
         </div>
-        <div className="overflow-y-auto overscroll-contain p-6">
+        {/* ponytail: always a tab stop, even when the list fits; gate on an overflow check (ResizeObserver) if tall screens complain. */}
+        <div
+          tabIndex={0}
+          role="region"
+          aria-label="Skills by category"
+          className="overflow-y-auto overscroll-contain rounded-b-card p-6 focus-visible:-outline-offset-2"
+        >
           <div className="grid gap-6 sm:grid-cols-2">
             {skillCategories.map((cat) => (
               <div

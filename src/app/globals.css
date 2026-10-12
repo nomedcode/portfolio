@@ -126,7 +126,15 @@ html {
 }
 
 @media (prefers-contrast: more) {
+  /* Solid bar, no blur, defined edge on the side that meets content. `.dark .material-light`
+     is listed on purpose: at (0,2,0) it would otherwise beat these (0,1,0) rules in dark theme. */
   .material-light,
+  .dark .material-light {
+    background: var(--c-page);
+    backdrop-filter: none;
+    border-top: 0;
+    border-bottom: 1px solid var(--c-muted);
+  }
   .material-dark {
     border-top: 1px solid var(--c-line);
   }
