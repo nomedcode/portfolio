@@ -2,11 +2,15 @@
 
 import { Download, Menu, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useActiveSection } from "@/hooks/useActiveSection";
 import { profile, sections } from "@/lib/content";
 import { ThemeToggle } from "./ThemeToggle";
 
+const sectionIds = sections.map((s) => s.id);
+
 export function Nav() {
   const [open, setOpen] = useState(false);
+  const active = useActiveSection(sectionIds);
   const headerRef = useRef<HTMLElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
 
@@ -46,7 +50,8 @@ export function Nav() {
             <a
               key={s.id}
               href={`#${s.id}`}
-              className="press hit-area rounded-md px-1.5 py-1 text-xs font-medium text-fg underline-offset-4 hover:underline"
+              aria-current={active === s.id ? "location" : undefined}
+              className="press hit-area rounded-md px-1.5 py-1 text-xs font-medium text-fg underline-offset-4 hover:underline aria-[current=location]:bg-line/70 forced-colors:aria-[current=location]:underline"
             >
               {s.label}
             </a>
@@ -90,7 +95,8 @@ export function Nav() {
               <li key={s.id}>
                 <a
                   href={`#${s.id}`}
-                  className="press hit-area w-full justify-start text-sm font-medium text-fg"
+                  aria-current={active === s.id ? "location" : undefined}
+                  className="press hit-area w-full justify-start text-sm font-medium text-fg underline-offset-4 aria-[current=location]:font-semibold aria-[current=location]:underline"
                   onClick={() => setOpen(false)}
                 >
                   {s.label}

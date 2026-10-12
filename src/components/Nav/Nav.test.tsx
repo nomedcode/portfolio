@@ -1,6 +1,6 @@
-import { render, screen } from "@testing-library/react";
+import { act, cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, test } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { profile, sections } from "@/lib/content";
 import { Nav } from "./Nav";
 
@@ -123,3 +123,85 @@ describe("Nav", () => {
     ).toBeGreaterThan(0);
   });
 });
+
+describe("Nav current section", () => {
+  let callback: (entries: Partial<IntersectionObserverEntry>[]) => void;
+
+  class FakeObserver {
+    constructor(cb: typeof callback) {
+      callback = cb;
+    }
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+    takeRecords() {
+      return [];
+    }
+  }
+
+  beforeEach(() => {
+    vi.stubGlobal("IntersectionObserver", FakeObserver);
+    for (const s of sections) {
+      const el = document.createElement("section");
+      el.id = s.id;
+      document.body.appendChild(el);
+    }
+  });
+
+  afterEach(() => {
+    cleanup();
+    vi.unstubAllGlobals();
+    for (const s of sections) document.getElementById(s.id)?.remove();
+  });
+
+  function enter(id: string, isIntersecting = true) {
+    act(() => {
+      callback([{ target: document.getElementById(id)!, isIntersecting }]);
+    });
+  }
+
+  test("no link is current until a section reaches the reading line", () => {
+    render(<Nav />);
+    expect(document.querySelectorAll("[aria-current]")).toHaveLength(0);
+  });
+
+  test("the link for the section in view gets aria-current=location, and only that one", () => {
+    render(<Nav />);
+    enter("skills");
+    const current = document.querySelectorAll("[aria-current]");
+    expect(current).toHaveLength(1);
+    expect(current[0]).toHaveAttribute("aria-current", "location");
+    expect(current[0]).toHaveAttribute("href", "#skills");
+    expect(current[0]).toHaveTextContent("Skills");
+    enter("skills", false);
+    enter("awards");
+    expect(document.querySelector("[aria-current]")).toHaveAttribute(
+      "href",
+      "#awards"
+    );
+  });
+
+  test("the current desktop link has a visual state besides colour, with an underline fallback for forced colours", () => {
+    render(<Nav />);
+    enter("education");
+    const link = document.querySelector("[aria-current]") as HTMLElement;
+    expect(link.className).toContain("aria-[current=location]:bg-line/70");
+    expect(link.className).toContain(
+      "forced-colors:aria-[current=location]:underline"
+    );
+  });
+
+  test("the open mobile menu marks the same section", async () => {
+    const user = userEvent.setup();
+    render(<Nav />);
+    await user.click(screen.getByRole("button", { name: "Toggle menu" }));
+    enter("contact");
+    const panel = document.getElementById("mobile-menu") as HTMLElement;
+    const current = panel.querySelector("[aria-current]");
+    expect(current).toHaveAttribute("href", "#contact");
+    expect(current?.className).toContain(
+      "aria-[current=location]:font-semibold"
+    );
+  });
+});
+
