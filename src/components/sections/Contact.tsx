@@ -48,7 +48,7 @@ export function Contact() {
             href={`mailto:${profile.email}`}
             className="press inline-flex items-center gap-2 rounded-full bg-accent px-8 py-4 font-medium text-white"
           >
-            <GmailLogo className="h-[18px] w-6" />
+            <GmailLogo className="h-[18px] w-[23px]" />
             Email me
           </a>
           <a

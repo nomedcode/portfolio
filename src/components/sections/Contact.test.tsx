@@ -81,17 +81,31 @@ describe("Contact", () => {
     expect(iconFills("0a66c2").light).toBe("#0a66c2");
   });
 
-  test("the Email logo is the four-colour Gmail mark, drawn straight on the button with no badge behind it", () => {
+  test("the Email logo is the 2026 Gmail mark, drawn straight on the button with no badge behind it", () => {
     render(<Contact />);
     const link = screen.getByRole("link", { name: "Email me" });
     const svg = link.querySelector("svg") as SVGElement;
     expect(svg.parentElement).toBe(link);
     expect(link.querySelector(".bg-white")).toBeNull();
     expect(svg).toHaveAttribute("aria-hidden", "true");
-    expect(svg).toHaveAttribute("viewBox", "52 42 88 66");
+    expect(svg).toHaveAttribute("viewBox", "0 0 800 636.36322");
+
+    // three shapes: right stripe and top arc are gradients, the left stripe is flat red
     const fills = [...svg.querySelectorAll("path")].map((p) => p.getAttribute("fill"));
-    // the 2020 mark: blue, green and yellow sides, red envelope, dark-red fold
-    expect(fills).toEqual(["#4285f4", "#34a853", "#fbbc04", "#ea4335", "#c5221f"]);
+    expect(fills).toEqual(["url(#gmail-a)", "#fc413d", "url(#gmail-b)"]);
+
+    const stops = (id: string) =>
+      [...(svg.querySelector(`#${id}`)?.querySelectorAll("stop") ?? [])].map(
+        (s) => s.getAttribute("stop-color")
+      );
+    // green to blue down the right stripe
+    expect(stops("gmail-a")).toEqual([
+      "#60d673", "#42c868", "#0ebc5f", "#00a9bb", "#3c90ff", "#3186ff",
+    ]);
+    // pink, red, orange, yellow across the top arc
+    expect(stops("gmail-b")).toEqual([
+      "#ff63a0", "#fc413d", "#fc413d", "#fc413d", "#fc5c30", "#feb10c", "#fec700", "#ffdb0f",
+    ]);
   });
 
   test("the GitHub and LinkedIn outline reaches 3:1 against the raised surface in both themes", () => {
