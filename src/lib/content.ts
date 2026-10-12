@@ -209,7 +209,7 @@ export const education: EducationItem[] = [
     id: "binus",
     school: "BINUS University",
     degree: "Undergraduate Computer Science — Cloud Technology",
-    period: "Sept 2024 — Sept 2028",
+    period: "2024 — 2028",
     gpa: "3.06",
     coursework: [
       "Software Development Operations in Cloud Environments",

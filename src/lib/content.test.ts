@@ -129,9 +129,9 @@ describe("education", () => {
     expect(restart?.period).toBe("Sept 2026 — Nov 2026");
   });
 
-  test("BINUS runs Sept 2024 to Sept 2028", () => {
+  test("BINUS runs 2024 to 2028", () => {
     expect(education.find((e) => e.id === "binus")?.period).toBe(
-      "Sept 2024 — Sept 2028"
+      "2024 — 2028"
     );
   });
 });
