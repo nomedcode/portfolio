@@ -81,12 +81,18 @@ describe("Contact", () => {
     expect(iconFills("0a66c2").light).toBe("#0a66c2");
   });
 
-  test("the Email logo is the 2026 Gmail mark, drawn straight on the button with no badge behind it", () => {
+  test("the Email logo sits in a white circle on the blue button, so its red and blue parts stay readable", () => {
     render(<Contact />);
     const link = screen.getByRole("link", { name: "Email me" });
     const svg = link.querySelector("svg") as SVGElement;
-    expect(svg.parentElement).toBe(link);
-    expect(link.querySelector(".bg-white")).toBeNull();
+    const badge = link.querySelector("[data-gmail-badge]") as HTMLElement;
+    expect(badge).not.toBeNull();
+    expect(badge).toContainElement(svg);
+    expect(svg.parentElement).toBe(badge);
+    expect(badge).toHaveClass("bg-white", "rounded-full", "h-8", "w-8", "shrink-0");
+    expect(badge).toHaveAttribute("aria-hidden", "true");
+    // the badge adds no words: the link is still named by its label alone
+    expect(link).toHaveAccessibleName("Email me");
     expect(svg).toHaveAttribute("aria-hidden", "true");
     expect(svg).toHaveAttribute("viewBox", "0 0 800 636.36322");
 
@@ -106,6 +112,25 @@ describe("Contact", () => {
     expect(stops("gmail-b")).toEqual([
       "#ff63a0", "#fc413d", "#fc413d", "#fc413d", "#fc5c30", "#feb10c", "#fec700", "#ffdb0f",
     ]);
+  });
+
+  test("the badge keeps the Email button at its old height: 32px circle with 12px above and below", () => {
+    render(<Contact />);
+    const email = screen.getByRole("link", { name: "Email me" });
+    const cv = screen.getByRole("link", { name: /Download CV/ });
+    // 12px + 32px + 12px = 56px, the same content height as 16px + a 24px line + 16px (the outlined buttons add their 1px border)
+    expect(email).toHaveClass("py-3", "pl-3");
+    expect(email).not.toHaveClass("py-4", "px-8");
+    expect(cv).toHaveClass("py-4");
+  });
+
+  test("the red stripe and the blue base reach 3:1 on the white badge, which they do not on the blue button", () => {
+    const onBadge = "#ffffff";
+    const onButton = "#0066cc";
+    for (const hex of ["#fc413d", "#3186ff"]) {
+      expect(contrastRatio(hex, onBadge), `${hex} on white`).toBeGreaterThanOrEqual(3);
+      expect(contrastRatio(hex, onButton), `${hex} on blue`).toBeLessThan(3);
+    }
   });
 
   test("the GitHub and LinkedIn outline reaches 3:1 against the raised surface in both themes", () => {

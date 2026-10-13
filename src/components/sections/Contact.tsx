@@ -46,9 +46,16 @@ export function Contact() {
         >
           <a
             href={`mailto:${profile.email}`}
-            className="press inline-flex items-center gap-2 rounded-full bg-accent px-8 py-4 font-medium text-white"
+            className="press inline-flex items-center gap-3 rounded-full bg-accent py-3 pl-3 pr-7 font-medium text-white"
           >
-            <GmailLogo className="h-[18px] w-[23px]" />
+            {/* The mark is meant for a light ground: its red and blue parts fall to about 1.6:1 on the blue button and reach 3.5:1 on white. */}
+            <span
+              data-gmail-badge
+              aria-hidden="true"
+              className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white"
+            >
+              <GmailLogo className="h-4 w-5" />
+            </span>
             Email me
           </a>
           <a
