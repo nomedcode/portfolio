@@ -93,13 +93,15 @@ export function Projects() {
       </div>
 
       {/* The scroller is focusable so keyboard users can arrow through it; the inset ring is not clipped by the viewport edge. */}
+      {/* overflow-y-hidden matters: overflow-x:auto alone computes overflow-y to auto, and the card reveal's 24px
+          translate overflows the box, so the gallery would briefly scroll vertically and swallow the page wheel. */}
       <div
         ref={scrollerRef}
         data-gallery
         role="region"
         aria-label="Projects gallery"
         tabIndex={0}
-        className="gallery-scroll mt-16 snap-x snap-mandatory overflow-x-auto scroll-px-[max(1.5rem,calc((100%_-_72rem)/2_+_1.5rem))] focus-visible:-outline-offset-2"
+        className="gallery-scroll mt-16 snap-x snap-mandatory overflow-x-auto overflow-y-hidden scroll-px-[max(1.5rem,calc((100%_-_72rem)/2_+_1.5rem))] focus-visible:-outline-offset-2"
       >
         <m.ul
           role="list"

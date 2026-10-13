@@ -170,23 +170,23 @@ describe("iconFills", () => {
 
   test("the devicon originals keep their brand colours, and the few under 3:1 are named here, not hidden", () => {
     // A deliberate tradeoff: devicon's "original" artwork is used verbatim, so it is never run through the 3:1 fit.
-    // Only eleven marks are theme-fitted (the eight devicon does not carry, plus the monochrome AWS, Vercel and
-    // Motion); the rest carry fixed colours. These are the only ones under 3:1 on a surface. Logos are WCAG-exempt
-    // (1.4.3 and 1.4.11 exclude logotypes), the banner cloud is aria-hidden, and each popup chip names its skill.
-    expect(fittedIcons).toHaveLength(11);
-    expect(fixedColourIcons).toHaveLength(usedIcons.length - 11);
+    // Only nine marks are theme-fitted (the seven devicon does not carry, plus the monochrome AWS and Motion); the
+    // rest carry fixed colours. These are the only ones under 3:1 on a surface. Logos are WCAG-exempt (1.4.3 and
+    // 1.4.11 exclude logotypes), the banner cloud is aria-hidden, and each popup chip names its skill.
+    expect(fittedIcons).toHaveLength(9);
+    expect(fixedColourIcons).toHaveLength(usedIcons.length - 9);
     const under = (surfaces: readonly string[]) =>
       fixedColourIcons
         .filter(({ icon }) => bestContrast(icon, surfaces) < 3)
         .map((x) => x.slug)
         .sort();
-    expect(under(SURFACES.light)).toEqual(["react", "tailwindcss", "tensorflow"]);
-    expect(under(SURFACES.dark)).toEqual([
-      "datadog",
-      "mysql",
-      "sentry",
-      "terraform",
+    expect(under(SURFACES.light)).toEqual([
+      "docker",
+      "react",
+      "tailwindcss",
+      "tensorflow",
     ]);
+    expect(under(SURFACES.dark)).toEqual(["mysql", "terraform"]);
   });
 });
 

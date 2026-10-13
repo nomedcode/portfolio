@@ -67,7 +67,7 @@ export const profile: Profile = {
   ],
 };
 
-// The main cloud skills. The banner preview always leads with these, in this order; the rest of its logos are shuffled.
+// The main cloud skills. Both the banner preview and the popup lead with these, in this order, and nothing reshuffles.
 export const featuredSkillIcons = ["aws", "googlecloud", "azure"];
 
 export const skillCategories: SkillCategory[] = [
@@ -78,8 +78,8 @@ export const skillCategories: SkillCategory[] = [
       { name: "TypeScript", icon: "typescript" },
       { name: "JavaScript", icon: "javascript" },
       { name: "Python", icon: "python" },
-      { name: "C++", icon: "cplusplus" },
       { name: "Java", icon: "java" },
+      { name: "C++", icon: "cplusplus" },
       { name: "HTML", icon: "html5" },
       { name: "CSS", icon: "css" },
     ],
@@ -94,11 +94,8 @@ export const skillCategories: SkillCategory[] = [
       { name: "Terraform", icon: "terraform" },
       { name: "Docker", icon: "docker" },
       { name: "Kubernetes", icon: "kubernetes" },
+      { name: "nginx", icon: "nginx" },
       { name: "GitHub Actions", icon: "githubactions" },
-      { name: "Vercel", icon: "vercel" },
-      { name: "DigitalOcean", icon: "digitalocean" },
-      { name: "Sentry", icon: "sentry" },
-      { name: "Datadog", icon: "datadog" },
     ],
   },
   {
@@ -110,7 +107,7 @@ export const skillCategories: SkillCategory[] = [
       { name: "Vite", icon: "vite" },
       { name: "Tailwind CSS", icon: "tailwindcss" },
       { name: "Motion", icon: "framer" },
-      { name: "GSAP", icon: "greensock" },
+      { name: "GSAP", icon: "gsap" },
     ],
   },
   {
@@ -161,10 +158,10 @@ export const skillCategories: SkillCategory[] = [
     id: "ai-tools",
     name: "Tools & Builders",
     skills: [
-      { name: "Hermes Agent", icon: "hermes" },
       { name: "Figma", icon: "figma" },
-      { name: "Kiro", icon: "kiro" },
       { name: "Ollama", icon: "ollama" },
+      { name: "Kiro", icon: "kiro" },
+      { name: "Hermes Agent", icon: "hermes" },
       { name: "MCP Registry", icon: "modelcontextprotocol" },
       { name: "Cisco Packet Tracer", icon: "cisco" },
     ],

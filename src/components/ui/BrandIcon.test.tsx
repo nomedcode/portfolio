@@ -30,7 +30,7 @@ describe("BrandIcon", () => {
   });
 
   test("a monochrome devicon mark drops its fill, so the theme can invert it, and keeps the devicon grid", () => {
-    const icon = getSkillIcon("vercel")!;
+    const icon = getSkillIcon("framer")!;
     const { container } = render(<BrandIcon icon={icon} />);
     const svg = container.querySelector("svg") as SVGElement;
     expect(svg).toHaveAttribute("viewBox", "0 0 128 128");

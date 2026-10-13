@@ -54,8 +54,7 @@ afterEach(() => {
 });
 
 describe("TechStackDialog order", () => {
-  test("keeps the categories where they are and shuffles the skills inside each one", () => {
-    vi.spyOn(Math, "random").mockReturnValue(0);
+  test("keeps the categories and every skill inside them in the fixed content order", () => {
     const { dialog } = renderDialog();
     expect([...dialog.querySelectorAll("h3")].map((h) => h.textContent)).toEqual(
       skillCategories.map((c) => c.name)
@@ -65,10 +64,19 @@ describe("TechStackDialog order", () => {
       const shown = [...list.querySelectorAll("[data-skill-chip]")].map(
         (chip) => chip.textContent
       );
-      const original = cat.skills.map((s) => s.name);
-      expect([...shown].sort(), cat.name).toEqual([...original].sort());
-      expect(shown, cat.name).not.toEqual(original);
+      expect(shown, cat.name).toEqual(cat.skills.map((s) => s.name));
     }
+  });
+
+  test("opens with AWS, Google Cloud and Azure leading the cloud card, the same as the banner", () => {
+    const { dialog } = renderDialog();
+    const list = within(dialog).getByRole("list", {
+      name: "Cloud & Infrastructure skills",
+    });
+    const shown = [...list.querySelectorAll("[data-skill-chip]")].map((chip) =>
+      chip.textContent?.trim()
+    );
+    expect(shown.slice(0, 3)).toEqual(["AWS", "Google Cloud", "Azure"]);
   });
 });
 
@@ -115,9 +123,9 @@ describe("TechStackDialog motion", () => {
       skillCategories.reduce((n, c) => n + c.skills.length, 0)
     );
     expect(dialog.querySelectorAll("svg.dark\\:invert")).toHaveLength(0);
-    // eleven marks are theme-fitted (the eight devicon does not carry, plus the monochrome AWS, Vercel and Motion);
-    // the other thirty-nine are devicon originals that draw their own brand colours, so they carry no --icon-l
-    const selfColoured = 39;
+    // nine marks are theme-fitted: the seven devicon does not carry, plus the monochrome AWS and Motion. The other
+    // thirty-eight carry their own brand colours (the devicon originals and the uxwing Hugging Face), so no --icon-l.
+    const selfColoured = 38;
     const branded = [...svgs].filter((svg) =>
       (svg as SVGElement).style.getPropertyValue("--icon-l")
     );

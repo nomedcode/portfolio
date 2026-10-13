@@ -18,10 +18,7 @@ const devicon = [
   "docker",
   "kubernetes",
   "githubactions",
-  "vercel",
-  "digitalocean",
-  "sentry",
-  "datadog",
+  "nginx",
   "react",
   "vite",
   "nextdotjs",
@@ -50,8 +47,7 @@ const devicon = [
 
 // devicon does not carry these, so they stay a Simple Icons mark or a hand-written one.
 const notOnDevicon = [
-  "greensock",
-  "huggingface",
+  "gsap",
   "langflow",
   "hermes",
   "kiro",
@@ -61,7 +57,7 @@ const notOnDevicon = [
 ];
 
 // Marks drawn in one colour with no fixed fill, so BrandIcon paints them with the per-theme fill.
-const themeFilled = ["aws", "vercel", "framer"];
+const themeFilled = ["aws", "framer"];
 
 describe("skillIcons", () => {
   test("every devicon mark is layered and sits on the devicon 128 unit grid", () => {
@@ -73,7 +69,7 @@ describe("skillIcons", () => {
       expect(icon?.viewBox, slug).toBe("0 0 128 128");
       expect(icon?.hex, slug).toMatch(/^[0-9A-Fa-f]{6}$/);
     }
-    expect(devicon).toHaveLength(42);
+    expect(devicon).toHaveLength(39);
   });
 
   test("Google Cloud keeps devicon's four Google colours", () => {
@@ -95,6 +91,13 @@ describe("skillIcons", () => {
     expect(layers?.[1].fill).toBe("#ff9900");
     // the wordmark is the only mark whose artwork carries no fill rule of its own
     expect(icon?.fillRule).toBeUndefined();
+  });
+
+  test("Docker is devicon's plain mark: one flat brand-blue path, not the shaded original", () => {
+    const icon = getSkillIcon("docker");
+    expect(icon?.layers).toHaveLength(1);
+    expect(icon?.layers?.[0].fill).toBe("#019bc6");
+    expect(icon?.hex).toBe("019BC6");
   });
 
   test("the gradient marks reference gradients they define, and each keeps its own colours", () => {
@@ -158,12 +161,31 @@ describe("skillIcons", () => {
       expect(icon?.layers, slug).toBeUndefined();
       expect(icon?.hex, slug).toMatch(/^[0-9A-Fa-f]{6}$/);
     }
-    expect(notOnDevicon).toHaveLength(8);
+    expect(notOnDevicon).toHaveLength(7);
     // the Kiro ghost has two eyes cut out of it; the Hermes mark is merged into one even-odd path on the 24 unit grid
     expect(getSkillIcon("kiro")?.fillRule).toBe("evenodd");
     expect(getSkillIcon("hermes")?.fillRule).toBe("evenodd");
     expect(getSkillIcon("hermes")?.viewBox).toBeUndefined();
     expect(getSkillIcon("kiro")?.viewBox).not.toBe("0 0 128 128");
+  });
+
+  test("Hugging Face is the uxwing full-colour mark, not the flat Simple Icons silhouette", () => {
+    const icon = getSkillIcon("huggingface");
+    expect(icon).toBeTruthy();
+    expect(icon?.layers?.length).toBeGreaterThan(0);
+    // its own non-square view box, so it is neither a Simple Icons mark nor a devicon one
+    expect(icon?.viewBox).toBe("0 0 475 439");
+    const fills = new Set((icon?.layers ?? []).map((l) => l.fill));
+    expect(fills).toEqual(new Set(["#ffd21e", "#ff9d0b", "#3a3b45", "#ff323d"]));
+  });
+
+  test("GSAP is the solid wordmark, not the old line-drawn GreenSock mark", () => {
+    const icon = getSkillIcon("gsap");
+    expect(icon?.title).toBe("GSAP");
+    expect(icon?.hex).toBe("0AE448");
+    // the wordmark's outline; the retired GreenSock mark was a much longer, detailed line drawing
+    expect(icon?.path?.length).toBeGreaterThan(100);
+    expect(icon?.layers).toBeUndefined();
   });
 
   test("no longer carries the icons of the skills that were removed", () => {
@@ -190,6 +212,11 @@ describe("skillIcons", () => {
       "claudecode",
       "codex",
       "cursor",
+      "vercel",
+      "digitalocean",
+      "sentry",
+      "datadog",
+      "greensock",
     ]) {
       expect(getSkillIcon(slug), slug).toBeUndefined();
     }

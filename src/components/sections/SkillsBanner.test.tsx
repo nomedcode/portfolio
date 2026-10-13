@@ -20,23 +20,25 @@ function contentOrderWithoutFeatured() {
 }
 
 describe("Skills banner", () => {
-  test("the server HTML is the same every time: the main cloud skills first, then the rest in content order", () => {
+  test("keeps one fixed order, on the server and after mount: the main cloud skills first, then the rest in content order", () => {
     const html = renderToStaticMarkup(<SkillsBanner />);
-    const ids = [...html.matchAll(/data-skill="([^"]+)"/g)].map((m) => m[1]);
-    expect(ids).toEqual([...featuredSkillIcons, ...contentOrderWithoutFeatured()]);
-  });
+    const serverIds = [...html.matchAll(/data-skill="([^"]+)"/g)].map((m) => m[1]);
+    expect(serverIds).toEqual([...featuredSkillIcons, ...contentOrderWithoutFeatured()]);
 
-  test("after mount the main cloud skills still lead and the rest are shuffled", () => {
-    vi.spyOn(Math, "random").mockReturnValue(0);
-    render(<SkillsBanner />);
-    const ids = [...document.querySelectorAll("[data-preview-logo]")].map((li) =>
+    const { unmount } = render(<SkillsBanner />);
+    const clientIds = [...document.querySelectorAll("[data-preview-logo]")].map((li) =>
       li.getAttribute("data-skill")
     );
-    expect(ids.slice(0, featuredSkillIcons.length)).toEqual(featuredSkillIcons);
-    const rest = ids.slice(featuredSkillIcons.length) as string[];
-    expect(rest).not.toEqual(contentOrderWithoutFeatured());
-    expect([...rest].sort()).toEqual([...contentOrderWithoutFeatured()].sort());
-    vi.restoreAllMocks();
+    expect(clientIds).toEqual(serverIds);
+    unmount();
+
+    // a second mount shows the same order: nothing is shuffled between loads
+    render(<SkillsBanner />);
+    expect(
+      [...document.querySelectorAll("[data-preview-logo]")].map((li) =>
+        li.getAttribute("data-skill")
+      )
+    ).toEqual(serverIds);
   });
 
   test("preview logos use the shared per-theme brand fill, never a dark-mode invert", () => {
@@ -44,9 +46,9 @@ describe("Skills banner", () => {
     const svgs = document.querySelectorAll("[data-preview-logo] svg");
     expect(svgs).toHaveLength(expectedLogoCount());
     expect(document.querySelectorAll("svg.dark\\:invert")).toHaveLength(0);
-    // eleven marks are theme-fitted (the eight devicon does not carry, plus the monochrome AWS, Vercel and Motion);
-    // the other thirty-nine are devicon originals that draw their own brand colours, so they carry no --icon-l
-    const selfColoured = 39;
+    // nine marks are theme-fitted: the seven devicon does not carry, plus the monochrome AWS and Motion. The other
+    // thirty-eight carry their own brand colours (the devicon originals and the uxwing Hugging Face), so no --icon-l.
+    const selfColoured = 38;
     const withFills = [...svgs].filter((s) =>
       (s as SVGElement).style.getPropertyValue("--icon-l")
     );

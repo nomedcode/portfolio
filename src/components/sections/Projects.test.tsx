@@ -54,6 +54,9 @@ describe("Projects", () => {
     const { container } = render(<Projects />);
     const scroller = container.querySelector("[data-gallery]") as HTMLElement;
     expect(scroller).toHaveClass("overflow-x-auto", "snap-x", "snap-mandatory");
+    // overflow-x-auto alone computes overflow-y to auto, and the card reveal overflows the box vertically, so the
+    // gallery would briefly scroll vertically and swallow the page wheel. overflow-y-hidden pins it to horizontal.
+    expect(scroller).toHaveClass("overflow-y-hidden");
     const list = within(scroller).getByRole("list", {
       name: "Upcoming projects",
     });
