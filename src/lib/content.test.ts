@@ -69,7 +69,7 @@ describe("skills", () => {
       Languages: ["TypeScript", "JavaScript", "Python", "C++", "Java"],
       "Frontend Web": ["React", "Next.js", "Tailwind CSS", "Motion", "GSAP"],
       "Mobile & Android": ["Kotlin", "Jetpack Compose", "Flutter"],
-      "Backend & Edge": ["Node.js", "Bun"],
+      "Backend & Edge": ["Node.js", "Bun", "Laravel"],
       "Databases & Storage": [
         "PostgreSQL",
         "MySQL",

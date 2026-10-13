@@ -17,6 +17,7 @@ import {
   siKotlin,
   siKubernetes,
   siLangflow,
+  siLaravel,
   siMongodb,
   siMysql,
   siNetlify,
@@ -107,6 +108,7 @@ const icons: Record<string, SkillIcon> = {
   netlify: siNetlify,
   cloudflare: siCloudflare,
   langflow: siLangflow,
+  laravel: siLaravel,
   java,
   kiro,
 };
