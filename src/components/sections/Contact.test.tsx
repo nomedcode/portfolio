@@ -45,7 +45,7 @@ describe("Contact", () => {
     render(<Contact />);
     expect(
       screen.getByRole("link", { name: /Download CV/ })
-    ).toHaveAttribute("href", "/faiq-prasetya-cv.pdf");
+    ).toHaveAttribute("href", "/CV-ATS.pdf");
   });
 
   test("renders all social links with brand logos and no Instagram", () => {
@@ -172,7 +172,7 @@ describe("Footer", () => {
   test("offers the CV download alongside the socials", () => {
     render(<Footer />);
     const cv = screen.getByRole("link", { name: "Download CV" });
-    expect(cv).toHaveAttribute("href", "/faiq-prasetya-cv.pdf");
+    expect(cv).toHaveAttribute("href", "/CV-ATS.pdf");
     expect(
       document.querySelector("[data-footer-socials]")?.contains(cv)
     ).toBe(true);

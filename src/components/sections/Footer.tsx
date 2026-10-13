@@ -30,7 +30,7 @@ export function Footer() {
             </a>
           ))}
           <a
-            href="/faiq-prasetya-cv.pdf"
+            href="/CV-ATS.pdf"
             download
             className="press hit-area font-medium text-fg hover:underline"
           >

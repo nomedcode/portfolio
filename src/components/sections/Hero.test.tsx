@@ -113,7 +113,7 @@ describe("Hero", () => {
     expect(actions).not.toBeNull();
     const links = within(actions).getAllByRole("link");
     expect(links.map((a) => a.textContent)).toEqual(["Download CV", "Contact"]);
-    expect(links[0]).toHaveAttribute("href", "/faiq-prasetya-cv.pdf");
+    expect(links[0]).toHaveAttribute("href", "/CV-ATS.pdf");
     expect(links[0]).toHaveAttribute("download");
     expect(links[0].querySelector("svg.lucide-download")).toHaveAttribute(
       "aria-hidden",

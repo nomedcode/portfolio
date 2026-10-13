@@ -59,7 +59,7 @@ export function Contact() {
             Email me
           </a>
           <a
-            href="/faiq-prasetya-cv.pdf"
+            href="/CV-ATS.pdf"
             download
             className="press inline-flex items-center gap-2 rounded-full border border-accent px-6 py-4 font-medium text-accent hover:bg-accent/10 dark:border-accent-dark dark:text-accent-dark dark:hover:bg-accent-dark/10"
           >

@@ -142,7 +142,7 @@ export function Hero({ photo }: { photo?: string }) {
             className="hero-rise flex flex-wrap items-center justify-center gap-3 pt-2 [animation-delay:400ms] md:justify-start"
           >
             <a
-              href="/faiq-prasetya-cv.pdf"
+              href="/CV-ATS.pdf"
               download
               className="press inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 font-medium text-white hover:brightness-110"
             >
