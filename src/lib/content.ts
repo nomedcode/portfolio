@@ -58,7 +58,7 @@ export const profile: Profile = {
     "System Administrator",
   ],
   about:
-    "Computer Science Undergrad at BINUS, specializing in Cloud Technology, with a strong interest in Cloud Computing, AI/ML, and Data Engineering. Currently implementing CI/CD, containers, and IaC in my projects.",
+    "Computer Science Undergrad at BINUS, specializing in Cloud Technology, with a strong interest in Cloud Computing, AI/ML, and Data Engineering. Currently building Cloud / Mobile / Web Projects.",
   heroBackground:
     "linear-gradient(135deg, #1a1a2e 0%, #16213e 55%, #0f3460 100%)",
   email: "faiqhaidarprasetya0@gmail.com",
