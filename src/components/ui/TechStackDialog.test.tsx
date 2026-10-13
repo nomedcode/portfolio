@@ -1,5 +1,6 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, test, vi } from "vitest";
+import { skillCategories } from "@/lib/content";
 import { TechStackDialog } from "./TechStackDialog";
 
 type Box = { left: number; top: number; width: number; height: number };
@@ -90,7 +91,10 @@ describe("TechStackDialog motion", () => {
   test("chip logos use the shared per-theme brand fill, never a dark-mode invert", () => {
     const { dialog } = renderDialog();
     const svgs = dialog.querySelectorAll("[data-skill-chip] svg");
-    expect(svgs.length).toBeGreaterThan(40);
+    // one logo on every chip, and every skill has a chip
+    expect(svgs).toHaveLength(
+      skillCategories.reduce((n, c) => n + c.skills.length, 0)
+    );
     expect(dialog.querySelectorAll("svg.dark\\:invert")).toHaveLength(0);
     for (const svg of svgs) {
       expect((svg as SVGElement).style.getPropertyValue("--icon-l")).toMatch(/^#[0-9a-f]{6}$/);

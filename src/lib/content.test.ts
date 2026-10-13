@@ -60,6 +60,43 @@ describe("skills", () => {
       "Cloud & Infra",
     ]);
   });
+  test("lists the chosen skills in each category", () => {
+    const byCategory = Object.fromEntries(
+      skillCategories.map((c) => [c.name, c.skills.map((s) => s.name)])
+    );
+    expect(byCategory).toEqual({
+      Languages: ["TypeScript", "JavaScript", "Python", "C++", "Java"],
+      "Frontend Web": ["React", "Next.js", "Tailwind CSS", "Motion", "GSAP"],
+      "Mobile & Android": ["Kotlin", "Jetpack Compose", "Flutter"],
+      "Backend & Edge": ["Node.js", "Bun"],
+      "Databases & Storage": [
+        "PostgreSQL",
+        "MySQL",
+        "MongoDB",
+        "Redis",
+        "Supabase",
+        "Firebase",
+      ],
+      "AI & Machine Learning": [
+        "TensorFlow",
+        "PyTorch",
+        "Hugging Face",
+        "Ollama",
+        "Langflow",
+      ],
+      "AI Tools & Builders": ["GitHub Copilot", "Claude", "Cursor", "Figma", "Kiro"],
+      "Cloud & Infra": [
+        "Google Cloud",
+        "Docker",
+        "Kubernetes",
+        "GitHub Actions",
+        "Vercel",
+        "Netlify",
+        "Cloudflare",
+      ],
+    });
+  });
+
   test("every skill has a name and a resolvable brand icon", () => {
     for (const c of skillCategories) {
       for (const s of c.skills) {

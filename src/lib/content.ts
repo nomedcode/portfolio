@@ -83,8 +83,8 @@ export const skillCategories: SkillCategory[] = [
       { name: "TypeScript", icon: "typescript" },
       { name: "JavaScript", icon: "javascript" },
       { name: "Python", icon: "python" },
-      { name: "Go", icon: "go" },
       { name: "C++", icon: "cplusplus" },
+      { name: "Java", icon: "java" },
     ],
   },
   {
@@ -93,9 +93,6 @@ export const skillCategories: SkillCategory[] = [
     skills: [
       { name: "React", icon: "react" },
       { name: "Next.js", icon: "nextdotjs" },
-      { name: "Vue", icon: "vuedotjs" },
-      { name: "Svelte", icon: "svelte" },
-      { name: "Astro", icon: "astro" },
       { name: "Tailwind CSS", icon: "tailwindcss" },
       { name: "Motion", icon: "framer" },
       { name: "GSAP", icon: "greensock" },
@@ -107,7 +104,6 @@ export const skillCategories: SkillCategory[] = [
     skills: [
       { name: "Kotlin", icon: "kotlin" },
       { name: "Jetpack Compose", icon: "jetpackcompose" },
-      { name: "Expo", icon: "expo" },
       { name: "Flutter", icon: "flutter" },
     ],
   },
@@ -116,11 +112,7 @@ export const skillCategories: SkillCategory[] = [
     name: "Backend & Edge",
     skills: [
       { name: "Node.js", icon: "nodedotjs" },
-      { name: "Express", icon: "express" },
-      { name: "NestJS", icon: "nestjs" },
       { name: "Bun", icon: "bun" },
-      { name: "GraphQL", icon: "graphql" },
-      { name: "tRPC", icon: "trpc" },
     ],
   },
   {
@@ -131,7 +123,6 @@ export const skillCategories: SkillCategory[] = [
       { name: "MySQL", icon: "mysql" },
       { name: "MongoDB", icon: "mongodb" },
       { name: "Redis", icon: "redis" },
-      { name: "Prisma", icon: "prisma" },
       { name: "Supabase", icon: "supabase" },
       { name: "Firebase", icon: "firebase" },
     ],
@@ -143,9 +134,8 @@ export const skillCategories: SkillCategory[] = [
       { name: "TensorFlow", icon: "tensorflow" },
       { name: "PyTorch", icon: "pytorch" },
       { name: "Hugging Face", icon: "huggingface" },
-      { name: "LangChain", icon: "langchain" },
-      { name: "Google Gemini", icon: "googlegemini" },
       { name: "Ollama", icon: "ollama" },
+      { name: "Langflow", icon: "langflow" },
     ],
   },
   {
@@ -155,8 +145,8 @@ export const skillCategories: SkillCategory[] = [
       { name: "GitHub Copilot", icon: "githubcopilot" },
       { name: "Claude", icon: "anthropic" },
       { name: "Cursor", icon: "cursor" },
-      { name: "v0", icon: "v0" },
       { name: "Figma", icon: "figma" },
+      { name: "Kiro", icon: "kiro" },
     ],
   },
   {

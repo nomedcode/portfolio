@@ -42,7 +42,16 @@ describe("contrastRatio", () => {
 
 describe("iconFills", () => {
   test("covers every icon the page uses (sanity check on the fixture)", () => {
-    expect(usedIcons.length).toBeGreaterThanOrEqual(45);
+    // AWS and Azure are drawn from react-icons in the banner and follow the text colour; every other slug is a brand mark
+    const drawnElsewhere = ["aws", "azure"];
+    const slugs = [
+      ...new Set([
+        ...cloudSkills.map((c) => c.id),
+        ...skillCategories.flatMap((c) => c.skills.map((s) => s.icon)),
+      ]),
+    ].filter((slug) => !drawnElsewhere.includes(slug));
+    expect(usedIcons.map((x) => x.slug).sort()).toEqual(slugs.sort());
+    expect(usedIcons.length).toBeGreaterThanOrEqual(30);
   });
 
   test("every icon reaches 3:1 on both surfaces of both themes, except yellow on light (see below)", () => {

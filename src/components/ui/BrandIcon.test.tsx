@@ -6,7 +6,7 @@ import { BrandIcon } from "./BrandIcon";
 
 describe("BrandIcon", () => {
   test("paints a per-theme fill through CSS variables instead of inverting dark logos", () => {
-    const icon = getSkillIcon("prisma")!;
+    const icon = getSkillIcon("nextdotjs")!;
     const { container } = render(<BrandIcon icon={icon} className="h-7 w-7" />);
     const svg = container.querySelector("svg") as SVGElement;
     const fills = iconFills(icon.hex);
@@ -18,5 +18,26 @@ describe("BrandIcon", () => {
     // an explicit fill on the path would beat the inherited variable
     expect(svg.querySelector("path")).not.toHaveAttribute("fill");
     expect(svg.querySelector("path")).toHaveAttribute("d", icon.path);
+  });
+
+  test("a Simple Icons mark is drawn on the default 24 unit grid with the default fill rule", () => {
+    const icon = getSkillIcon("langflow")!;
+    const { container } = render(<BrandIcon icon={icon} />);
+    const svg = container.querySelector("svg") as SVGElement;
+    expect(svg).toHaveAttribute("viewBox", "0 0 24 24");
+    expect(svg.querySelector("path")).not.toHaveAttribute("fill-rule");
+  });
+
+  test("a mark with its own grid and holes keeps both, still painted by the theme variables", () => {
+    const icon = getSkillIcon("kiro")!;
+    const { container } = render(<BrandIcon icon={icon} className="h-4 w-4" />);
+    const svg = container.querySelector("svg") as SVGElement;
+    const fills = iconFills(icon.hex);
+    expect(svg).toHaveAttribute("viewBox", icon.viewBox);
+    expect(svg.querySelector("path")).toHaveAttribute("fill-rule", "evenodd");
+    expect(svg.querySelector("path")).not.toHaveAttribute("fill");
+    expect(svg).toHaveAttribute("aria-hidden", "true");
+    expect(svg.style.getPropertyValue("--icon-l")).toBe(fills.light);
+    expect(svg.style.getPropertyValue("--icon-d")).toBe(fills.dark);
   });
 });
