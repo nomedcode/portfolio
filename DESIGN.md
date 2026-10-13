@@ -219,7 +219,7 @@ Large, soft, and consistent. Big cards use a 28px radius and small cards 18px; e
 
 ### Hero
 - **Copy:** headline, role line, the about text (34rem wide, 65% white) and the two actions, left-aligned from 768px and centered below it. Each piece rises in on first paint with a 100ms stagger; the actions arrive last.
-- **Role line:** rotates through the four roles (Cloud Engineer, DevOps Engineer, Site Reliability Engineer, System Administrator) without end: a 2.6s hold, then 0.4s sliding out to the left and 0.45s sliding in from the right. A hidden tab holds the countdown. Under reduced motion it shows the first role and never moves. The first role is in the static HTML. There is no pause control, so the line moves by itself for more than five seconds (WCAG 2.2.2 is open, by choice).
+- **Role line:** rotates through the five roles (Cloud Engineer, DevOps Engineer, Site Reliability Engineer, System Administrator, AI Engineer) without end: a 2.6s hold, then 0.4s sliding out to the left and 0.45s sliding in from the right. A hidden tab holds the countdown. Under reduced motion it shows the first role and never moves. The first role is in the static HTML. There is no pause control, so the line moves by itself for more than five seconds (WCAG 2.2.2 is open, by choice).
 - **Scroll:** as the hero leaves, the copy settles 48px and fades to 20% while the portrait lags 96px and shrinks to 92%. These are transforms and opacity only, and reduced motion drops them.
 
 ### Portrait

@@ -21,6 +21,7 @@ describe("profile", () => {
       "DevOps Engineer",
       "Site Reliability Engineer",
       "System Administrator",
+      "AI Engineer",
     ]);
     expect(profile.about.trim()).not.toBe("");
     expect(profile.about).toMatch(/ Currently building Cloud \/ Mobile \/ Web Projects\.$/);

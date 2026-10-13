@@ -372,6 +372,7 @@ describe("Hero", () => {
     render(<Hero />);
     const roles = profile.roles;
     expect(roles).toContain("System Administrator");
+    expect(roles).toContain("AI Engineer");
     const steps = roles.length * 2 + 1;
     const seen: string[] = [];
     for (let i = 0; i < steps; i++) {

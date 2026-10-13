@@ -56,6 +56,7 @@ export const profile: Profile = {
     "DevOps Engineer",
     "Site Reliability Engineer",
     "System Administrator",
+    "AI Engineer",
   ],
   about:
     "Computer Science Undergrad at BINUS, specializing in Cloud Technology, with a strong interest in Cloud Computing, AI/ML, and Data Engineering. Currently building Cloud / Mobile / Web Projects.",
