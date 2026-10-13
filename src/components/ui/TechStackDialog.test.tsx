@@ -115,11 +115,13 @@ describe("TechStackDialog motion", () => {
       skillCategories.reduce((n, c) => n + c.skills.length, 0)
     );
     expect(dialog.querySelectorAll("svg.dark\\:invert")).toHaveLength(0);
-    // AWS follows the text colour and Google Cloud draws its four brand colours; every other logo carries the two fills
+    // AWS takes the per-theme fill for its wordmark; googlecloud, azure, vite, kotlin, python and java draw their own
+    // brand colours, so they carry no --icon-l variable
+    const selfColoured = 6;
     const branded = [...svgs].filter((svg) =>
       (svg as SVGElement).style.getPropertyValue("--icon-l")
     );
-    expect(branded).toHaveLength(svgs.length - 2);
+    expect(branded).toHaveLength(svgs.length - selfColoured);
     for (const svg of branded) {
       expect((svg as SVGElement).style.getPropertyValue("--icon-l")).toMatch(/^#[0-9a-f]{6}$/);
       expect((svg as SVGElement).style.getPropertyValue("--icon-d")).toMatch(/^#[0-9a-f]{6}$/);

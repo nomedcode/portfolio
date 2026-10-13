@@ -18,58 +18,91 @@ describe("skillIcons", () => {
     for (const layer of layers ?? []) expect(layer.path.length).toBeGreaterThan(50);
   });
 
-  test("resolves the newly added Java, Kiro, Codex, Hermes Agent, Azure and Langflow marks", () => {
-    for (const slug of ["java", "kiro", "codex", "hermes", "azure", "langflow"]) {
+  test("resolves the layered marks: AWS, Azure, Vite, Kotlin, Python and Java, each drawn in its own colours", () => {
+    for (const slug of ["aws", "azure", "vite", "kotlin", "python", "java"]) {
       const icon = getSkillIcon(slug);
       expect(icon, slug).toBeTruthy();
-      expect(icon?.path.length, slug).toBeGreaterThan(100);
+      expect(icon?.layers?.length, slug).toBeGreaterThan(0);
       expect(icon?.hex, slug).toMatch(/^[0-9A-Fa-f]{6}$/);
     }
   });
 
-  test("resolves the Simple Icons marks added for Laravel, the web languages, Vite, observability and data science", () => {
+  test("AWS is the two-tone mark: a wordmark with no fill of its own (so it takes the per-theme fill) and the orange smile", () => {
+    const layers = getSkillIcon("aws")?.layers;
+    expect(layers).toHaveLength(2);
+    expect(layers?.[0].fill).toBeUndefined();
+    expect(layers?.[1].fill).toBe("#FF9900");
+    expect(getSkillIcon("aws")?.fillRule).toBe("evenodd");
+  });
+
+  test("Azure, Vite, Kotlin and Python paint their layers from named gradients; Java uses flat brand colours", () => {
+    for (const slug of ["azure", "vite", "kotlin", "python"]) {
+      const icon = getSkillIcon(slug);
+      expect(icon?.gradients?.length, slug).toBeGreaterThan(0);
+      const ids = new Set((icon?.gradients ?? []).map((g) => g.id));
+      let gradientLayers = 0;
+      for (const layer of icon?.layers ?? []) {
+        const ref = layer.fill?.match(/^url\(#(.+)\)$/)?.[1];
+        if (ref === undefined) {
+          // a flat layer is fine, but it must be a real brand colour
+          expect(layer.fill, `${slug} ${layer.fill}`).toMatch(/^#[0-9A-Fa-f]{6}$/);
+          continue;
+        }
+        gradientLayers++;
+        expect(ids.has(ref), `${slug} ${ref}`).toBe(true);
+      }
+      expect(gradientLayers, slug).toBeGreaterThan(0);
+    }
+    const java = getSkillIcon("java");
+    expect(java?.gradients).toBeUndefined();
+    expect(
+      [...new Set((java?.layers ?? []).map((l) => l.fill))].sort()
+    ).toEqual(["#0074BD", "#EA2D2E"]);
+  });
+
+  test("resolves the single-colour Kiro, Hermes Agent and Langflow marks", () => {
+    for (const slug of ["kiro", "hermes", "langflow"]) {
+      const icon = getSkillIcon(slug);
+      expect(icon, slug).toBeTruthy();
+      expect(icon?.path?.length, slug).toBeGreaterThan(100);
+      expect(icon?.hex, slug).toMatch(/^[0-9A-Fa-f]{6}$/);
+    }
+  });
+
+  test("resolves the Simple Icons marks added for Laravel, the web languages, observability and data science", () => {
     for (const slug of [
       "laravel",
       "html5",
       "css",
-      "vite",
       "sentry",
       "datadog",
       "digitalocean",
       "scikitlearn",
       "numpy",
       "pandas",
-      "claudecode",
       "androidstudio",
       "modelcontextprotocol",
       "cisco",
     ]) {
       const icon = getSkillIcon(slug);
       expect(icon, slug).toBeTruthy();
-      expect(icon?.path.length, slug).toBeGreaterThan(100);
+      expect(icon?.path?.length, slug).toBeGreaterThan(100);
       expect(icon?.hex, slug).toMatch(/^[0-9A-Fa-f]{6}$/);
     }
   });
 
-  test("Java and Kiro come with their own square view box, because no installed icon set carries them", () => {
-    for (const slug of ["java", "kiro"]) {
+  test("the marks that come from outside Simple Icons bring their own square view box", () => {
+    for (const slug of ["java", "kiro", "aws", "azure", "vite", "kotlin", "python"]) {
       const box = getSkillIcon(slug)?.viewBox?.split(" ").map(Number) as number[];
       expect(box, slug).toHaveLength(4);
       expect(box[2], slug).toBe(box[3]);
-      expect(box[2], slug).toBeGreaterThan(24);
+      expect(box[2], slug).toBeGreaterThanOrEqual(24);
     }
     // the Kiro ghost has two eyes cut out of it
     expect(getSkillIcon("kiro")?.fillRule).toBe("evenodd");
-    // so does the Codex blossom, which has no view box of its own: it sits on the default 24 unit grid
-    expect(getSkillIcon("codex")?.fillRule).toBe("evenodd");
-    expect(getSkillIcon("codex")?.viewBox).toBeUndefined();
     // the Hermes Agent mark is drawn on the same default grid, with its shapes merged into one even-odd path
     expect(getSkillIcon("hermes")?.fillRule).toBe("evenodd");
     expect(getSkillIcon("hermes")?.viewBox).toBeUndefined();
-    // Azure is the 16 unit Codicons glyph, in Azure blue
-    expect(getSkillIcon("azure")?.viewBox).toBe("0 0 16 16");
-    expect(getSkillIcon("azure")?.fillRule).toBe("evenodd");
-    expect(getSkillIcon("azure")?.hex).toBe("0078D4");
     // the Simple Icons marks keep the default 24 unit grid
     expect(getSkillIcon("langflow")?.viewBox).toBeUndefined();
   });
@@ -94,6 +127,10 @@ describe("skillIcons", () => {
       "anthropic",
       "newrelic",
       "termius",
+      "githubcopilot",
+      "claudecode",
+      "codex",
+      "cursor",
     ]) {
       expect(getSkillIcon(slug), slug).toBeUndefined();
     }

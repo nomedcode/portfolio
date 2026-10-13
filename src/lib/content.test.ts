@@ -97,11 +97,7 @@ describe("skills", () => {
         "Langflow",
       ],
       "Tools & Builders": [
-        "GitHub Copilot",
-        "Claude Code",
-        "Codex",
         "Hermes Agent",
-        "Cursor",
         "Figma",
         "Kiro",
         "Ollama",
@@ -137,12 +133,9 @@ describe("skills", () => {
   });
 
   test("every skill has a name and a resolvable brand icon", () => {
-    // AWS is drawn from react-icons by SkillMark and follows the text colour; every other skill is a brand mark
-    const drawnByComponent = ["aws"];
     for (const c of skillCategories) {
       for (const s of c.skills) {
         expect(s.name).toBeTruthy();
-        if (drawnByComponent.includes(s.icon)) continue;
         expect(getSkillIcon(s.icon)).toBeTruthy();
       }
     }

@@ -39,11 +39,10 @@ describe("contrastRatio", () => {
 
 describe("iconFills", () => {
   test("covers every icon the page uses (sanity check on the fixture)", () => {
-    // AWS is drawn from react-icons by SkillMark and follows the text colour; every other slug is a brand mark
-    const drawnElsewhere = ["aws"];
+    // Every slug the content lists now resolves to a brand mark in getSkillIcon, AWS included.
     const slugs = [
       ...new Set(skillCategories.flatMap((c) => c.skills.map((s) => s.icon))),
-    ].filter((slug) => !drawnElsewhere.includes(slug));
+    ];
     expect(usedIcons.map((x) => x.slug).sort()).toEqual(slugs.sort());
     expect(usedIcons.length).toBeGreaterThanOrEqual(30);
   });

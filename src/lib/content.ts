@@ -161,11 +161,7 @@ export const skillCategories: SkillCategory[] = [
     id: "ai-tools",
     name: "Tools & Builders",
     skills: [
-      { name: "GitHub Copilot", icon: "githubcopilot" },
-      { name: "Claude Code", icon: "claudecode" },
-      { name: "Codex", icon: "codex" },
       { name: "Hermes Agent", icon: "hermes" },
-      { name: "Cursor", icon: "cursor" },
       { name: "Figma", icon: "figma" },
       { name: "Kiro", icon: "kiro" },
       { name: "Ollama", icon: "ollama" },

@@ -44,11 +44,13 @@ describe("Skills banner", () => {
     const svgs = document.querySelectorAll("[data-preview-logo] svg");
     expect(svgs).toHaveLength(expectedLogoCount());
     expect(document.querySelectorAll("svg.dark\\:invert")).toHaveLength(0);
-    // aws follows the text colour and googlecloud draws its four brand colours; the rest carry the variables
+    // aws takes the per-theme fill for its wordmark; googlecloud, azure, vite, kotlin, python and java draw their
+    // own brand colours instead, so they carry no --icon-l variable
+    const selfColoured = 6;
     const withFills = [...svgs].filter((s) =>
       (s as SVGElement).style.getPropertyValue("--icon-l")
     );
-    expect(withFills).toHaveLength(svgs.length - 2);
+    expect(withFills).toHaveLength(svgs.length - selfColoured);
   });
 
   test("preview logos start hidden and pop in from a point by default", () => {
