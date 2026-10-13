@@ -51,7 +51,12 @@ export const profile: Profile = {
   name: "Faiq Prasetya",
   fullName: "Fa'iq Haidar Prasetya",
   location: "Bandung, Indonesia",
-  roles: ["Cloud Engineer", "DevOps Engineer", "Site Reliability Engineer"],
+  roles: [
+    "Cloud Engineer",
+    "DevOps Engineer",
+    "Site Reliability Engineer",
+    "System Administrator",
+  ],
   about:
     "Computer Science Undergrad at BINUS, specializing in Cloud Technology, with a strong interest in Cloud Computing, AI/ML, and Data Engineering. Currently implementing CI/CD, containers, and infrastructure as code in my projects.",
   heroBackground:

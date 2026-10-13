@@ -20,6 +20,7 @@ describe("profile", () => {
       "Cloud Engineer",
       "DevOps Engineer",
       "Site Reliability Engineer",
+      "System Administrator",
     ]);
     expect(profile.about.trim()).not.toBe("");
     expect(profile.heroBackground).toMatch(/^linear-gradient\(/);

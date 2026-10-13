@@ -367,26 +367,25 @@ describe("Hero", () => {
     expect(second?.getAttribute("style") ?? "").not.toMatch(/translateY/);
   });
 
-  test("keeps going round without end: after the last role the first comes back, one role every three seconds", async () => {
+  test("keeps going round without end through every role: after the last one the first comes back, one role every three seconds", async () => {
     useFakeClock();
     render(<Hero />);
+    const roles = profile.roles;
+    expect(roles).toContain("System Administrator");
+    const steps = roles.length * 2 + 1;
     const seen: string[] = [];
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < steps; i++) {
       await act(async () => {
         vi.advanceTimersByTime(STEP);
       });
       seen.push(roleNode()?.textContent ?? "");
       expect(activeRoles()).toHaveLength(1);
     }
-    expect(seen).toEqual([
-      "DevOps Engineer",
-      "Site Reliability Engineer",
-      "Cloud Engineer",
-      "DevOps Engineer",
-      "Site Reliability Engineer",
-      "Cloud Engineer",
-      "DevOps Engineer",
-    ]);
+    expect(seen).toEqual(
+      Array.from({ length: steps }, (_, i) => roles[(i + 1) % roles.length])
+    );
+    // two full laps and one more: every role was shown, the first came back, and it is still running
+    expect(new Set(seen)).toEqual(new Set(roles));
     expect(vi.getTimerCount()).toBeGreaterThan(0);
     expect(
       screen.getByRole("heading", { name: "Fa'iq Haidar Prasetya" })
