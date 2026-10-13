@@ -67,10 +67,13 @@ export const profile: Profile = {
   ],
 };
 
+// The main cloud skills. The banner preview always leads with these, in this order; the rest of its logos are shuffled.
+export const featuredSkillIcons = ["aws", "googlecloud", "azure"];
+
 export const skillCategories: SkillCategory[] = [
   {
     id: "languages",
-    name: "Languages",
+    name: "Programming Languages",
     skills: [
       { name: "TypeScript", icon: "typescript" },
       { name: "JavaScript", icon: "javascript" },
@@ -82,75 +85,8 @@ export const skillCategories: SkillCategory[] = [
     ],
   },
   {
-    id: "frontend",
-    name: "Frontend Web",
-    skills: [
-      { name: "React", icon: "react" },
-      { name: "Next.js", icon: "nextdotjs" },
-      { name: "Vite", icon: "vite" },
-      { name: "Tailwind CSS", icon: "tailwindcss" },
-      { name: "Motion", icon: "framer" },
-      { name: "GSAP", icon: "greensock" },
-    ],
-  },
-  {
-    id: "mobile",
-    name: "Mobile & Android",
-    skills: [
-      { name: "Kotlin", icon: "kotlin" },
-      { name: "Jetpack Compose", icon: "jetpackcompose" },
-      { name: "Flutter", icon: "flutter" },
-    ],
-  },
-  {
-    id: "backend",
-    name: "Backend & Edge",
-    skills: [
-      { name: "Node.js", icon: "nodedotjs" },
-      { name: "Bun", icon: "bun" },
-      { name: "Laravel", icon: "laravel" },
-    ],
-  },
-  {
-    id: "databases",
-    name: "Databases & Storage",
-    skills: [
-      { name: "PostgreSQL", icon: "postgresql" },
-      { name: "MySQL", icon: "mysql" },
-      { name: "MongoDB", icon: "mongodb" },
-      { name: "Redis", icon: "redis" },
-      { name: "Supabase", icon: "supabase" },
-      { name: "Firebase", icon: "firebase" },
-    ],
-  },
-  {
-    id: "ai-ml",
-    name: "AI & Machine Learning",
-    skills: [
-      { name: "TensorFlow", icon: "tensorflow" },
-      { name: "PyTorch", icon: "pytorch" },
-      { name: "scikit-learn", icon: "scikitlearn" },
-      { name: "NumPy", icon: "numpy" },
-      { name: "Pandas", icon: "pandas" },
-      { name: "Hugging Face", icon: "huggingface" },
-      { name: "Ollama", icon: "ollama" },
-      { name: "Langflow", icon: "langflow" },
-    ],
-  },
-  {
-    id: "ai-tools",
-    name: "AI Tools & Builders",
-    skills: [
-      { name: "GitHub Copilot", icon: "githubcopilot" },
-      { name: "Claude", icon: "anthropic" },
-      { name: "Cursor", icon: "cursor" },
-      { name: "Figma", icon: "figma" },
-      { name: "Kiro", icon: "kiro" },
-    ],
-  },
-  {
     id: "cloud",
-    name: "Cloud & Infra",
+    name: "Cloud & Infrastructure",
     skills: [
       { name: "AWS", icon: "aws" },
       { name: "Google Cloud", icon: "googlecloud" },
@@ -163,8 +99,77 @@ export const skillCategories: SkillCategory[] = [
       { name: "DigitalOcean", icon: "digitalocean" },
       { name: "Sentry", icon: "sentry" },
       { name: "Datadog", icon: "datadog" },
-      { name: "New Relic", icon: "newrelic" },
-      { name: "Termius", icon: "termius" },
+    ],
+  },
+  {
+    id: "frontend",
+    name: "Frontend",
+    skills: [
+      { name: "React", icon: "react" },
+      { name: "Next.js", icon: "nextdotjs" },
+      { name: "Vite", icon: "vite" },
+      { name: "Tailwind CSS", icon: "tailwindcss" },
+      { name: "Motion", icon: "framer" },
+      { name: "GSAP", icon: "greensock" },
+    ],
+  },
+  {
+    id: "backend",
+    name: "Backend",
+    skills: [
+      { name: "Node.js", icon: "nodedotjs" },
+      { name: "Bun", icon: "bun" },
+      { name: "Laravel", icon: "laravel" },
+    ],
+  },
+  {
+    id: "mobile",
+    name: "Mobile",
+    skills: [
+      { name: "Kotlin", icon: "kotlin" },
+      { name: "Jetpack Compose", icon: "jetpackcompose" },
+      { name: "Flutter", icon: "flutter" },
+      { name: "Android Studio", icon: "androidstudio" },
+    ],
+  },
+  {
+    id: "databases",
+    name: "Database",
+    skills: [
+      { name: "PostgreSQL", icon: "postgresql" },
+      { name: "MySQL", icon: "mysql" },
+      { name: "MongoDB", icon: "mongodb" },
+      { name: "Redis", icon: "redis" },
+      { name: "Supabase", icon: "supabase" },
+      { name: "Firebase", icon: "firebase" },
+    ],
+  },
+  {
+    id: "ai-ml",
+    name: "Machine Learning",
+    skills: [
+      { name: "TensorFlow", icon: "tensorflow" },
+      { name: "PyTorch", icon: "pytorch" },
+      { name: "scikit-learn", icon: "scikitlearn" },
+      { name: "NumPy", icon: "numpy" },
+      { name: "Pandas", icon: "pandas" },
+      { name: "Hugging Face", icon: "huggingface" },
+      { name: "Langflow", icon: "langflow" },
+    ],
+  },
+  {
+    id: "ai-tools",
+    name: "Tools & Builders",
+    skills: [
+      { name: "GitHub Copilot", icon: "githubcopilot" },
+      { name: "Claude Code", icon: "claudecode" },
+      { name: "Codex", icon: "codex" },
+      { name: "Hermes Agent", icon: "hermes" },
+      { name: "Cursor", icon: "cursor" },
+      { name: "Figma", icon: "figma" },
+      { name: "Kiro", icon: "kiro" },
+      { name: "Ollama", icon: "ollama" },
+      { name: "MCP Registry", icon: "modelcontextprotocol" },
     ],
   },
 ];

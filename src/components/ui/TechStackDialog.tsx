@@ -2,8 +2,9 @@
 
 import { m, type Variants } from "framer-motion";
 import { X } from "lucide-react";
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { skillCategories } from "@/lib/content";
+import { shuffle } from "@/lib/shuffle";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { SkillMark } from "./SkillMark";
 
@@ -27,7 +28,11 @@ export function TechStackDialog({
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const reduce = useReducedMotion();
-
+  // The cards stay in their fixed order; the skills inside each card are shuffled afresh every time the dialog opens.
+  // The dialog only mounts on a click, so it is never part of the server HTML and cannot mismatch on hydration.
+  const [categories] = useState(() =>
+    skillCategories.map((cat) => ({ ...cat, skills: shuffle(cat.skills) }))
+  );
   // Scale out of the Skills card instead of the screen centre, so the dialog reads as that card opening.
   // Scaling about the centre keeps the rect centre fixed, so measure from centres and offsetWidth/Height (not scaled).
   useLayoutEffect(() => {
@@ -139,7 +144,7 @@ export function TechStackDialog({
           className="overflow-y-auto overscroll-contain rounded-b-card p-6 focus-visible:-outline-offset-2"
         >
           <div className="grid gap-6 sm:grid-cols-2">
-            {skillCategories.map((cat) => (
+            {categories.map((cat) => (
               <div
                 key={cat.id}
                 className="rounded-card-sm border border-line bg-raised p-6"

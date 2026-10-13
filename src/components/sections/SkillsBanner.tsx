@@ -2,9 +2,10 @@
 
 import { AnimatePresence, m, type Variants } from "framer-motion";
 import dynamic from "next/dynamic";
-import { useMemo, useRef, useState } from "react";
-import { skillCategories } from "@/lib/content";
+import { useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { featuredSkillIcons, skillCategories } from "@/lib/content";
 import { motionTransition } from "@/lib/motion";
+import { shuffle } from "@/lib/shuffle";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { SkillMark } from "@/components/ui/SkillMark";
 import { Reveal } from "@/components/ui/Reveal";
@@ -38,15 +39,21 @@ const logoVariants = (reduce: boolean): Variants => ({
   },
 });
 
+// Nothing to subscribe to: the shuffled order is fixed per mount. useSyncExternalStore is only used for its split
+// between the server snapshot (hydration) and the client snapshot.
+const noopSubscribe = () => () => {};
+
 export function SkillsBanner() {
   const [open, setOpen] = useState(false);
   const openerRef = useRef<HTMLButtonElement | null>(null);
   const reduce = useReducedMotion();
   const cloud = useMemo(() => cloudVariants(reduce), [reduce]);
   const logo = useMemo(() => logoVariants(reduce), [reduce]);
+  // The main cloud skills first, then every other skill once. The server HTML and the hydrating render use this
+  // fixed order so they match; once hydrated, the client switches to a shuffle of everything after the featured ones.
   const previewIcons = useMemo(() => {
-    const seen = new Set<string>();
-    const list: string[] = [];
+    const seen = new Set<string>(featuredSkillIcons);
+    const list: string[] = [...featuredSkillIcons];
     for (const cat of skillCategories) {
       for (const s of cat.skills) {
         if (!seen.has(s.icon)) {
@@ -57,6 +64,16 @@ export function SkillsBanner() {
     }
     return list;
   }, []);
+  const [shuffled] = useState(() => [
+    ...featuredSkillIcons,
+    ...shuffle(previewIcons.slice(featuredSkillIcons.length)),
+  ]);
+  // The logos are still hidden (opacity 0) when the order switches, so the reshuffle is not seen.
+  const order = useSyncExternalStore(
+    noopSubscribe,
+    () => shuffled,
+    () => previewIcons
+  );
 
   return (
     <section
@@ -92,11 +109,12 @@ export function SkillsBanner() {
                 data-preview-list
                 className="flex flex-1 flex-wrap content-center items-center justify-start gap-3 md:justify-end"
               >
-                {previewIcons.map((id) => (
+                {order.map((id) => (
                   <m.li
                     key={id}
                     variants={logo}
                     data-preview-logo
+                    data-skill={id}
                     className="flex h-7 w-7 items-center justify-center"
                   >
                     <SkillMark id={id} className="h-7 w-7" />

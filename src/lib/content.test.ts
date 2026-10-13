@@ -4,6 +4,7 @@ import {
   awards,
   credlyBadge,
   education,
+  featuredSkillIcons,
   profile,
   sections,
   skillCategories,
@@ -37,16 +38,16 @@ describe("profile", () => {
 });
 
 describe("skills", () => {
-  test("renders the eight tech-stack categories", () => {
+  test("renders the eight tech-stack categories, two to a row in the popup: languages and cloud, frontend and backend, mobile and database, machine learning and tools", () => {
     expect(skillCategories.map((c) => c.name)).toEqual([
-      "Languages",
-      "Frontend Web",
-      "Mobile & Android",
-      "Backend & Edge",
-      "Databases & Storage",
-      "AI & Machine Learning",
-      "AI Tools & Builders",
-      "Cloud & Infra",
+      "Programming Languages",
+      "Cloud & Infrastructure",
+      "Frontend",
+      "Backend",
+      "Mobile",
+      "Database",
+      "Machine Learning",
+      "Tools & Builders",
     ]);
   });
   test("lists the chosen skills in each category", () => {
@@ -54,7 +55,7 @@ describe("skills", () => {
       skillCategories.map((c) => [c.name, c.skills.map((s) => s.name)])
     );
     expect(byCategory).toEqual({
-      Languages: [
+      "Programming Languages": [
         "TypeScript",
         "JavaScript",
         "Python",
@@ -63,7 +64,7 @@ describe("skills", () => {
         "HTML",
         "CSS",
       ],
-      "Frontend Web": [
+      Frontend: [
         "React",
         "Next.js",
         "Vite",
@@ -71,9 +72,14 @@ describe("skills", () => {
         "Motion",
         "GSAP",
       ],
-      "Mobile & Android": ["Kotlin", "Jetpack Compose", "Flutter"],
-      "Backend & Edge": ["Node.js", "Bun", "Laravel"],
-      "Databases & Storage": [
+      Mobile: [
+        "Kotlin",
+        "Jetpack Compose",
+        "Flutter",
+        "Android Studio",
+      ],
+      Backend: ["Node.js", "Bun", "Laravel"],
+      Database: [
         "PostgreSQL",
         "MySQL",
         "MongoDB",
@@ -81,18 +87,27 @@ describe("skills", () => {
         "Supabase",
         "Firebase",
       ],
-      "AI & Machine Learning": [
+      "Machine Learning": [
         "TensorFlow",
         "PyTorch",
         "scikit-learn",
         "NumPy",
         "Pandas",
         "Hugging Face",
-        "Ollama",
         "Langflow",
       ],
-      "AI Tools & Builders": ["GitHub Copilot", "Claude", "Cursor", "Figma", "Kiro"],
-      "Cloud & Infra": [
+      "Tools & Builders": [
+        "GitHub Copilot",
+        "Claude Code",
+        "Codex",
+        "Hermes Agent",
+        "Cursor",
+        "Figma",
+        "Kiro",
+        "Ollama",
+        "MCP Registry",
+      ],
+      "Cloud & Infrastructure": [
         "AWS",
         "Google Cloud",
         "Azure",
@@ -104,10 +119,14 @@ describe("skills", () => {
         "DigitalOcean",
         "Sentry",
         "Datadog",
-        "New Relic",
-        "Termius",
       ],
     });
+  });
+
+  test("names the main cloud skills the banner leads with, and each is a listed skill", () => {
+    expect(featuredSkillIcons).toEqual(["aws", "googlecloud", "azure"]);
+    const icons = skillCategories.flatMap((c) => c.skills.map((s) => s.icon));
+    for (const id of featuredSkillIcons) expect(icons).toContain(id);
   });
 
   test("lists no skill twice, so the banner preview and the popup show the same set", () => {
@@ -117,8 +136,8 @@ describe("skills", () => {
   });
 
   test("every skill has a name and a resolvable brand icon", () => {
-    // AWS and Azure are drawn from react-icons by SkillMark and follow the text colour; every other slug is a brand mark
-    const drawnByComponent = ["aws", "azure"];
+    // AWS is drawn from react-icons by SkillMark and follows the text colour; every other skill is a brand mark
+    const drawnByComponent = ["aws"];
     for (const c of skillCategories) {
       for (const s of c.skills) {
         expect(s.name).toBeTruthy();

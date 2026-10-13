@@ -39,8 +39,8 @@ describe("contrastRatio", () => {
 
 describe("iconFills", () => {
   test("covers every icon the page uses (sanity check on the fixture)", () => {
-    // AWS and Azure are drawn from react-icons by SkillMark and follow the text colour; every other slug is a brand mark
-    const drawnElsewhere = ["aws", "azure"];
+    // AWS is drawn from react-icons by SkillMark and follows the text colour; every other slug is a brand mark
+    const drawnElsewhere = ["aws"];
     const slugs = [
       ...new Set(skillCategories.flatMap((c) => c.skills.map((s) => s.icon))),
     ].filter((slug) => !drawnElsewhere.includes(slug));

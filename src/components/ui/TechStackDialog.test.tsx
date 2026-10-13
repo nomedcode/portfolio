@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, test, vi } from "vitest";
 import { skillCategories } from "@/lib/content";
 import { TechStackDialog } from "./TechStackDialog";
@@ -53,6 +53,25 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
+describe("TechStackDialog order", () => {
+  test("keeps the categories where they are and shuffles the skills inside each one", () => {
+    vi.spyOn(Math, "random").mockReturnValue(0);
+    const { dialog } = renderDialog();
+    expect([...dialog.querySelectorAll("h3")].map((h) => h.textContent)).toEqual(
+      skillCategories.map((c) => c.name)
+    );
+    for (const cat of skillCategories) {
+      const list = within(dialog).getByRole("list", { name: `${cat.name} skills` });
+      const shown = [...list.querySelectorAll("[data-skill-chip]")].map(
+        (chip) => chip.textContent
+      );
+      const original = cat.skills.map((s) => s.name);
+      expect([...shown].sort(), cat.name).toEqual([...original].sort());
+      expect(shown, cat.name).not.toEqual(original);
+    }
+  });
+});
+
 describe("TechStackDialog motion", () => {
   test("opens from the Skills card: it scales out of the card's position", () => {
     mockBoxes(
@@ -96,11 +115,11 @@ describe("TechStackDialog motion", () => {
       skillCategories.reduce((n, c) => n + c.skills.length, 0)
     );
     expect(dialog.querySelectorAll("svg.dark\\:invert")).toHaveLength(0);
-    // AWS and Azure come from react-icons and follow the text colour; every other logo carries the two fills
+    // AWS comes from react-icons and follows the text colour; every other logo carries the two fills
     const branded = [...svgs].filter((svg) =>
       (svg as SVGElement).style.getPropertyValue("--icon-l")
     );
-    expect(branded).toHaveLength(svgs.length - 2);
+    expect(branded).toHaveLength(svgs.length - 1);
     for (const svg of branded) {
       expect((svg as SVGElement).style.getPropertyValue("--icon-l")).toMatch(/^#[0-9a-f]{6}$/);
       expect((svg as SVGElement).style.getPropertyValue("--icon-d")).toMatch(/^#[0-9a-f]{6}$/);

@@ -7,8 +7,8 @@ describe("skillIcons", () => {
     expect(getSkillIcon("terraform")).toBeTruthy();
   });
 
-  test("resolves the newly added Java, Kiro and Langflow marks", () => {
-    for (const slug of ["java", "kiro", "langflow"]) {
+  test("resolves the newly added Java, Kiro, Codex, Hermes Agent, Azure and Langflow marks", () => {
+    for (const slug of ["java", "kiro", "codex", "hermes", "azure", "langflow"]) {
       const icon = getSkillIcon(slug);
       expect(icon, slug).toBeTruthy();
       expect(icon?.path.length, slug).toBeGreaterThan(100);
@@ -23,13 +23,14 @@ describe("skillIcons", () => {
       "css",
       "vite",
       "sentry",
-      "newrelic",
-      "termius",
       "datadog",
       "digitalocean",
       "scikitlearn",
       "numpy",
       "pandas",
+      "claudecode",
+      "androidstudio",
+      "modelcontextprotocol",
     ]) {
       const icon = getSkillIcon(slug);
       expect(icon, slug).toBeTruthy();
@@ -47,6 +48,16 @@ describe("skillIcons", () => {
     }
     // the Kiro ghost has two eyes cut out of it
     expect(getSkillIcon("kiro")?.fillRule).toBe("evenodd");
+    // so does the Codex blossom, which has no view box of its own: it sits on the default 24 unit grid
+    expect(getSkillIcon("codex")?.fillRule).toBe("evenodd");
+    expect(getSkillIcon("codex")?.viewBox).toBeUndefined();
+    // the Hermes Agent mark is drawn on the same default grid, with its shapes merged into one even-odd path
+    expect(getSkillIcon("hermes")?.fillRule).toBe("evenodd");
+    expect(getSkillIcon("hermes")?.viewBox).toBeUndefined();
+    // Azure is the 16 unit Codicons glyph, in Azure blue
+    expect(getSkillIcon("azure")?.viewBox).toBe("0 0 16 16");
+    expect(getSkillIcon("azure")?.fillRule).toBe("evenodd");
+    expect(getSkillIcon("azure")?.hex).toBe("0078D4");
     // the Simple Icons marks keep the default 24 unit grid
     expect(getSkillIcon("langflow")?.viewBox).toBeUndefined();
   });
@@ -68,6 +79,9 @@ describe("skillIcons", () => {
       "v0",
       "netlify",
       "cloudflare",
+      "anthropic",
+      "newrelic",
+      "termius",
     ]) {
       expect(getSkillIcon(slug), slug).toBeUndefined();
     }

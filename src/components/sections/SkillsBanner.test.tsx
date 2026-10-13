@@ -1,7 +1,8 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, test, vi } from "vitest";
-import { skillCategories } from "@/lib/content";
+import { featuredSkillIcons, skillCategories } from "@/lib/content";
 import { SkillsBanner } from "./SkillsBanner";
 
 function expectedLogoCount() {
@@ -12,17 +13,42 @@ function expectedLogoCount() {
   return expected.size;
 }
 
+function contentOrderWithoutFeatured() {
+  return [
+    ...new Set(skillCategories.flatMap((c) => c.skills.map((s) => s.icon))),
+  ].filter((id) => !featuredSkillIcons.includes(id));
+}
+
 describe("Skills banner", () => {
+  test("the server HTML is the same every time: the main cloud skills first, then the rest in content order", () => {
+    const html = renderToStaticMarkup(<SkillsBanner />);
+    const ids = [...html.matchAll(/data-skill="([^"]+)"/g)].map((m) => m[1]);
+    expect(ids).toEqual([...featuredSkillIcons, ...contentOrderWithoutFeatured()]);
+  });
+
+  test("after mount the main cloud skills still lead and the rest are shuffled", () => {
+    vi.spyOn(Math, "random").mockReturnValue(0);
+    render(<SkillsBanner />);
+    const ids = [...document.querySelectorAll("[data-preview-logo]")].map((li) =>
+      li.getAttribute("data-skill")
+    );
+    expect(ids.slice(0, featuredSkillIcons.length)).toEqual(featuredSkillIcons);
+    const rest = ids.slice(featuredSkillIcons.length) as string[];
+    expect(rest).not.toEqual(contentOrderWithoutFeatured());
+    expect([...rest].sort()).toEqual([...contentOrderWithoutFeatured()].sort());
+    vi.restoreAllMocks();
+  });
+
   test("preview logos use the shared per-theme brand fill, never a dark-mode invert", () => {
     render(<SkillsBanner />);
     const svgs = document.querySelectorAll("[data-preview-logo] svg");
     expect(svgs).toHaveLength(expectedLogoCount());
     expect(document.querySelectorAll("svg.dark\\:invert")).toHaveLength(0);
-    // aws and azure come from react-icons and follow the text colour; the rest carry the variables
+    // aws comes from react-icons and follows the text colour; the rest carry the variables
     const withFills = [...svgs].filter((s) =>
       (s as SVGElement).style.getPropertyValue("--icon-l")
     );
-    expect(withFills.length).toBeGreaterThanOrEqual(svgs.length - 2);
+    expect(withFills).toHaveLength(svgs.length - 1);
   });
 
   test("preview logos start hidden and pop in from a point by default", () => {
