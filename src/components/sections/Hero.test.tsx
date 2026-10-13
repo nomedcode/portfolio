@@ -11,6 +11,16 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 import { profile } from "@/lib/content";
 import { Hero } from "./Hero";
 
+const css = readFileSync(
+  path.resolve(__dirname, "../../app/globals.css"),
+  "utf8"
+);
+
+// The role line holds each role for 1500 ms, then spends 400 ms leaving before the next one is put in place.
+const HOLD = 1500;
+const EXIT = 400;
+const STEP = HOLD + EXIT;
+
 function rotatingRole(name: string) {
   return screen.getByText(name, { selector: "[data-hero-role-text]" });
 }
@@ -33,15 +43,18 @@ function follows(before: Element, after: Element) {
   ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
 }
 
-function enterOffset(el: Element | null) {
-  const style = el?.getAttribute("style") ?? "";
-  const match = style.match(/translateY\(([-\d.]+)px\)/);
-  return match ? Number(match[1]) : null;
+function useFakeClock() {
+  vi.useFakeTimers({
+    toFake: ["setInterval", "clearInterval", "setTimeout", "clearTimeout"],
+  });
 }
 
-function enteredFromBelow(el: Element | null) {
-  const offset = enterOffset(el);
-  return offset === null || offset > 0;
+function preferReducedMotion() {
+  const originalMatchMedia = window.matchMedia;
+  vi.spyOn(window, "matchMedia").mockImplementation((query) => ({
+    ...originalMatchMedia(query),
+    matches: query === "(prefers-reduced-motion: reduce)",
+  }));
 }
 
 afterEach(() => {
@@ -51,7 +64,7 @@ afterEach(() => {
 });
 
 describe("Hero", () => {
-  test("introduces the full name with one rotating role paragraph", () => {
+  test("introduces the full name with one role line and no scroll cue", () => {
     render(<Hero />);
     expect(
       screen.getByRole("heading", {
@@ -66,61 +79,132 @@ describe("Hero", () => {
     expect(document.querySelector("p[data-hero-role]")).not.toHaveAttribute(
       "aria-live"
     );
+    expect(screen.getByText(profile.about)).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: "Learn more" })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: "Learn more" }).querySelector(
-        "svg.lucide-arrow-down"
-      )
-    ).toBeInTheDocument();
-    expect(screen.queryByText("LEARN MORE", { selector: "p" })).not.toBeInTheDocument();
+      screen.queryByRole("button", { name: "Learn more" })
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/learn more/i)).not.toBeInTheDocument();
     expect(screen.queryByText("Scroll", { exact: true })).not.toBeInTheDocument();
     expect(
       screen.queryByRole("button", { name: /role rotation/ })
     ).not.toBeInTheDocument();
-    expect(screen.queryByText("Future", { exact: true })).not.toBeInTheDocument();
     expect(
       screen.queryByText("Bandung, Indonesia", { exact: true })
     ).not.toBeInTheDocument();
   });
 
-  test("grows past the viewport on short screens and reserves room for its controls", () => {
+  test("offers two real destinations: the projects first, then contact", () => {
+    render(<Hero />);
+    const actions = document.querySelector("[data-hero-actions]") as HTMLElement;
+    expect(actions).not.toBeNull();
+    const links = within(actions).getAllByRole("link");
+    expect(links.map((a) => a.textContent)).toEqual(["View projects", "Contact"]);
+    expect(links[0]).toHaveAttribute("href", "#projects");
+    expect(links[1]).toHaveAttribute("href", "#contact");
+    expect(within(actions).queryAllByRole("button")).toHaveLength(0);
+    follows(screen.getByText(profile.about), actions);
+  });
+
+  test("the primary action is the one Signal Blue pill, the secondary is an outline pill", () => {
+    render(<Hero />);
+    const primary = screen.getByRole("link", { name: "View projects" });
+    const secondary = screen.getByRole("link", { name: "Contact" });
+    expect(primary).toHaveClass("bg-accent", "text-white", "rounded-full", "press");
+    expect(secondary).toHaveClass("border", "rounded-full", "press", "text-white");
+    expect(secondary).not.toHaveClass("bg-accent");
+  });
+
+  test("both actions have a touch target of at least 44px", () => {
+    render(<Hero />);
+    for (const name of ["View projects", "Contact"]) {
+      // py-3 (24px) around a 24px line is 48px
+      expect(screen.getByRole("link", { name })).toHaveClass("py-3");
+    }
+  });
+
+  test("grows past the viewport on short screens", () => {
     render(<Hero />);
     const hero = screen.getByRole("region", { name: "Introduction" });
     expect(hero).toHaveClass("min-h-svh");
     expect(hero).not.toHaveClass("h-svh");
-    expect(hero.querySelector("[data-hero-content]")).toHaveClass("pb-32");
+    const content = hero.querySelector("[data-hero-content]") as HTMLElement;
+    expect(content).toHaveClass("min-h-svh");
+    expect(content).not.toHaveClass("h-svh");
   });
 
-  test("rises in on load: portrait, then headline, role and about line", () => {
+  test("sits on the page container, so its left edge lines up with the header and every section", () => {
+    render(<Hero />);
+    const content = document.querySelector("[data-hero-content]") as HTMLElement;
+    expect(content).toHaveClass("mx-auto", "max-w-6xl", "px-6");
+  });
+
+  test("splits into copy on the left and the portrait on the right from md, and stacks the portrait first below it", () => {
+    render(<Hero />);
+    const content = document.querySelector("[data-hero-content]") as HTMLElement;
+    expect(content).toHaveClass("grid");
+    expect(content.className).toMatch(/md:grid-cols-\[/);
+    const copy = document.querySelector("[data-hero-copy]") as HTMLElement;
+    const portrait = document.querySelector("[data-hero-portrait-wrap]") as HTMLElement;
+    expect(content).toContainElement(copy);
+    expect(content).toContainElement(portrait);
+    expect(copy).toContainElement(screen.getByRole("heading", { level: 1 }));
+    expect(copy).toHaveClass("text-center", "md:text-left", "items-center", "md:items-start");
+    expect(portrait).toHaveClass("max-md:order-first", "md:justify-self-end");
+    // reading order stays headline first; the order utility only moves the portrait up on small screens
+    follows(copy, portrait);
+  });
+
+  test("sets the headline at four sizes and balances its lines so the name breaks between words, not mid-name", () => {
+    render(<Hero />);
+    const h1 = screen.getByRole("heading", { level: 1 });
+    expect(h1).toHaveClass(
+      "font-semibold",
+      "tracking-display",
+      "text-balance",
+      "leading-[1.05]",
+      "text-[2.5rem]",
+      "sm:text-5xl",
+      "lg:text-6xl",
+      "xl:text-7xl"
+    );
+  });
+
+  test("rises in on load: portrait, headline, role, about line, then the actions", () => {
     render(<Hero />);
     const portrait = document.querySelector("[data-hero-portrait]") as HTMLElement;
     const heading = screen.getByRole("heading", { level: 1 });
     const roleBlock = document.querySelector("[data-hero-role]")
       ?.parentElement as HTMLElement;
     const about = screen.getByText(profile.about);
-    for (const el of [portrait, heading, roleBlock, about]) {
+    const actions = document.querySelector("[data-hero-actions]") as HTMLElement;
+    for (const el of [portrait, heading, roleBlock, about, actions]) {
       expect(el).toHaveClass("hero-rise");
     }
     expect(portrait).not.toHaveClass("[animation-delay:100ms]");
     expect(heading).toHaveClass("[animation-delay:100ms]");
     expect(roleBlock).toHaveClass("[animation-delay:200ms]");
     expect(about).toHaveClass("[animation-delay:300ms]");
+    expect(actions).toHaveClass("[animation-delay:400ms]");
   });
 
-  test("shows the photo in a round frame above the headline when one is provided", () => {
+  test("shows the photo in a round frame when one is provided, loaded first", () => {
     render(<Hero photo="/photo.png" />);
     const img = screen.getByRole("img", {
       name: "Portrait of Fa'iq Haidar Prasetya",
     });
     expect(img.getAttribute("src")).toContain("photo.png");
     expect(img).toHaveAttribute("loading", "eager");
+    expect(img).toHaveAttribute("fetchpriority", "high");
     expect(img).toHaveClass("object-cover");
     const frame = document.querySelector("[data-hero-portrait]") as HTMLElement;
     expect(frame).toContainElement(img);
     expect(frame).toHaveClass("rounded-full", "overflow-hidden");
-    follows(frame, screen.getByRole("heading", { level: 1 }));
+  });
+
+  test("the portrait is a large frame beside the copy from tablet up and a small one above it on a phone", () => {
+    render(<Hero />);
+    const frame = document.querySelector("[data-hero-portrait]") as HTMLElement;
+    expect(frame).toHaveClass("h-32", "w-32", "sm:h-40", "sm:w-40", "md:h-56", "md:w-56", "lg:h-72", "lg:w-72");
   });
 
   test("without a photo it shows a decorative initials placeholder in the same frame", () => {
@@ -132,11 +216,22 @@ describe("Hero", () => {
     expect(initials).toHaveAttribute("aria-hidden", "true");
   });
 
+  test("a soft blue bloom sits behind the portrait, decorative and outside the clipped frame", () => {
+    render(<Hero />);
+    const wrap = document.querySelector("[data-hero-portrait-wrap]") as HTMLElement;
+    const frame = document.querySelector("[data-hero-portrait]") as HTMLElement;
+    const glow = wrap.querySelector("[data-hero-glow]") as HTMLElement;
+    expect(glow).not.toBeNull();
+    expect(glow).toHaveAttribute("aria-hidden", "true");
+    expect(frame).not.toContainElement(glow);
+    follows(glow, frame);
+    // one flat radial wash, no blur filter and no box-shadow to repaint
+    expect(glow.className).toMatch(/radial-gradient/);
+    expect(glow.className).not.toMatch(/blur|shadow/);
+    expect(frame.className).not.toMatch(/shadow-\[/);
+  });
+
   test("hero-rise is a CSS animation that reduced motion switches off", () => {
-    const css = readFileSync(
-      path.resolve(__dirname, "../../app/globals.css"),
-      "utf8"
-    );
     expect(css).toMatch(/@keyframes hero-rise/);
     expect(css).toMatch(/\.hero-rise\s*\{[^}]*animation:[^;}]*hero-rise/);
     const reduced = css.match(
@@ -152,16 +247,6 @@ describe("Hero", () => {
     );
   });
 
-  test("the Learn more label is part of its button, stacked above the arrow, so one control carries one name", () => {
-    render(<Hero />);
-    const button = screen.getByRole("button", { name: "Learn more" });
-    const label = within(button).getByText("Learn more");
-    const arrow = button.querySelector("svg.lucide-arrow-down") as Element;
-    expect(label).toHaveClass("uppercase");
-    expect(button).not.toHaveAttribute("aria-label");
-    follows(label, arrow);
-  });
-
   test("the role line has no control of its own", () => {
     render(<Hero />);
     const roleBlock = document.querySelector("[data-hero-role]")
@@ -175,7 +260,7 @@ describe("Hero", () => {
     const sizer = document.querySelector(
       "[data-hero-role]"
     )?.parentElement?.querySelector("[aria-hidden='true']") as HTMLElement;
-    for (const cls of ["text-lg", "md:text-xl", "font-medium"]) {
+    for (const cls of ["text-xl", "md:text-2xl", "font-medium"]) {
       expect(visible).toHaveClass(cls);
       expect(sizer).toHaveClass(cls);
     }
@@ -189,7 +274,7 @@ describe("Hero", () => {
     expect(hero).not.toHaveAttribute("role");
   });
 
-  test("renders the rotating role below the headline and above the about line", () => {
+  test("renders the role below the headline and above the about line", () => {
     render(<Hero />);
     const role = rotatingRole("Cloud Engineer");
     const heading = screen.getByRole("heading", { level: 1 });
@@ -198,37 +283,11 @@ describe("Hero", () => {
     follows(role, about);
   });
 
-  test("brings each new role in from below on a fresh node, never overlapping the last", async () => {
-    vi.useFakeTimers({
-      toFake: [
-        "setInterval",
-        "clearInterval",
-        "setTimeout",
-        "clearTimeout",
-        "requestAnimationFrame",
-        "cancelAnimationFrame",
-      ],
-    });
+  test("the first role is on screen in the static HTML, not waiting for a script to fade it in", () => {
     render(<Hero />);
-    const first = roleNode();
-    expect(first).not.toBeNull();
-    expect(enterOffset(first)).toBe(24);
-
-    await act(async () => {
-      vi.advanceTimersByTime(3000);
-    });
-    expect(roleNode()).toBe(first);
-    expect(activeRoles()).toHaveLength(1);
-    expect(rotatingRole("Cloud Engineer")).toBeInTheDocument();
-
-    await act(async () => {
-      vi.advanceTimersByTime(450);
-    });
-    const second = roleNode();
-    expect(second).not.toBe(first);
-    expect(activeRoles()).toHaveLength(1);
-    expect(rotatingRole("DevOps Engineer")).toBeInTheDocument();
-    expect(enteredFromBelow(second)).toBe(true);
+    const style = roleNode()?.getAttribute("style") ?? "";
+    expect(style).not.toMatch(/opacity:\s*0\b/);
+    expect(style).not.toMatch(/translateY\((?!0)/);
   });
 
   test("renders one hero panel without carousel controls", () => {
@@ -237,126 +296,134 @@ describe("Hero", () => {
       screen.queryAllByRole("button", { name: /Go to slide/ })
     ).toHaveLength(0);
     expect(
-      screen.queryByRole("button", { name: "Previous slide" })
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole("button", { name: "Next slide" })
-    ).not.toBeInTheDocument();
-    expect(
       screen.getByRole("region", { name: "Introduction" })
     ).not.toHaveAttribute("aria-roledescription", "carousel");
   });
 
-  test("cycles roles while the accessible heading and the hero stay stable", async () => {
-    vi.useFakeTimers({
-      toFake: ["setInterval", "clearInterval", "setTimeout", "clearTimeout"],
-    });
-    const { container } = render(<Hero />);
-    const hero = container.querySelector("[data-hero-inner]");
-    const heading = screen.getByRole("heading", { level: 1 });
-    for (const [position, role] of [
-      "DevOps Engineer",
-      "Site Reliability Engineer",
-      "Cloud Engineer",
-    ].entries()) {
-      await act(async () => {
-        vi.advanceTimersByTime(position === 0 ? 3000 : 2550);
-      });
-      expect(activeRoles()).toHaveLength(1);
-      if (position > 0) {
-        expect(
-          rotatingRole(
-            position === 1 ? "DevOps Engineer" : "Site Reliability Engineer"
-          )
-        ).toBeInTheDocument();
-      }
-      expect(queryRotatingRole(role)).not.toBeInTheDocument();
-      await act(async () => {
-        vi.advanceTimersByTime(450);
-      });
-      expect(rotatingRole(role)).toBeInTheDocument();
-      expect(
-        screen.getByRole("heading", {
-          name: "Hi, I'm Fa'iq Haidar Prasetya",
-        })
-      ).toBe(heading);
-      expect(hero?.contains(heading)).toBe(true);
-    }
-  });
-
-  test("finishes the outgoing role before entering the next role", async () => {
-    vi.useFakeTimers({
-      toFake: ["setInterval", "clearInterval", "setTimeout", "clearTimeout"],
-    });
+  test("goes through every role once, finishing each exit before the next arrives", async () => {
+    useFakeClock();
     render(<Hero />);
+    const first = roleNode();
 
     await act(async () => {
-      vi.advanceTimersByTime(3000);
+      vi.advanceTimersByTime(HOLD);
     });
-
+    expect(roleNode()).toBe(first);
     expect(activeRoles()).toHaveLength(1);
     expect(rotatingRole("Cloud Engineer")).toBeInTheDocument();
 
     await act(async () => {
-      vi.advanceTimersByTime(449);
+      vi.advanceTimersByTime(EXIT - 1);
     });
-    expect(activeRoles()).toHaveLength(1);
     expect(rotatingRole("Cloud Engineer")).toBeInTheDocument();
 
     await act(async () => {
       vi.advanceTimersByTime(1);
     });
+    expect(roleNode()).not.toBe(first);
     expect(activeRoles()).toHaveLength(1);
     expect(rotatingRole("DevOps Engineer")).toBeInTheDocument();
-  });
 
-  test("clears its role rotation interval on unmount without errors", () => {
-    vi.useFakeTimers({
-      toFake: ["setInterval", "clearInterval", "setTimeout", "clearTimeout"],
-    });
-    const { unmount } = render(<Hero />);
-    expect(() => unmount()).not.toThrow();
-  });
-
-  test("keeps the first role static for reduced motion", async () => {
-    vi.useFakeTimers({
-      toFake: ["setInterval", "clearInterval", "setTimeout", "clearTimeout"],
-    });
-    const originalMatchMedia = window.matchMedia;
-    vi.spyOn(window, "matchMedia").mockImplementation((query) => ({
-      ...originalMatchMedia(query),
-      matches: query === "(prefers-reduced-motion: reduce)",
-    }));
-    render(<Hero />);
-    expect(
-      screen.queryByRole("button", { name: /role rotation/ })
-    ).not.toBeInTheDocument();
     await act(async () => {
-      vi.advanceTimersByTime(9000);
+      vi.advanceTimersByTime(STEP);
+    });
+    expect(rotatingRole("Site Reliability Engineer")).toBeInTheDocument();
+    expect(queryRotatingRole("DevOps Engineer")).not.toBeInTheDocument();
+  });
+
+  test("comes back to the first role and then stays put, so nothing moves on its own for more than five seconds", async () => {
+    useFakeClock();
+    render(<Hero />);
+    const heading = screen.getByRole("heading", { level: 1 });
+
+    for (let i = 0; i < 3; i++) {
+      await act(async () => {
+        vi.advanceTimersByTime(STEP);
+      });
+    }
+    expect(rotatingRole("Cloud Engineer")).toBeInTheDocument();
+    const settled = roleNode();
+
+    await act(async () => {
+      vi.advanceTimersByTime(60_000);
+    });
+    expect(roleNode()).toBe(settled);
+    expect(rotatingRole("Cloud Engineer")).toBeInTheDocument();
+    expect(activeRoles()).toHaveLength(1);
+    expect(
+      screen.getByRole("heading", { name: "Hi, I'm Fa'iq Haidar Prasetya" })
+    ).toBe(heading);
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  test("clears its timers on unmount without errors", () => {
+    useFakeClock();
+    const { unmount } = render(<Hero />);
+    expect(vi.getTimerCount()).toBeGreaterThan(0);
+    expect(() => unmount()).not.toThrow();
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  test("keeps the first role static for reduced motion, with no timers at all", async () => {
+    useFakeClock();
+    preferReducedMotion();
+    render(<Hero />);
+    expect(vi.getTimerCount()).toBe(0);
+    await act(async () => {
+      vi.advanceTimersByTime(30_000);
     });
     expect(rotatingRole("Cloud Engineer")).toBeInTheDocument();
-    expect(
-      screen.queryByText("DevOps Engineer", { selector: "[data-hero-role-text]" })
-    ).not.toBeInTheDocument();
+    expect(queryRotatingRole("DevOps Engineer")).not.toBeInTheDocument();
   });
 
-  test("does not advance while the tab is hidden and resumes without skipping roles", async () => {
-    vi.useFakeTimers({
-      toFake: ["setInterval", "clearInterval", "setTimeout", "clearTimeout"],
-    });
+  test("holds still while the tab is hidden, then starts its pass when the tab is shown", async () => {
+    useFakeClock();
     const hidden = vi.spyOn(document, "hidden", "get").mockReturnValue(true);
     render(<Hero />);
+    expect(vi.getTimerCount()).toBe(0);
     await act(async () => {
-      vi.advanceTimersByTime(9000);
+      vi.advanceTimersByTime(STEP * 5);
     });
     expect(rotatingRole("Cloud Engineer")).toBeInTheDocument();
-    expect(
-      screen.queryByText("DevOps Engineer", { selector: "[data-hero-role-text]" })
-    ).not.toBeInTheDocument();
+    expect(queryRotatingRole("DevOps Engineer")).not.toBeInTheDocument();
+
     hidden.mockReturnValue(false);
     await act(async () => {
-      vi.advanceTimersByTime(3450);
+      document.dispatchEvent(new Event("visibilitychange"));
+    });
+    await act(async () => {
+      vi.advanceTimersByTime(HOLD - 1);
+    });
+    expect(rotatingRole("Cloud Engineer")).toBeInTheDocument();
+    await act(async () => {
+      vi.advanceTimersByTime(1 + EXIT);
     });
     expect(rotatingRole("DevOps Engineer")).toBeInTheDocument();
+  });
+
+  test("pauses the countdown when the tab is hidden mid-hold, and gives the role a full hold again on return", async () => {
+    useFakeClock();
+    const hidden = vi.spyOn(document, "hidden", "get").mockReturnValue(false);
+    render(<Hero />);
+    await act(async () => {
+      vi.advanceTimersByTime(HOLD - 100);
+    });
+    hidden.mockReturnValue(true);
+    await act(async () => {
+      document.dispatchEvent(new Event("visibilitychange"));
+    });
+    await act(async () => {
+      vi.advanceTimersByTime(HOLD * 4);
+    });
+    expect(rotatingRole("Cloud Engineer")).toBeInTheDocument();
+
+    hidden.mockReturnValue(false);
+    await act(async () => {
+      document.dispatchEvent(new Event("visibilitychange"));
+    });
+    await act(async () => {
+      vi.advanceTimersByTime(HOLD - 1);
+    });
+    expect(rotatingRole("Cloud Engineer")).toBeInTheDocument();
   });
 });

@@ -1,14 +1,17 @@
 "use client";
 
 import { m, useScroll, useTransform } from "framer-motion";
-import { ArrowDown } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { profile } from "@/lib/content";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
-const ROLE_MS = 3000;
-const ROLE_TRANSITION_MS = 450;
+// The role line makes one pass through every role and comes back to the first, then stays put. Anything that moves
+// by itself for more than five seconds needs a way to stop it (WCAG 2.2.2); this whole pass moves for about 4.6.
+const ROLE_HOLD_MS = 1500;
+const ROLE_EXIT_MS = 400;
+const ROLE_ENTER_S = 0.45;
+const ROLE_EASE = [0.16, 1, 0.3, 1] as const;
 
 // First and last word, e.g. "Fa'iq Haidar Prasetya" -> "FP".
 function initialsOf(fullName: string) {
@@ -17,157 +20,172 @@ function initialsOf(fullName: string) {
 }
 
 export function Hero({ photo }: { photo?: string }) {
-  const [index, setIndex] = useState(0);
+  const [step, setStep] = useState(0);
   const [isRoleExiting, setIsRoleExiting] = useState(false);
   const reduce = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
-  const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const transitionActiveRef = useRef(false);
   const count = profile.roles.length;
-  const activeRole = profile.roles[reduce ? 0 : index];
+  const activeRole = profile.roles[reduce ? 0 : step % count];
+  const leaving = isRoleExiting && !reduce;
 
   useEffect(() => {
-    if (reduce) return;
+    if (reduce || step >= count) return;
 
-    const advanceRole = () => {
-      if (document.hidden || transitionActiveRef.current) return;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let phase: "hold" | "exit" = "hold";
 
-      transitionActiveRef.current = true;
-      setIsRoleExiting(true);
-      transitionTimeoutRef.current = setTimeout(() => {
-        setIndex((i) => (i + 1) % count);
-        setIsRoleExiting(false);
-        transitionActiveRef.current = false;
-        transitionTimeoutRef.current = null;
-      }, ROLE_TRANSITION_MS);
+    const arm = () => {
+      timer = setTimeout(() => {
+        phase = "exit";
+        setIsRoleExiting(true);
+        timer = setTimeout(() => {
+          setStep((s) => s + 1);
+          setIsRoleExiting(false);
+        }, ROLE_EXIT_MS);
+      }, ROLE_HOLD_MS);
     };
 
-    const t = setInterval(advanceRole, ROLE_MS);
+    // A hidden tab stops the countdown; coming back gives the role a full hold again.
+    const onVisibility = () => {
+      if (phase !== "hold") return;
+      clearTimeout(timer);
+      if (!document.hidden) arm();
+    };
+
+    if (!document.hidden) arm();
+    document.addEventListener("visibilitychange", onVisibility);
     return () => {
-      clearInterval(t);
-      if (transitionTimeoutRef.current) {
-        clearTimeout(transitionTimeoutRef.current);
-        transitionTimeoutRef.current = null;
-      }
-      transitionActiveRef.current = false;
-      setIsRoleExiting(false);
+      clearTimeout(timer);
+      document.removeEventListener("visibilitychange", onVisibility);
     };
-  }, [count, reduce]);
+  }, [step, count, reduce]);
 
-  const scrollToProjects = () => {
-    document.getElementById("projects")?.scrollIntoView({
-      behavior: reduce ? "auto" : "smooth",
-      block: "start",
-    });
-  };
-
+  // The hero recedes as the next section arrives: the copy settles and fades, the portrait lags behind a little.
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end start"],
   });
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.12]);
-  const opacity = useTransform(scrollYProgress, [0, 1], [1, 0.4]);
+  const copyY = useTransform(scrollYProgress, [0, 1], [0, 48]);
+  const copyOpacity = useTransform(scrollYProgress, [0, 0.85], [1, 0.2]);
+  const portraitY = useTransform(scrollYProgress, [0, 1], [0, 96]);
+  const portraitScale = useTransform(scrollYProgress, [0, 1], [1, 0.92]);
 
   return (
     <section
       ref={sectionRef}
-      id="top"
+      id="top"
       aria-label="Introduction"
       className="relative min-h-svh overflow-hidden bg-deep text-white [--c-ring:#2997ff]"
     >
-      <m.div
-        data-hero-inner
-        className="relative min-h-svh"
-        style={reduce ? undefined : { scale, opacity }}
+      <div
+        className="absolute inset-0"
+        style={{ background: profile.heroBackground }}
+        aria-hidden
+      />
+      <div
+        data-hero-content
+        className="relative mx-auto grid min-h-svh max-w-6xl content-center items-center gap-10 px-6 pb-16 pt-24 md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] md:gap-12 lg:gap-16"
       >
-        <div
-          className="absolute inset-0"
-          style={{ background: profile.heroBackground }}
-          aria-hidden
-        />
-        <div
-          data-hero-content
-          className="relative flex min-h-svh flex-col items-center justify-center gap-6 px-6 pb-32 pt-20 text-center"
+        <m.div
+          data-hero-copy
+          className="flex flex-col items-center gap-6 text-center md:items-start md:text-left"
+          style={reduce ? undefined : { y: copyY, opacity: copyOpacity }}
         >
-          <div className="relative flex w-full flex-col items-center gap-6">
-            {/* ponytail: the frame is a build-time choice (page.tsx checks public/photo.png); a photo that 404s at runtime would show a broken image instead of the initials. */}
+          <h1 className="hero-rise w-full text-balance text-[2.5rem] font-semibold leading-[1.05] tracking-display [animation-delay:100ms] sm:text-5xl lg:text-6xl xl:text-7xl">
+            Hi, I&apos;m {profile.fullName}
+          </h1>
+          <div className="hero-rise grid w-fit max-w-full [animation-delay:200ms]">
+            {/* All roles share one grid cell: the widest sets the width and one line sets the height, so the block never jumps as roles change. */}
             <div
-              data-hero-portrait
-              className="hero-rise relative h-28 w-28 shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-white/20 to-white/5 ring-1 ring-white/20 shadow-[0_0_64px_-16px_rgba(41,151,255,0.55)] md:h-36 md:w-36"
+              aria-hidden="true"
+              className="invisible col-start-1 row-start-1 grid text-xl font-medium md:text-2xl"
             >
-              {photo ? (
-                <Image
-                  src={photo}
-                  alt={`Portrait of ${profile.fullName}`}
-                  width={320}
-                  height={320}
-                  loading="eager"
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <span
-                  aria-hidden="true"
-                  className="flex h-full w-full items-center justify-center text-3xl font-semibold tracking-title text-white/60 md:text-4xl"
-                >
-                  {initialsOf(profile.fullName)}
+              {profile.roles.map((role) => (
+                <span key={role} className="col-start-1 row-start-1">
+                  {role}
                 </span>
-              )}
+              ))}
             </div>
-            <h1
-              className="hero-rise w-full max-w-5xl text-5xl font-semibold leading-[1.05] tracking-display [animation-delay:100ms] md:text-7xl"
+            <p
+              data-hero-role
+              className="col-start-1 row-start-1 self-center text-xl font-medium text-white/80 md:text-2xl"
             >
-              Hi, I&apos;m {profile.fullName}
-            </h1>
-            <div className="hero-rise grid w-fit max-w-full [animation-delay:200ms]">
-              {/* All roles share one grid cell: the widest sets the width and one line sets the height, so the block never jumps as roles change. */}
-              <div
-                aria-hidden="true"
-                className="invisible col-start-1 row-start-1 grid text-lg font-medium md:text-xl"
+              <m.span
+                key={activeRole}
+                data-hero-role-text
+                className="inline-block"
+                // The first role is part of the static HTML, so it never waits for a script to fade it in.
+                initial={step === 0 ? false : { opacity: 0, y: 12 }}
+                animate={
+                  leaving ? { opacity: 0, y: -12 } : { opacity: 1, y: 0 }
+                }
+                transition={{
+                  duration: leaving ? ROLE_EXIT_MS / 1000 : ROLE_ENTER_S,
+                  ease: ROLE_EASE,
+                }}
               >
-                {profile.roles.map((role) => (
-                  <span key={role} className="col-start-1 row-start-1">
-                    {role}
-                  </span>
-                ))}
-              </div>
-              <p
-                data-hero-role
-                className="col-start-1 row-start-1 self-center text-lg font-medium text-white/70 md:text-xl"
-              >
-                <m.span
-                  key={activeRole}
-                  data-hero-role-text
-                  className="inline-block"
-                  initial={reduce ? false : { opacity: 0, y: 24 }}
-                  animate={
-                    isRoleExiting
-                      ? { opacity: 0, y: -24 }
-                      : { opacity: 1, y: 0 }
-                  }
-                  transition={{
-                    duration: ROLE_TRANSITION_MS / 1000,
-                    ease: "easeOut",
-                  }}
-                >
-                  {activeRole}
-                </m.span>
-              </p>
-            </div>
-            <p className="hero-rise w-full max-w-2xl text-base text-white/60 [animation-delay:300ms] md:text-lg">
-              {profile.about}
+                {activeRole}
+              </m.span>
             </p>
           </div>
-        </div>
-      </m.div>
+          <p className="hero-rise max-w-[34rem] text-pretty text-base text-white/65 [animation-delay:300ms] md:text-lg">
+            {profile.about}
+          </p>
+          <div
+            data-hero-actions
+            className="hero-rise flex flex-wrap items-center justify-center gap-3 pt-2 [animation-delay:400ms] md:justify-start"
+          >
+            <a
+              href="#projects"
+              className="press inline-flex items-center rounded-full bg-accent px-7 py-3 font-medium text-white hover:brightness-110"
+            >
+              View projects
+            </a>
+            <a
+              href="#contact"
+              className="press inline-flex items-center rounded-full border border-white/40 px-6 py-3 font-medium text-white hover:bg-white/10"
+            >
+              Contact
+            </a>
+          </div>
+        </m.div>
 
-      <button
-        type="button"
-        onClick={scrollToProjects}
-        className="press hit-area absolute bottom-8 left-1/2 -translate-x-1/2 flex-col gap-2 rounded-2xl px-4 py-2 text-white/70 hover:bg-white/10 hover:text-white"
-      >
-        <span className="text-xs uppercase tracking-widest">Learn more</span>
-        <ArrowDown className="h-5 w-5" aria-hidden />
-      </button>
+        <m.div
+          data-hero-portrait-wrap
+          className="relative flex items-center justify-center max-md:order-first md:justify-self-end"
+          style={reduce ? undefined : { y: portraitY, scale: portraitScale }}
+        >
+          <div
+            data-hero-glow
+            aria-hidden="true"
+            className="hero-rise pointer-events-none absolute -inset-10 rounded-full bg-[radial-gradient(closest-side,rgba(41,151,255,0.32),transparent)] md:-inset-16 lg:-inset-24"
+          />
+          {/* ponytail: the frame is a build-time choice (page.tsx checks public/photo.png); a photo that 404s at runtime would show a broken image instead of the initials. */}
+          <div
+            data-hero-portrait
+            className="hero-rise relative h-32 w-32 shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-white/20 to-white/5 ring-1 ring-white/20 sm:h-40 sm:w-40 md:h-56 md:w-56 lg:h-72 lg:w-72"
+          >
+            {photo ? (
+              <Image
+                src={photo}
+                alt={`Portrait of ${profile.fullName}`}
+                width={400}
+                height={400}
+                loading="eager"
+                fetchPriority="high"
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <span
+                aria-hidden="true"
+                className="flex h-full w-full items-center justify-center text-4xl font-semibold tracking-display text-white/60 lg:text-6xl"
+              >
+                {initialsOf(profile.fullName)}
+              </span>
+            )}
+          </div>
+        </m.div>
+      </div>
     </section>
   );
 }
