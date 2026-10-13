@@ -96,7 +96,12 @@ describe("TechStackDialog motion", () => {
       skillCategories.reduce((n, c) => n + c.skills.length, 0)
     );
     expect(dialog.querySelectorAll("svg.dark\\:invert")).toHaveLength(0);
-    for (const svg of svgs) {
+    // AWS and Azure come from react-icons and follow the text colour; every other logo carries the two fills
+    const branded = [...svgs].filter((svg) =>
+      (svg as SVGElement).style.getPropertyValue("--icon-l")
+    );
+    expect(branded).toHaveLength(svgs.length - 2);
+    for (const svg of branded) {
       expect((svg as SVGElement).style.getPropertyValue("--icon-l")).toMatch(/^#[0-9a-f]{6}$/);
       expect((svg as SVGElement).style.getPropertyValue("--icon-d")).toMatch(/^#[0-9a-f]{6}$/);
     }

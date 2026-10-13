@@ -16,6 +16,28 @@ describe("skillIcons", () => {
     }
   });
 
+  test("resolves the Simple Icons marks added for Laravel, the web languages, Vite, observability and data science", () => {
+    for (const slug of [
+      "laravel",
+      "html5",
+      "css",
+      "vite",
+      "sentry",
+      "newrelic",
+      "termius",
+      "datadog",
+      "digitalocean",
+      "scikitlearn",
+      "numpy",
+      "pandas",
+    ]) {
+      const icon = getSkillIcon(slug);
+      expect(icon, slug).toBeTruthy();
+      expect(icon?.path.length, slug).toBeGreaterThan(100);
+      expect(icon?.hex, slug).toMatch(/^[0-9A-Fa-f]{6}$/);
+    }
+  });
+
   test("Java and Kiro come with their own square view box, because no installed icon set carries them", () => {
     for (const slug of ["java", "kiro"]) {
       const box = getSkillIcon(slug)?.viewBox?.split(" ").map(Number) as number[];
@@ -44,6 +66,8 @@ describe("skillIcons", () => {
       "langchain",
       "googlegemini",
       "v0",
+      "netlify",
+      "cloudflare",
     ]) {
       expect(getSkillIcon(slug), slug).toBeUndefined();
     }

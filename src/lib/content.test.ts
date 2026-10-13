@@ -2,7 +2,6 @@ import { describe, expect, test } from "vitest";
 import { getSkillIcon } from "./skillIcons";
 import {
   awards,
-  cloudSkills,
   credlyBadge,
   education,
   profile,
@@ -37,17 +36,6 @@ describe("profile", () => {
   });
 });
 
-describe("cloud skills banner", () => {
-  test("shows the four cloud tiles", () => {
-    expect(cloudSkills.map((c) => c.name)).toEqual([
-      "AWS",
-      "Google Cloud",
-      "Azure",
-      "Terraform",
-    ]);
-  });
-});
-
 describe("skills", () => {
   test("renders the eight tech-stack categories", () => {
     expect(skillCategories.map((c) => c.name)).toEqual([
@@ -66,8 +54,23 @@ describe("skills", () => {
       skillCategories.map((c) => [c.name, c.skills.map((s) => s.name)])
     );
     expect(byCategory).toEqual({
-      Languages: ["TypeScript", "JavaScript", "Python", "C++", "Java"],
-      "Frontend Web": ["React", "Next.js", "Tailwind CSS", "Motion", "GSAP"],
+      Languages: [
+        "TypeScript",
+        "JavaScript",
+        "Python",
+        "C++",
+        "Java",
+        "HTML",
+        "CSS",
+      ],
+      "Frontend Web": [
+        "React",
+        "Next.js",
+        "Vite",
+        "Tailwind CSS",
+        "Motion",
+        "GSAP",
+      ],
       "Mobile & Android": ["Kotlin", "Jetpack Compose", "Flutter"],
       "Backend & Edge": ["Node.js", "Bun", "Laravel"],
       "Databases & Storage": [
@@ -81,27 +84,45 @@ describe("skills", () => {
       "AI & Machine Learning": [
         "TensorFlow",
         "PyTorch",
+        "scikit-learn",
+        "NumPy",
+        "Pandas",
         "Hugging Face",
         "Ollama",
         "Langflow",
       ],
       "AI Tools & Builders": ["GitHub Copilot", "Claude", "Cursor", "Figma", "Kiro"],
       "Cloud & Infra": [
+        "AWS",
         "Google Cloud",
+        "Azure",
+        "Terraform",
         "Docker",
         "Kubernetes",
         "GitHub Actions",
         "Vercel",
-        "Netlify",
-        "Cloudflare",
+        "DigitalOcean",
+        "Sentry",
+        "Datadog",
+        "New Relic",
+        "Termius",
       ],
     });
   });
 
+  test("lists no skill twice, so the banner preview and the popup show the same set", () => {
+    const skills = skillCategories.flatMap((c) => c.skills);
+    expect(new Set(skills.map((s) => s.name)).size).toBe(skills.length);
+    expect(new Set(skills.map((s) => s.icon)).size).toBe(skills.length);
+  });
+
   test("every skill has a name and a resolvable brand icon", () => {
+    // AWS and Azure are drawn from react-icons by SkillMark and follow the text colour; every other slug is a brand mark
+    const drawnByComponent = ["aws", "azure"];
     for (const c of skillCategories) {
       for (const s of c.skills) {
         expect(s.name).toBeTruthy();
+        if (drawnByComponent.includes(s.icon)) continue;
         expect(getSkillIcon(s.icon)).toBeTruthy();
       }
     }

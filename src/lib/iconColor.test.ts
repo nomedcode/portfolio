@@ -1,15 +1,12 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, test } from "vitest";
-import { cloudSkills, skillCategories } from "./content";
+import { skillCategories } from "./content";
 import { contrastRatio, FOREGROUND, iconFills, isYellow, SURFACES } from "./iconColor";
 import { getSkillIcon } from "./skillIcons";
 
 const usedIcons = [
-  ...new Set([
-    ...cloudSkills.map((c) => c.id),
-    ...skillCategories.flatMap((c) => c.skills.map((s) => s.icon)),
-  ]),
+  ...new Set(skillCategories.flatMap((c) => c.skills.map((s) => s.icon))),
 ]
   .map((slug) => ({ slug, icon: getSkillIcon(slug) }))
   .filter((x): x is { slug: string; icon: NonNullable<typeof x.icon> } =>
@@ -42,13 +39,10 @@ describe("contrastRatio", () => {
 
 describe("iconFills", () => {
   test("covers every icon the page uses (sanity check on the fixture)", () => {
-    // AWS and Azure are drawn from react-icons in the banner and follow the text colour; every other slug is a brand mark
+    // AWS and Azure are drawn from react-icons by SkillMark and follow the text colour; every other slug is a brand mark
     const drawnElsewhere = ["aws", "azure"];
     const slugs = [
-      ...new Set([
-        ...cloudSkills.map((c) => c.id),
-        ...skillCategories.flatMap((c) => c.skills.map((s) => s.icon)),
-      ]),
+      ...new Set(skillCategories.flatMap((c) => c.skills.map((s) => s.icon))),
     ].filter((slug) => !drawnElsewhere.includes(slug));
     expect(usedIcons.map((x) => x.slug).sort()).toEqual(slugs.sort());
     expect(usedIcons.length).toBeGreaterThanOrEqual(30);

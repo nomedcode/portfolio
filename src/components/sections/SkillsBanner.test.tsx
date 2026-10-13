@@ -1,12 +1,11 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, test, vi } from "vitest";
-import { cloudSkills, skillCategories } from "@/lib/content";
+import { skillCategories } from "@/lib/content";
 import { SkillsBanner } from "./SkillsBanner";
 
 function expectedLogoCount() {
   const expected = new Set<string>();
-  for (const c of cloudSkills) expected.add(c.id);
   for (const cat of skillCategories) {
     for (const s of cat.skills) expected.add(s.icon);
   }
@@ -117,6 +116,20 @@ describe("Skills banner", () => {
     expect(dialog.querySelector(".overflow-y-auto")).toHaveClass(
       "overscroll-contain"
     );
+  });
+
+  test("the popup lists exactly the skills the banner previews, each with its logo", async () => {
+    const user = userEvent.setup();
+    render(<SkillsBanner />);
+    const previewCount = document.querySelectorAll("[data-preview-logo]").length;
+    await user.click(screen.getByRole("button", { name: "View all skills" }));
+    const dialog = await screen.findByRole("dialog");
+    const chips = [...dialog.querySelectorAll("[data-skill-chip]")];
+    expect(chips).toHaveLength(previewCount);
+    expect(chips.every((chip) => chip.querySelector("svg"))).toBe(true);
+    for (const name of ["AWS", "Azure", "Terraform"]) {
+      expect(within(dialog).getByText(name)).toBeInTheDocument();
+    }
   });
 
   test("dialog has no eyebrow and no category description paragraphs", async () => {

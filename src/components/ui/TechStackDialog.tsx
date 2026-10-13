@@ -4,9 +4,8 @@ import { m, type Variants } from "framer-motion";
 import { X } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { skillCategories } from "@/lib/content";
-import { getSkillIcon } from "@/lib/skillIcons";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import { BrandIcon } from "./BrandIcon";
+import { SkillMark } from "./SkillMark";
 
 const listVariants: Variants = {
   hidden: {},
@@ -155,20 +154,17 @@ export function TechStackDialog({
                   aria-label={`${cat.name} skills`}
                   className="flex flex-wrap gap-2"
                 >
-                  {cat.skills.map((s) => {
-                    const icon = getSkillIcon(s.icon);
-                    return (
-                      <m.li
-                        key={s.name}
-                        variants={chipVariants}
-                        data-skill-chip
-                        className="flex items-center gap-2 rounded-full border border-line px-3.5 py-1.5 text-sm"
-                      >
-                        {icon && <BrandIcon icon={icon} className="h-4 w-4" />}
-                        {s.name}
-                      </m.li>
-                    );
-                  })}
+                  {cat.skills.map((s) => (
+                    <m.li
+                      key={s.name}
+                      variants={chipVariants}
+                      data-skill-chip
+                      className="flex items-center gap-2 rounded-full border border-line px-3.5 py-1.5 text-sm"
+                    >
+                      <SkillMark id={s.icon} className="h-4 w-4" />
+                      {s.name}
+                    </m.li>
+                  ))}
                 </m.ul>
               </div>
             ))}

@@ -2,14 +2,11 @@
 
 import { AnimatePresence, m, type Variants } from "framer-motion";
 import dynamic from "next/dynamic";
-import { FaAws } from "react-icons/fa6";
-import { VscAzure } from "react-icons/vsc";
 import { useMemo, useRef, useState } from "react";
-import { cloudSkills, skillCategories } from "@/lib/content";
-import { getSkillIcon } from "@/lib/skillIcons";
+import { skillCategories } from "@/lib/content";
 import { motionTransition } from "@/lib/motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import { BrandIcon } from "@/components/ui/BrandIcon";
+import { SkillMark } from "@/components/ui/SkillMark";
 import { Reveal } from "@/components/ui/Reveal";
 
 // One import() site feeds both the dynamic component and the warm-up. Two separate import() calls become two
@@ -41,18 +38,6 @@ const logoVariants = (reduce: boolean): Variants => ({
   },
 });
 
-function TileIcon({ id, className }: { id: string; className?: string }) {
-  if (id === "aws") {
-    return <FaAws className={className} aria-hidden />;
-  }
-  if (id === "azure") {
-    return <VscAzure className={className} aria-hidden />;
-  }
-  const icon = getSkillIcon(id);
-  if (!icon) return null;
-  return <BrandIcon icon={icon} className={className} />;
-}
-
 export function SkillsBanner() {
   const [open, setOpen] = useState(false);
   const openerRef = useRef<HTMLButtonElement | null>(null);
@@ -62,12 +47,6 @@ export function SkillsBanner() {
   const previewIcons = useMemo(() => {
     const seen = new Set<string>();
     const list: string[] = [];
-    for (const c of cloudSkills) {
-      if (!seen.has(c.id)) {
-        seen.add(c.id);
-        list.push(c.id);
-      }
-    }
     for (const cat of skillCategories) {
       for (const s of cat.skills) {
         if (!seen.has(s.icon)) {
@@ -120,7 +99,7 @@ export function SkillsBanner() {
                     data-preview-logo
                     className="flex h-7 w-7 items-center justify-center"
                   >
-                    <TileIcon id={id} className="h-7 w-7" />
+                    <SkillMark id={id} className="h-7 w-7" />
                   </m.li>
                 ))}
               </m.ul>

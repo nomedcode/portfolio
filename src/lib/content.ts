@@ -11,8 +11,6 @@ export type Profile = {
   socials: Social[];
 };
 
-export type CloudSkill = { id: string; name: string };
-
 export type Skill = { name: string; icon: string };
 
 export type SkillCategory = {
@@ -69,13 +67,6 @@ export const profile: Profile = {
   ],
 };
 
-export const cloudSkills: CloudSkill[] = [
-  { id: "aws", name: "AWS" },
-  { id: "googlecloud", name: "Google Cloud" },
-  { id: "azure", name: "Azure" },
-  { id: "terraform", name: "Terraform" },
-];
-
 export const skillCategories: SkillCategory[] = [
   {
     id: "languages",
@@ -86,6 +77,8 @@ export const skillCategories: SkillCategory[] = [
       { name: "Python", icon: "python" },
       { name: "C++", icon: "cplusplus" },
       { name: "Java", icon: "java" },
+      { name: "HTML", icon: "html5" },
+      { name: "CSS", icon: "css" },
     ],
   },
   {
@@ -94,6 +87,7 @@ export const skillCategories: SkillCategory[] = [
     skills: [
       { name: "React", icon: "react" },
       { name: "Next.js", icon: "nextdotjs" },
+      { name: "Vite", icon: "vite" },
       { name: "Tailwind CSS", icon: "tailwindcss" },
       { name: "Motion", icon: "framer" },
       { name: "GSAP", icon: "greensock" },
@@ -135,6 +129,9 @@ export const skillCategories: SkillCategory[] = [
     skills: [
       { name: "TensorFlow", icon: "tensorflow" },
       { name: "PyTorch", icon: "pytorch" },
+      { name: "scikit-learn", icon: "scikitlearn" },
+      { name: "NumPy", icon: "numpy" },
+      { name: "Pandas", icon: "pandas" },
       { name: "Hugging Face", icon: "huggingface" },
       { name: "Ollama", icon: "ollama" },
       { name: "Langflow", icon: "langflow" },
@@ -155,13 +152,19 @@ export const skillCategories: SkillCategory[] = [
     id: "cloud",
     name: "Cloud & Infra",
     skills: [
+      { name: "AWS", icon: "aws" },
       { name: "Google Cloud", icon: "googlecloud" },
+      { name: "Azure", icon: "azure" },
+      { name: "Terraform", icon: "terraform" },
       { name: "Docker", icon: "docker" },
       { name: "Kubernetes", icon: "kubernetes" },
       { name: "GitHub Actions", icon: "githubactions" },
       { name: "Vercel", icon: "vercel" },
-      { name: "Netlify", icon: "netlify" },
-      { name: "Cloudflare", icon: "cloudflare" },
+      { name: "DigitalOcean", icon: "digitalocean" },
+      { name: "Sentry", icon: "sentry" },
+      { name: "Datadog", icon: "datadog" },
+      { name: "New Relic", icon: "newrelic" },
+      { name: "Termius", icon: "termius" },
     ],
   },
 ];
