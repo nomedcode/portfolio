@@ -31,6 +31,7 @@ describe("skillIcons", () => {
       "claudecode",
       "androidstudio",
       "modelcontextprotocol",
+      "cisco",
     ]) {
       const icon = getSkillIcon(slug);
       expect(icon, slug).toBeTruthy();

@@ -106,6 +106,7 @@ describe("skills", () => {
         "Kiro",
         "Ollama",
         "MCP Registry",
+        "Cisco Packet Tracer",
       ],
       "Cloud & Infrastructure": [
         "AWS",

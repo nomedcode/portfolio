@@ -170,6 +170,7 @@ export const skillCategories: SkillCategory[] = [
       { name: "Kiro", icon: "kiro" },
       { name: "Ollama", icon: "ollama" },
       { name: "MCP Registry", icon: "modelcontextprotocol" },
+      { name: "Cisco Packet Tracer", icon: "cisco" },
     ],
   },
 ];

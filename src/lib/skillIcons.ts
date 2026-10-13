@@ -1,6 +1,7 @@
 import {
   siAndroidstudio,
   siBun,
+  siCisco,
   siClaudecode,
   siCplusplus,
   siCss,
@@ -140,6 +141,7 @@ const icons: Record<string, SkillIcon> = {
   huggingface: siHuggingface,
   ollama: siOllama,
   modelcontextprotocol: siModelcontextprotocol,
+  cisco: siCisco,
   githubcopilot: siGithubcopilot,
   claudecode: siClaudecode,
   androidstudio: siAndroidstudio,
