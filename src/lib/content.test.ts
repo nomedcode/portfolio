@@ -23,6 +23,8 @@ describe("profile", () => {
       "System Administrator",
     ]);
     expect(profile.about.trim()).not.toBe("");
+    expect(profile.about).toContain("CI/CD, containers, and IaC in my projects.");
+    expect(profile.about).not.toMatch(/infrastructure as code/i);
     expect(profile.heroBackground).toMatch(/^linear-gradient\(/);
   });
 
