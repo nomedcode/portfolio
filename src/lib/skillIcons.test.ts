@@ -1,45 +1,116 @@
 import { describe, expect, test } from "vitest";
 import { getSkillIcon } from "./skillIcons";
 
+// The skills devicon carries, drawn from its "original" artwork (MIT, github.com/devicons/devicon). AWS is the one
+// wordmark, because devicon ships no square AWS glyph.
+const devicon = [
+  "typescript",
+  "javascript",
+  "python",
+  "cplusplus",
+  "java",
+  "html5",
+  "css",
+  "aws",
+  "googlecloud",
+  "azure",
+  "terraform",
+  "docker",
+  "kubernetes",
+  "githubactions",
+  "vercel",
+  "digitalocean",
+  "sentry",
+  "datadog",
+  "react",
+  "vite",
+  "nextdotjs",
+  "tailwindcss",
+  "framer",
+  "bun",
+  "laravel",
+  "nodedotjs",
+  "kotlin",
+  "jetpackcompose",
+  "flutter",
+  "androidstudio",
+  "postgresql",
+  "mysql",
+  "mongodb",
+  "redis",
+  "supabase",
+  "firebase",
+  "tensorflow",
+  "pytorch",
+  "scikitlearn",
+  "numpy",
+  "pandas",
+  "figma",
+];
+
+// devicon does not carry these, so they stay a Simple Icons mark or a hand-written one.
+const notOnDevicon = [
+  "greensock",
+  "huggingface",
+  "langflow",
+  "hermes",
+  "kiro",
+  "ollama",
+  "modelcontextprotocol",
+  "cisco",
+];
+
+// Marks drawn in one colour with no fixed fill, so BrandIcon paints them with the per-theme fill.
+const themeFilled = ["aws", "vercel", "framer"];
+
 describe("skillIcons", () => {
-  test("resolves the cloud banner tiles", () => {
-    expect(getSkillIcon("googlecloud")?.hex).toBe("4285F4");
-    expect(getSkillIcon("terraform")).toBeTruthy();
+  test("every devicon mark is layered and sits on the devicon 128 unit grid", () => {
+    for (const slug of devicon) {
+      const icon = getSkillIcon(slug);
+      expect(icon, slug).toBeTruthy();
+      expect(icon?.layers?.length, slug).toBeGreaterThan(0);
+      expect(icon?.path, `${slug} should not also carry a single-colour path`).toBeUndefined();
+      expect(icon?.viewBox, slug).toBe("0 0 128 128");
+      expect(icon?.hex, slug).toMatch(/^[0-9A-Fa-f]{6}$/);
+    }
+    expect(devicon).toHaveLength(42);
   });
 
-  test("Google Cloud is the full-colour mark: four layers in the Google red, blue, green and yellow", () => {
+  test("Google Cloud keeps devicon's four Google colours", () => {
     const layers = getSkillIcon("googlecloud")?.layers;
     expect(layers?.map((l) => l.fill)).toEqual([
-      "#EA4335",
-      "#4285F4",
-      "#34A853",
-      "#FBBC05",
+      "#ea4535",
+      "#557ebf",
+      "#36a852",
+      "#f9bc15",
     ]);
     for (const layer of layers ?? []) expect(layer.path.length).toBeGreaterThan(50);
   });
 
-  test("resolves the layered marks: AWS, Azure, Vite, Kotlin, Python and Java, each drawn in its own colours", () => {
-    for (const slug of ["aws", "azure", "vite", "kotlin", "python", "java"]) {
-      const icon = getSkillIcon(slug);
-      expect(icon, slug).toBeTruthy();
-      expect(icon?.layers?.length, slug).toBeGreaterThan(0);
-      expect(icon?.hex, slug).toMatch(/^[0-9A-Fa-f]{6}$/);
-    }
-  });
-
-  test("AWS is the two-tone mark: a wordmark with no fill of its own (so it takes the per-theme fill) and the orange smile", () => {
-    const layers = getSkillIcon("aws")?.layers;
+  test("AWS is devicon's wordmark: the wordmark takes the per-theme fill, the smile keeps the brand orange", () => {
+    const icon = getSkillIcon("aws");
+    const layers = icon?.layers;
     expect(layers).toHaveLength(2);
     expect(layers?.[0].fill).toBeUndefined();
-    expect(layers?.[1].fill).toBe("#FF9900");
-    expect(getSkillIcon("aws")?.fillRule).toBe("evenodd");
+    expect(layers?.[1].fill).toBe("#ff9900");
+    // the wordmark is the only mark whose artwork carries no fill rule of its own
+    expect(icon?.fillRule).toBeUndefined();
   });
 
-  test("Azure, Vite, Kotlin and Python paint their layers from named gradients; Java uses flat brand colours", () => {
-    for (const slug of ["azure", "vite", "kotlin", "python"]) {
+  test("the gradient marks reference gradients they define, and each keeps its own colours", () => {
+    for (const slug of [
+      "azure",
+      "vite",
+      "kotlin",
+      "python",
+      "nextdotjs",
+      "nodedotjs",
+      "flutter",
+      "supabase",
+    ]) {
       const icon = getSkillIcon(slug);
-      expect(icon?.gradients?.length, slug).toBeGreaterThan(0);
       const ids = new Set((icon?.gradients ?? []).map((g) => g.id));
+      expect(ids.size, slug).toBeGreaterThan(0);
       let gradientLayers = 0;
       for (const layer of icon?.layers ?? []) {
         const ref = layer.fill?.match(/^url\(#(.+)\)$/)?.[1];
@@ -53,58 +124,46 @@ describe("skillIcons", () => {
       }
       expect(gradientLayers, slug).toBeGreaterThan(0);
     }
+    // Python's drop shadow is the one radial gradient
+    const radial = getSkillIcon("python")?.gradients?.filter((g) => g.radial);
+    expect(radial).toHaveLength(1);
+    // Java has no gradients: Oracle's flat blue and red
     const java = getSkillIcon("java");
     expect(java?.gradients).toBeUndefined();
-    expect(
-      [...new Set((java?.layers ?? []).map((l) => l.fill))].sort()
-    ).toEqual(["#0074BD", "#EA2D2E"]);
+    expect([...new Set((java?.layers ?? []).map((l) => l.fill))].sort()).toEqual([
+      "#0074bd",
+      "#ea2d2e",
+    ]);
   });
 
-  test("resolves the single-colour Kiro, Hermes Agent and Langflow marks", () => {
-    for (const slug of ["kiro", "hermes", "langflow"]) {
+  test("only the monochrome marks drop their fill so the theme can invert them", () => {
+    for (const slug of themeFilled) {
+      const icon = getSkillIcon(slug);
+      expect(icon?.layers?.some((l) => !l.fill), slug).toBe(true);
+    }
+    // a monochrome mark with a fixed fill would be invisible on one of the two surfaces
+    for (const slug of devicon.filter((s) => !themeFilled.includes(s))) {
+      expect(
+        getSkillIcon(slug)?.layers?.every((l) => l.fill),
+        `${slug} should keep every fill`
+      ).toBe(true);
+    }
+  });
+
+  test("the marks devicon does not carry stay single-path Simple Icons or hand-written", () => {
+    for (const slug of notOnDevicon) {
       const icon = getSkillIcon(slug);
       expect(icon, slug).toBeTruthy();
       expect(icon?.path?.length, slug).toBeGreaterThan(100);
+      expect(icon?.layers, slug).toBeUndefined();
       expect(icon?.hex, slug).toMatch(/^[0-9A-Fa-f]{6}$/);
     }
-  });
-
-  test("resolves the Simple Icons marks added for Laravel, the web languages, observability and data science", () => {
-    for (const slug of [
-      "laravel",
-      "html5",
-      "css",
-      "sentry",
-      "datadog",
-      "digitalocean",
-      "scikitlearn",
-      "numpy",
-      "pandas",
-      "androidstudio",
-      "modelcontextprotocol",
-      "cisco",
-    ]) {
-      const icon = getSkillIcon(slug);
-      expect(icon, slug).toBeTruthy();
-      expect(icon?.path?.length, slug).toBeGreaterThan(100);
-      expect(icon?.hex, slug).toMatch(/^[0-9A-Fa-f]{6}$/);
-    }
-  });
-
-  test("the marks that come from outside Simple Icons bring their own square view box", () => {
-    for (const slug of ["java", "kiro", "aws", "azure", "vite", "kotlin", "python"]) {
-      const box = getSkillIcon(slug)?.viewBox?.split(" ").map(Number) as number[];
-      expect(box, slug).toHaveLength(4);
-      expect(box[2], slug).toBe(box[3]);
-      expect(box[2], slug).toBeGreaterThanOrEqual(24);
-    }
-    // the Kiro ghost has two eyes cut out of it
+    expect(notOnDevicon).toHaveLength(8);
+    // the Kiro ghost has two eyes cut out of it; the Hermes mark is merged into one even-odd path on the 24 unit grid
     expect(getSkillIcon("kiro")?.fillRule).toBe("evenodd");
-    // the Hermes Agent mark is drawn on the same default grid, with its shapes merged into one even-odd path
     expect(getSkillIcon("hermes")?.fillRule).toBe("evenodd");
     expect(getSkillIcon("hermes")?.viewBox).toBeUndefined();
-    // the Simple Icons marks keep the default 24 unit grid
-    expect(getSkillIcon("langflow")?.viewBox).toBeUndefined();
+    expect(getSkillIcon("kiro")?.viewBox).not.toBe("0 0 128 128");
   });
 
   test("no longer carries the icons of the skills that were removed", () => {

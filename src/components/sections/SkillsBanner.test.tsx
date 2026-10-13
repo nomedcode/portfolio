@@ -44,9 +44,9 @@ describe("Skills banner", () => {
     const svgs = document.querySelectorAll("[data-preview-logo] svg");
     expect(svgs).toHaveLength(expectedLogoCount());
     expect(document.querySelectorAll("svg.dark\\:invert")).toHaveLength(0);
-    // aws takes the per-theme fill for its wordmark; googlecloud, azure, vite, kotlin, python and java draw their
-    // own brand colours instead, so they carry no --icon-l variable
-    const selfColoured = 6;
+    // eleven marks are theme-fitted (the eight devicon does not carry, plus the monochrome AWS, Vercel and Motion);
+    // the other thirty-nine are devicon originals that draw their own brand colours, so they carry no --icon-l
+    const selfColoured = 39;
     const withFills = [...svgs].filter((s) =>
       (s as SVGElement).style.getPropertyValue("--icon-l")
     );

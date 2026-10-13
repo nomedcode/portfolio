@@ -1,7 +1,7 @@
 // Fails when the home route's first-load JS exceeds the budget. Run after `npm run build`.
 import { readFileSync } from "node:fs";
 
-const BUDGET_BYTES = 720_000; // raw; measured 678,522 on 2026-10-12, raise on purpose only
+const BUDGET_BYTES = 740_000; // raw; measured 734,322 on 2026-10-13 (the devicon logos), raise on purpose only
 const stats = JSON.parse(
   readFileSync(".next/diagnostics/route-bundle-stats.json", "utf8")
 );

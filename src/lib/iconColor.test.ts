@@ -13,6 +13,36 @@ const usedIcons = [
     Boolean(x.icon)
   );
 
+// BrandIcon paints the per-theme fill only for marks that have no colour of their own: the single-colour Simple Icons
+// and hand-written marks, plus the monochrome devicon marks (AWS, Vercel, Motion) whose artwork carries no fill.
+// Every other mark is a devicon "original" that brings its own brand colours, which iconFills never touches.
+const fittedIcons = usedIcons.filter(
+  ({ icon }) => !icon.layers || icon.layers.some((l) => !l.fill)
+);
+const fixedColourIcons = usedIcons.filter(
+  ({ icon }) => icon.layers && icon.layers.every((l) => l.fill)
+);
+
+// Every colour a fixed-colour mark can paint: the flat layer fills and the gradient stops.
+function markColours(icon: (typeof usedIcons)[number]["icon"]): string[] {
+  return [
+    ...new Set([
+      ...(icon.layers ?? []).map((l) => l.fill),
+      ...(icon.gradients ?? []).flatMap((g) => g.stops.map((s) => s.color)),
+    ]),
+  ].filter((f): f is string => typeof f === "string" && /^#[0-9a-f]{6}$/.test(f));
+}
+
+// The best contrast the mark reaches on a theme: its most legible colour.
+function bestContrast(
+  icon: (typeof usedIcons)[number]["icon"],
+  surfaces: readonly string[]
+): number {
+  const colours = markColours(icon);
+  if (!colours.length) return Infinity;
+  return Math.max(...colours.map((c) => Math.min(...surfaces.map((s) => contrastRatio(c, s)))));
+}
+
 function hue(hex: string) {
   const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
   const max = Math.max(r, g, b);
@@ -47,9 +77,9 @@ describe("iconFills", () => {
     expect(usedIcons.length).toBeGreaterThanOrEqual(30);
   });
 
-  test("every icon reaches 3:1 on both surfaces of both themes, except yellow on light (see below)", () => {
+  test("every theme-fitted icon reaches 3:1 on both surfaces of both themes, except yellow on light (see below)", () => {
     const failures: string[] = [];
-    for (const { slug, icon } of usedIcons) {
+    for (const { slug, icon } of fittedIcons) {
       const fills = iconFills(icon.hex);
       for (const theme of ["light", "dark"] as const) {
         if (theme === "light" && isYellow(`#${icon.hex.toLowerCase()}`)) continue;
@@ -70,8 +100,8 @@ describe("iconFills", () => {
     }
   });
 
-  test("only yellows are exempt; every other brand is still fitted to 3:1 by lightness alone", () => {
-    for (const { slug, icon } of usedIcons) {
+  test("only yellows are exempt; every other theme-fitted brand is still fitted to 3:1 by lightness alone", () => {
+    for (const { slug, icon } of fittedIcons) {
       const brand = `#${icon.hex.toLowerCase()}`;
       if (!isYellow(brand)) {
         // a non-yellow that fails on light is moved, never left below 3:1
@@ -90,7 +120,7 @@ describe("iconFills", () => {
   });
 
   test("colours that already pass are the exact brand colour", () => {
-    for (const { icon } of usedIcons) {
+    for (const { icon } of fittedIcons) {
       const brand = `#${icon.hex.toLowerCase()}`;
       const fills = iconFills(icon.hex);
       for (const theme of ["light", "dark"] as const) {
@@ -101,7 +131,7 @@ describe("iconFills", () => {
   });
 
   test("adjusted colours keep their hue (within 4 degrees) and only move one way", () => {
-    for (const { slug, icon } of usedIcons) {
+    for (const { slug, icon } of fittedIcons) {
       const brand = `#${icon.hex.toLowerCase()}`;
       const fills = iconFills(icon.hex);
       const lum = (hex: string) => contrastRatio(hex, "#000000");
@@ -136,6 +166,27 @@ describe("iconFills", () => {
     expect(contrastRatio(cpp.dark, "#1f1f20")).toBeGreaterThanOrEqual(3);
     const react = iconFills("61DAFB");
     expect(contrastRatio(react.light, "#f5f5f7")).toBeGreaterThanOrEqual(3);
+  });
+
+  test("the devicon originals keep their brand colours, and the few under 3:1 are named here, not hidden", () => {
+    // A deliberate tradeoff: devicon's "original" artwork is used verbatim, so it is never run through the 3:1 fit.
+    // Only eleven marks are theme-fitted (the eight devicon does not carry, plus the monochrome AWS, Vercel and
+    // Motion); the rest carry fixed colours. These are the only ones under 3:1 on a surface. Logos are WCAG-exempt
+    // (1.4.3 and 1.4.11 exclude logotypes), the banner cloud is aria-hidden, and each popup chip names its skill.
+    expect(fittedIcons).toHaveLength(11);
+    expect(fixedColourIcons).toHaveLength(usedIcons.length - 11);
+    const under = (surfaces: readonly string[]) =>
+      fixedColourIcons
+        .filter(({ icon }) => bestContrast(icon, surfaces) < 3)
+        .map((x) => x.slug)
+        .sort();
+    expect(under(SURFACES.light)).toEqual(["react", "tailwindcss", "tensorflow"]);
+    expect(under(SURFACES.dark)).toEqual([
+      "datadog",
+      "mysql",
+      "sentry",
+      "terraform",
+    ]);
   });
 });
 

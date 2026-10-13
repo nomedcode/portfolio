@@ -32,27 +32,51 @@ export function BrandIcon({
       >
         {icon.gradients && (
           <defs>
-            {icon.gradients.map((gradient) => (
-              <linearGradient
-                key={gradient.id}
-                id={gradient.id}
-                x1={gradient.x1}
-                y1={gradient.y1}
-                x2={gradient.x2}
-                y2={gradient.y2}
-                gradientUnits={gradient.gradientUnits}
-                gradientTransform={gradient.gradientTransform}
-              >
-                {gradient.stops.map((stop) => (
-                  <stop
-                    key={`${stop.offset}-${stop.color}`}
-                    offset={stop.offset}
-                    stopColor={stop.color}
-                    stopOpacity={stop.opacity}
-                  />
-                ))}
-              </linearGradient>
-            ))}
+            {icon.gradients.map((gradient) => {
+              const shared = {
+                id: gradient.id,
+                gradientUnits: gradient.gradientUnits,
+                gradientTransform: gradient.gradientTransform,
+              };
+              return gradient.radial ? (
+                <radialGradient
+                  key={gradient.id}
+                  {...shared}
+                  cx={gradient.cx}
+                  cy={gradient.cy}
+                  r={gradient.r}
+                  fx={gradient.fx}
+                  fy={gradient.fy}
+                >
+                  {gradient.stops.map((stop) => (
+                    <stop
+                      key={`${stop.offset}-${stop.color}`}
+                      offset={stop.offset}
+                      stopColor={stop.color}
+                      stopOpacity={stop.opacity}
+                    />
+                  ))}
+                </radialGradient>
+              ) : (
+                <linearGradient
+                  key={gradient.id}
+                  {...shared}
+                  x1={gradient.x1}
+                  y1={gradient.y1}
+                  x2={gradient.x2}
+                  y2={gradient.y2}
+                >
+                  {gradient.stops.map((stop) => (
+                    <stop
+                      key={`${stop.offset}-${stop.color}`}
+                      offset={stop.offset}
+                      stopColor={stop.color}
+                      stopOpacity={stop.opacity}
+                    />
+                  ))}
+                </linearGradient>
+              );
+            })}
           </defs>
         )}
         {icon.layers.map((layer, index) => (
@@ -62,6 +86,7 @@ export function BrandIcon({
             fill={layer.fill}
             fillRule={layer.fillRule ?? icon.fillRule}
             transform={layer.transform}
+            opacity={layer.opacity}
           />
         ))}
       </svg>

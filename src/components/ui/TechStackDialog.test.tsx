@@ -115,9 +115,9 @@ describe("TechStackDialog motion", () => {
       skillCategories.reduce((n, c) => n + c.skills.length, 0)
     );
     expect(dialog.querySelectorAll("svg.dark\\:invert")).toHaveLength(0);
-    // AWS takes the per-theme fill for its wordmark; googlecloud, azure, vite, kotlin, python and java draw their own
-    // brand colours, so they carry no --icon-l variable
-    const selfColoured = 6;
+    // eleven marks are theme-fitted (the eight devicon does not carry, plus the monochrome AWS, Vercel and Motion);
+    // the other thirty-nine are devicon originals that draw their own brand colours, so they carry no --icon-l
+    const selfColoured = 39;
     const branded = [...svgs].filter((svg) =>
       (svg as SVGElement).style.getPropertyValue("--icon-l")
     );
