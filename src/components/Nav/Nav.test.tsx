@@ -27,10 +27,8 @@ describe("Nav", () => {
     }
   });
 
-  test("desktop section links hover like the Download CV button: a rounded wash, not an underline", () => {
+  test("desktop section links hover as a rounded wash, not an underline", () => {
     render(<Nav />);
-    const cv = screen.getByRole("link", { name: "Download CV" });
-    expect(cv).toHaveClass("rounded-full", "hover:bg-line/60");
     for (const s of sections) {
       const link = screen.getAllByRole("link", { name: s.label })[0];
       expect(link).toHaveClass("rounded-full", "hover:bg-line/60");
@@ -38,14 +36,27 @@ describe("Nav", () => {
     }
   });
 
-  test("offers the CV download beside the theme toggle", () => {
+  test("keeps the CV download out of the header: the bar is the brand, the sections and the theme toggle", async () => {
+    const user = userEvent.setup();
     render(<Nav />);
-    const cv = screen.getByRole("link", { name: "Download CV" });
-    expect(cv).toHaveAttribute("href", "/faiq-prasetya-cv.pdf");
-    const toggle = screen.getByRole("button", { name: "Toggle dark mode" });
+    expect(screen.queryByRole("link", { name: /CV/ })).not.toBeInTheDocument();
+    expect(document.querySelector("a[download]")).toBeNull();
     expect(
-      cv.compareDocumentPosition(toggle) & Node.DOCUMENT_POSITION_FOLLOWING
-    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+      screen.getByRole("button", { name: "Toggle dark mode" })
+    ).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Toggle menu" }));
+    expect(screen.queryByRole("link", { name: /CV/ })).not.toBeInTheDocument();
+  });
+
+  test("from tablet up the section links sit in the true centre, whatever the widths of the brand and the controls either side", () => {
+    render(<Nav />);
+    const bar = screen.getByRole("navigation", { name: "Main" });
+    expect(bar).toHaveClass("md:grid", "md:grid-cols-[1fr_auto_1fr]");
+    const brand = screen.getByRole("link", { name: profile.name });
+    expect(brand).toHaveClass("md:justify-self-start");
+    const controls = screen.getByRole("button", { name: "Toggle dark mode" })
+      .parentElement as HTMLElement;
+    expect(controls).toHaveClass("md:justify-self-end");
   });
 
   test("mobile menu points at its panel; Escape closes it and returns focus", async () => {
@@ -111,14 +122,6 @@ describe("Nav", () => {
       "overflow-y-auto",
       "overscroll-contain"
     );
-  });
-
-  test("the CV button drops its label at tablet widths to keep the bar uncrowded", () => {
-    render(<Nav />);
-    const cv = screen.getByRole("link", { name: "Download CV" });
-    const label = cv.querySelector("span") as HTMLElement;
-    expect(label).toHaveTextContent("Download CV");
-    expect(label).toHaveClass("hidden", "sm:inline", "md:max-lg:hidden");
   });
 
   test("mobile menu toggle opens the section links", async () => {

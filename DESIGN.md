@@ -23,7 +23,7 @@ colors:
 typography:
   display:
     fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', Inter, ui-sans-serif, system-ui, sans-serif"
-    fontSize: "72px from 1280px, 60px from 1024px, 48px from 640px, 40px below"
+    fontSize: "80px from 1280px, 72px from 1024px, 60px from 640px, 48px from 400px, 44px below"
     fontWeight: 600
     lineHeight: 1.05
     letterSpacing: "-0.03em"
@@ -131,7 +131,7 @@ Density is low and the rhythm is steady: one container, one section padding, one
 A cool neutral ladder with one blue. Light and dark themes are each composed, not inverted: dark uses near-black surfaces (not pure black) and a lighter blue.
 
 ### Primary
-- **Signal Blue** (#0066cc): the action color in the light theme. Primary pill buttons (including "View projects" in the hero), outlined buttons, links and the focus ring.
+- **Signal Blue** (#0066cc): the action color in the light theme. Primary pill buttons (including "Download CV" in the hero), outlined buttons, links and the focus ring.
 - **Beacon Blue** (#2997ff): the same role in the dark theme and always inside the hero, where it is also the focus ring and the bloom behind the portrait.
 
 ### Neutral
@@ -157,11 +157,11 @@ A cool neutral ladder with one blue. Light and dark themes are each composed, no
 **Character:** one family, three weights (400, 500, 600). Hierarchy comes from size, weight and tracking, not from a second typeface.
 
 ### Hierarchy
-- **Display** (600, line-height 1.05, tracking -0.03em): the hero headline, set at 40px, 48px from 640px, 60px from 1024px and 72px from 1280px with balanced line breaks so the name splits between words, and the Contact heading (60px). The portrait monogram uses it at 36px and 60px.
+- **Display** (600, line-height 1.05, tracking -0.03em): the hero headline, which is just the name, set at 44px, 48px from 400px, 60px from 640px, 72px from 1024px and 80px from 1280px with balanced line breaks so the name splits between words, and the Contact heading (60px). The portrait monogram uses it at 36px and 60px.
 - **Headline** (600, 48px, 36px below 768px, tracking -0.02em): every section heading.
 - **Title** (600, 18px to 28px, tracking -0.01em, leading-snug on the 18px ones): card titles, dialog title, project cards.
 - **Body** (400, 16px to 20px, line-height 1.4 to 1.56): about text and card copy, in secondary text colors; prose stays within about 70 characters.
-- **Nav** (500, 12px, normal tracking): the header links and the Download CV button.
+- **Nav** (500, 12px, normal tracking): the header links.
 - **Role line** (500, 20px, 24px from 768px, 80% white): the hero role under the headline.
 
 ### Named Rules
@@ -175,7 +175,7 @@ Surfaces alternate down the page: Projects on page, Skills on raised, Certificat
 
 The hero is a two-column grid from 768px (copy 1.3fr on the left, portrait 1fr on the right) and one centered column below it, with the portrait first. It is at least one small viewport tall and grows when the content is taller, so short landscape screens scroll instead of clipping.
 
-Breakpoints follow content: 640px (CV label appears, larger hero type and portrait), 768px (desktop nav, larger type, wider padding, split hero), 1024px (CV label returns on the desktop bar, larger hero type and portrait), 1280px (largest hero headline). Between 768px and 1023px the CV button shows only its icon so the bar never crowds. The mobile menu is capped to the space under the header and scrolls.
+Breakpoints follow content: 400px (larger hero headline on phones), 640px (larger hero type and portrait), 768px (desktop nav, larger type, wider padding, split hero), 1024px (larger hero type and portrait), 1280px (largest hero headline). The mobile menu is capped to the space under the header and scrolls.
 
 ## Elevation & Depth
 
@@ -195,14 +195,14 @@ Large, soft, and consistent. Big cards use a 28px radius and small cards 18px; e
 
 ### Buttons
 - **Shape:** full pill (9999px).
-- **Hero:** two pills, 48px tall. "View projects" is a Signal Blue fill with white text and "Contact" is a 1px white 40% outline with white text and a 10% white wash on hover; both are links to sections (`#projects`, `#contact`), not buttons. The header already carries Download CV, so the hero offers no second copy of it.
+- **Hero:** two pills, 48px tall. "Download CV" is a Signal Blue fill with white text and a leading download icon, a link to the PDF with the `download` attribute, and "Contact" is a 1px white 40% outline with white text and a 10% white wash on hover, a link to `#contact`. The header carries no CV link; the file is also offered in Contact and the footer.
 - **Primary:** Signal Blue fill, white text, 16px by 32px padding (the Email action). Its leading logo is the 2026 Gmail mark (red left stripe, pink-to-yellow arc, green-to-blue right stripe), drawn straight on the blue with no badge; its red and pink parts hold well on the blue, and only the blue base of the right stripe is low-contrast.
 - **Outline:** 1px Signal Blue border and text, 10% blue wash on hover (Download CV in Contact).
 - **Neutral:** 1px Mist Subtle border (Dusk in dark, 3:1 or better on the raised Contact surface; Hairline vanishes there), Ink text, hairline wash at 60% on hover (social links). Their logos keep the brand colour (GitHub near-black and LinkedIn blue), moved only as far as 3:1 needs per theme.
 - **Press:** every control scales to 0.97 over 100ms. Under reduced motion it dips to 70% opacity instead.
 
 ### Navigation
-- **Style:** fixed 48px glass bar; brand left, section links centered, Download CV and the theme toggle right. Links are 12px medium pills in full-contrast text; on hover they take the same hairline wash at 60% as the Download CV button.
+- **Style:** fixed 48px glass bar; brand left, section links centered, the theme toggle right (with the menu button below 768px). Links are 12px medium pills in full-contrast text; on hover they take a Hairline wash at 60%.
 - **Current section:** the link for the section under the reading line gets a Hairline pill at 70% with a 1px inset Hairline ring, so it never reads as hover (an underline under forced colors), and `aria-current="location"`. Nothing is current over the hero.
 - **Mobile:** a hamburger opens a solid panel under the bar that drops 8px in over 200ms (plain fade under reduced motion), scrolls when short, and closes on Escape or any press outside the header.
 
@@ -219,7 +219,7 @@ Large, soft, and consistent. Big cards use a 28px radius and small cards 18px; e
 
 ### Hero
 - **Copy:** headline, role line, the about text (34rem wide, 65% white) and the two actions, left-aligned from 768px and centered below it. Each piece rises in on first paint with a 100ms stagger; the actions arrive last.
-- **Role line:** goes through the three roles once (1.5s hold, 0.4s out, 0.45s in) and comes back to the first, then stays put, so nothing moves by itself for more than five seconds. A hidden tab holds the countdown. Under reduced motion it shows the first role and never moves. The first role is in the static HTML.
+- **Role line:** rotates through the three roles without end: a 2.6s hold, then 0.4s sliding out to the left and 0.45s sliding in from the right. A hidden tab holds the countdown. Under reduced motion it shows the first role and never moves. The first role is in the static HTML. There is no pause control, so the line moves by itself for more than five seconds (WCAG 2.2.2 is open, by choice).
 - **Scroll:** as the hero leaves, the copy settles 48px and fades to 20% while the portrait lags 96px and shrinks to 92%. These are transforms and opacity only, and reduced motion drops them.
 
 ### Portrait

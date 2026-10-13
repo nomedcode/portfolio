@@ -1,16 +1,20 @@
 "use client";
 
 import { m, useScroll, useTransform } from "framer-motion";
+import { Download } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { profile } from "@/lib/content";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
-// The role line makes one pass through every role and comes back to the first, then stays put. Anything that moves
-// by itself for more than five seconds needs a way to stop it (WCAG 2.2.2); this whole pass moves for about 4.6.
-const ROLE_HOLD_MS = 1500;
+// ponytail: the role line rotates forever and has no pause control, at the owner's request. That leaves WCAG 2.2.2
+// (Level A) open for anything that moves by itself for more than five seconds. Ceiling: reduced motion is the only
+// way to stop it. Upgrade path: pause while the hero is hovered or focused, or stop after one pass.
+const ROLE_HOLD_MS = 2600;
 const ROLE_EXIT_MS = 400;
 const ROLE_ENTER_S = 0.45;
+// Roles travel sideways: the old one leaves to the left, the next one arrives from the right.
+const ROLE_SLIDE_PX = 24;
 const ROLE_EASE = [0.16, 1, 0.3, 1] as const;
 
 // First and last word, e.g. "Fa'iq Haidar Prasetya" -> "FP".
@@ -29,7 +33,7 @@ export function Hero({ photo }: { photo?: string }) {
   const leaving = isRoleExiting && !reduce;
 
   useEffect(() => {
-    if (reduce || step >= count) return;
+    if (reduce) return;
 
     let timer: ReturnType<typeof setTimeout> | undefined;
     let phase: "hold" | "exit" = "hold";
@@ -58,7 +62,7 @@ export function Hero({ photo }: { photo?: string }) {
       clearTimeout(timer);
       document.removeEventListener("visibilitychange", onVisibility);
     };
-  }, [step, count, reduce]);
+  }, [step, reduce]);
 
   // The hero recedes as the next section arrives: the copy settles and fades, the portrait lags behind a little.
   const { scrollYProgress } = useScroll({
@@ -91,8 +95,8 @@ export function Hero({ photo }: { photo?: string }) {
           className="flex flex-col items-center gap-6 text-center md:items-start md:text-left"
           style={reduce ? undefined : { y: copyY, opacity: copyOpacity }}
         >
-          <h1 className="hero-rise w-full text-balance text-[2.5rem] font-semibold leading-[1.05] tracking-display [animation-delay:100ms] sm:text-5xl lg:text-6xl xl:text-7xl">
-            Hi, I&apos;m {profile.fullName}
+          <h1 className="hero-rise w-full text-balance text-[2.75rem] font-semibold leading-[1.05] tracking-display [animation-delay:100ms] min-[400px]:text-5xl sm:text-6xl lg:text-7xl xl:text-[5rem]">
+            {profile.fullName}
           </h1>
           <div className="hero-rise grid w-fit max-w-full [animation-delay:200ms]">
             {/* All roles share one grid cell: the widest sets the width and one line sets the height, so the block never jumps as roles change. */}
@@ -115,9 +119,11 @@ export function Hero({ photo }: { photo?: string }) {
                 data-hero-role-text
                 className="inline-block"
                 // The first role is part of the static HTML, so it never waits for a script to fade it in.
-                initial={step === 0 ? false : { opacity: 0, y: 12 }}
+                initial={step === 0 ? false : { opacity: 0, x: ROLE_SLIDE_PX }}
                 animate={
-                  leaving ? { opacity: 0, y: -12 } : { opacity: 1, y: 0 }
+                  leaving
+                    ? { opacity: 0, x: -ROLE_SLIDE_PX }
+                    : { opacity: 1, x: 0 }
                 }
                 transition={{
                   duration: leaving ? ROLE_EXIT_MS / 1000 : ROLE_ENTER_S,
@@ -136,10 +142,12 @@ export function Hero({ photo }: { photo?: string }) {
             className="hero-rise flex flex-wrap items-center justify-center gap-3 pt-2 [animation-delay:400ms] md:justify-start"
           >
             <a
-              href="#projects"
-              className="press inline-flex items-center rounded-full bg-accent px-7 py-3 font-medium text-white hover:brightness-110"
+              href="/faiq-prasetya-cv.pdf"
+              download
+              className="press inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 font-medium text-white hover:brightness-110"
             >
-              View projects
+              <Download className="h-5 w-5" aria-hidden />
+              Download CV
             </a>
             <a
               href="#contact"

@@ -1,6 +1,6 @@
 "use client";
 
-import { Download, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useActiveSection } from "@/hooks/useActiveSection";
 import { profile, sections } from "@/lib/content";
@@ -40,9 +40,12 @@ export function Nav() {
     >
       <nav
         aria-label="Main"
-        className="mx-auto flex h-12 max-w-6xl items-center justify-between px-6"
+        className="mx-auto flex h-12 max-w-6xl items-center justify-between px-6 md:grid md:grid-cols-[1fr_auto_1fr]"
       >
-        <a href="#top" className="press hit-area text-sm font-semibold text-fg">
+        <a
+          href="#top"
+          className="press hit-area text-sm font-semibold text-fg md:justify-self-start"
+        >
           {profile.name}
         </a>
         <div className="hidden items-center gap-1 md:flex">
@@ -57,16 +60,7 @@ export function Nav() {
             </a>
           ))}
         </div>
-        <div className="flex items-center gap-1">
-          <a
-            href="/faiq-prasetya-cv.pdf"
-            download
-            aria-label="Download CV"
-            className="press hit-area mr-1 gap-1.5 rounded-full border border-line px-3 py-1.5 text-xs font-medium text-fg hover:bg-line/60"
-          >
-            <Download className="h-3.5 w-3.5" aria-hidden />
-            <span className="hidden sm:inline md:max-lg:hidden">Download CV</span>
-          </a>
+        <div className="flex items-center gap-1 md:justify-self-end">
           <ThemeToggle />
           <button
             ref={toggleRef}
