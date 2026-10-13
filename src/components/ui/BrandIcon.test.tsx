@@ -28,6 +28,24 @@ describe("BrandIcon", () => {
     expect(svg.querySelector("path")).not.toHaveAttribute("fill-rule");
   });
 
+  test("a multi-colour mark paints one path per layer in its own fixed colour, with no theme variables", () => {
+    const icon = getSkillIcon("googlecloud")!;
+    const { container } = render(<BrandIcon icon={icon} className="h-7 w-7" />);
+    const svg = container.querySelector("svg") as SVGElement;
+    const paths = [...svg.querySelectorAll("path")];
+    expect(paths.map((p) => p.getAttribute("fill"))).toEqual(
+      icon.layers!.map((l) => l.fill)
+    );
+    expect(paths.map((p) => p.getAttribute("d"))).toEqual(
+      icon.layers!.map((l) => l.path)
+    );
+    expect(svg).toHaveAttribute("aria-hidden", "true");
+    expect(svg).toHaveAttribute("viewBox", "0 0 24 24");
+    expect(svg).toHaveClass("h-7", "w-7");
+    expect(svg).not.toHaveClass("fill-(--icon-l)");
+    expect(svg.style.getPropertyValue("--icon-l")).toBe("");
+  });
+
   test("a mark with its own grid and holes keeps both, still painted by the theme variables", () => {
     const icon = getSkillIcon("kiro")!;
     const { container } = render(<BrandIcon icon={icon} className="h-4 w-4" />);

@@ -56,6 +56,21 @@ import {
 export type SkillIcon = Pick<SimpleIcon, "title" | "slug" | "hex" | "path"> & {
   viewBox?: string;
   fillRule?: "evenodd";
+  // A full-colour mark: each layer is a path in its own fixed colour, drawn instead of `path`. `hex` and `path` still
+  // describe the mark's main colour and outline.
+  layers?: { path: string; fill: string }[];
+};
+
+// Google Cloud in its four Google colours, from the Lobe Icons static set (MIT,
+// https://unpkg.com/@lobehub/icons-static-svg/icons/googlecloud-color.svg). The Simple Icons mark is one flat blue.
+const googlecloud: SkillIcon = {
+  ...siGooglecloud,
+  layers: [
+    { path: "M15.961 7.327l2.086-2.086.14-.879C14.384.905 8.34 1.297 4.913 5.18A9.643 9.643 0 002.88 8.991l.747-.105 4.172-.688.322-.33c1.856-2.038 4.994-2.312 7.137-.578l.703.037z", fill: "#EA4335" },
+    { path: "M21.02 8.93a9.399 9.399 0 00-2.834-4.568L15.258 7.29a5.204 5.204 0 011.91 4.129v.52a2.606 2.606 0 012.607 2.605c0 1.44-1.167 2.577-2.606 2.577h-5.22l-.512.556v3.126l.513.49h5.219c3.743.03 6.802-2.952 6.83-6.695a6.778 6.778 0 00-2.98-5.668z", fill: "#4285F4" },
+    { path: "M6.738 21.293h5.212v-4.172H6.738c-.371 0-.731-.08-1.069-.234l-.74.227-2.1 2.086-.183.71a6.763 6.763 0 004.092 1.383z", fill: "#34A853" },
+    { path: "M6.738 7.759A6.778 6.778 0 002.646 19.91l3.023-3.023a2.606 2.606 0 113.448-3.448l3.023-3.023a6.771 6.771 0 00-5.402-2.657z", fill: "#FBBC05" },
+  ],
 };
 
 // Java: the cup from Font Awesome Free 6 (brand icon "java", CC BY 4.0, as shipped in react-icons/fa6). Simple Icons
@@ -147,7 +162,7 @@ const icons: Record<string, SkillIcon> = {
   androidstudio: siAndroidstudio,
   cursor: siCursor,
   figma: siFigma,
-  googlecloud: siGooglecloud,
+  googlecloud,
   docker: siDocker,
   kubernetes: siKubernetes,
   githubactions: siGithubactions,

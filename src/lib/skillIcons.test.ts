@@ -7,6 +7,17 @@ describe("skillIcons", () => {
     expect(getSkillIcon("terraform")).toBeTruthy();
   });
 
+  test("Google Cloud is the full-colour mark: four layers in the Google red, blue, green and yellow", () => {
+    const layers = getSkillIcon("googlecloud")?.layers;
+    expect(layers?.map((l) => l.fill)).toEqual([
+      "#EA4335",
+      "#4285F4",
+      "#34A853",
+      "#FBBC05",
+    ]);
+    for (const layer of layers ?? []) expect(layer.path.length).toBeGreaterThan(50);
+  });
+
   test("resolves the newly added Java, Kiro, Codex, Hermes Agent, Azure and Langflow marks", () => {
     for (const slug of ["java", "kiro", "codex", "hermes", "azure", "langflow"]) {
       const icon = getSkillIcon(slug);

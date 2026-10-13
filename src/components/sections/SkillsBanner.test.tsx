@@ -44,11 +44,11 @@ describe("Skills banner", () => {
     const svgs = document.querySelectorAll("[data-preview-logo] svg");
     expect(svgs).toHaveLength(expectedLogoCount());
     expect(document.querySelectorAll("svg.dark\\:invert")).toHaveLength(0);
-    // aws comes from react-icons and follows the text colour; the rest carry the variables
+    // aws follows the text colour and googlecloud draws its four brand colours; the rest carry the variables
     const withFills = [...svgs].filter((s) =>
       (s as SVGElement).style.getPropertyValue("--icon-l")
     );
-    expect(withFills).toHaveLength(svgs.length - 1);
+    expect(withFills).toHaveLength(svgs.length - 2);
   });
 
   test("preview logos start hidden and pop in from a point by default", () => {
