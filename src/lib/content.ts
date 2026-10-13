@@ -53,7 +53,7 @@ export const profile: Profile = {
   location: "Bandung, Indonesia",
   roles: ["Cloud Engineer", "DevOps Engineer", "Site Reliability Engineer"],
   about:
-    "Undergraduate Computer Science student at BINUS specializing in Cloud Technology, with a strong interest in Cloud Engineering, AI/ML, Data Engineering, and modern cloud infrastructure.",
+    "Computer Science Undergrad at BINUS, specializing in Cloud Technology, with a strong interest in Cloud Computing, AI/ML, and Data Engineering. Currently implementing CI/CD, containers, and infrastructure as code in my projects.",
   heroBackground:
     "linear-gradient(135deg, #1a1a2e 0%, #16213e 55%, #0f3460 100%)",
   email: "faiqhaidarprasetya0@gmail.com",
