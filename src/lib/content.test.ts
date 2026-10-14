@@ -26,7 +26,8 @@ describe("profile", () => {
     expect(profile.about.trim()).not.toBe("");
     expect(profile.about).toMatch(/ Currently building Cloud \/ Mobile \/ Web Projects\.$/);
     expect(profile.about).not.toMatch(/CI\/CD|IaC|infrastructure as code/i);
-    expect(profile.heroBackground).toMatch(/^linear-gradient\(/);
+    // The hero sits on the neutral page surface now; it carries no background of its own.
+    expect("heroBackground" in profile).toBe(false);
   });
 
   test("links only GitHub and LinkedIn, without Instagram", () => {

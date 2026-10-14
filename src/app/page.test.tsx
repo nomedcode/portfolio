@@ -55,10 +55,10 @@ describe("Assembled page", () => {
   test("hero shows public/photo.png when the file exists and the placeholder when it does not", () => {
     const hasPhoto = existsSync(path.join(process.cwd(), "public", "photo.png"));
     render(<Home />);
-    expect(screen.queryAllByRole("img", { name: /^Portrait of / })).toHaveLength(
-      hasPhoto ? 1 : 0
-    );
-    expect(document.querySelector("[data-hero-portrait]")).not.toBeNull();
+    const chip = document.querySelector("[data-hero-portrait]");
+    expect(chip).not.toBeNull();
+    // The portrait is decorative (aria-hidden), so assert on the DOM, not the accessibility tree.
+    expect(chip!.querySelectorAll("img")).toHaveLength(hasPhoto ? 1 : 0);
   });
 
   test("nav exposes the theme toggle", () => {

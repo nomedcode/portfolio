@@ -13,7 +13,7 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 const ROLE_HOLD_MS = 2600;
 const ROLE_EXIT_MS = 400;
 const ROLE_ENTER_S = 0.45;
-// Roles travel sideways: the old one leaves to the left, the next one arrives from the right.
+// Roles roll vertically like a ticker: the old one leaves upward, the next one arrives from below.
 const ROLE_SLIDE_PX = 24;
 const ROLE_EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -64,136 +64,118 @@ export function Hero({ photo }: { photo?: string }) {
     };
   }, [step, reduce]);
 
-  // The hero recedes as the next section arrives: the copy settles and fades, the portrait lags behind a little.
+  // The hero recedes as the next section arrives: the copy settles and fades.
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end start"],
   });
   const copyY = useTransform(scrollYProgress, [0, 1], [0, 48]);
   const copyOpacity = useTransform(scrollYProgress, [0, 0.85], [1, 0.2]);
-  const portraitY = useTransform(scrollYProgress, [0, 1], [0, 96]);
-  const portraitScale = useTransform(scrollYProgress, [0, 1], [1, 0.92]);
 
   return (
     <section
       ref={sectionRef}
       id="top"
       aria-label="Introduction"
-      className="relative min-h-svh overflow-hidden bg-deep text-white [--c-ring:#2997ff]"
+      className="relative min-h-svh bg-page text-fg"
     >
-      <div
-        className="absolute inset-0"
-        style={{ background: profile.heroBackground }}
-        aria-hidden
-      />
-      <div
+      <m.div
         data-hero-content
-        className="relative mx-auto grid min-h-svh max-w-6xl content-center items-center gap-10 px-6 pb-16 pt-24 md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] md:gap-12 lg:gap-16"
+        className="mx-auto flex min-h-svh max-w-6xl flex-col justify-center gap-8 px-6 pb-16 pt-24"
+        style={reduce ? undefined : { y: copyY, opacity: copyOpacity }}
       >
-        <m.div
-          data-hero-copy
-          className="flex flex-col items-center gap-6 text-center md:items-start md:text-left"
-          style={reduce ? undefined : { y: copyY, opacity: copyOpacity }}
+        {/* The name may wrap to two lines on a phone; from 640px up it must fit one line, so the size scales with the viewport. */}
+        <h1 className="hero-rise text-balance text-[2.75rem] font-semibold leading-[1.05] tracking-display [animation-delay:100ms] sm:whitespace-nowrap sm:text-[clamp(2rem,6vw,5rem)]">
+          {profile.fullName}
+        </h1>
+        <div
+          data-hero-row
+          className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between md:gap-12"
         >
-          <h1 className="hero-rise w-full text-balance text-[2.75rem] font-semibold leading-[1.05] tracking-display [animation-delay:100ms] min-[400px]:text-5xl sm:text-6xl lg:text-7xl xl:text-[5rem]">
-            {profile.fullName}
-          </h1>
-          <div className="hero-rise grid w-fit max-w-full [animation-delay:200ms]">
-            {/* All roles share one grid cell: the widest sets the width and one line sets the height, so the block never jumps as roles change. */}
-            <div
-              aria-hidden="true"
-              className="invisible col-start-1 row-start-1 grid text-xl font-medium md:text-2xl"
-            >
-              {profile.roles.map((role) => (
-                <span key={role} className="col-start-1 row-start-1">
-                  {role}
-                </span>
-              ))}
-            </div>
-            <p
-              data-hero-role
-              className="col-start-1 row-start-1 self-center text-xl font-medium text-white/80 md:text-2xl"
-            >
-              <m.span
-                key={activeRole}
-                data-hero-role-text
-                className="inline-block"
-                // The first role is part of the static HTML, so it never waits for a script to fade it in.
-                initial={step === 0 ? false : { opacity: 0, x: ROLE_SLIDE_PX }}
-                animate={
-                  leaving
-                    ? { opacity: 0, x: -ROLE_SLIDE_PX }
-                    : { opacity: 1, x: 0 }
-                }
-                transition={{
-                  duration: leaving ? ROLE_EXIT_MS / 1000 : ROLE_ENTER_S,
-                  ease: ROLE_EASE,
-                }}
+          <div className="flex flex-col gap-6">
+            <div className="hero-rise grid w-fit max-w-full [animation-delay:200ms]">
+              {/* All roles share one grid cell: the widest sets the width and one line sets the height, so the block never jumps as roles change. */}
+              <div
+                aria-hidden="true"
+                className="invisible col-start-1 row-start-1 grid text-xl font-medium sm:text-2xl md:text-3xl lg:text-4xl"
               >
-                {activeRole}
-              </m.span>
+                {profile.roles.map((role) => (
+                  <span key={role} className="col-start-1 row-start-1">
+                    {role}
+                  </span>
+                ))}
+              </div>
+              <p
+                data-hero-role
+                className="col-start-1 row-start-1 self-center text-xl font-medium text-muted sm:text-2xl md:text-3xl lg:text-4xl"
+              >
+                <m.span
+                  key={activeRole}
+                  data-hero-role-text
+                  className="inline-block"
+                  // The first role is part of the static HTML, so it never waits for a script to fade it in.
+                  initial={step === 0 ? false : { opacity: 0, y: ROLE_SLIDE_PX }}
+                  animate={
+                    leaving
+                      ? { opacity: 0, y: -ROLE_SLIDE_PX }
+                      : { opacity: 1, y: 0 }
+                  }
+                  transition={{
+                    duration: leaving ? ROLE_EXIT_MS / 1000 : ROLE_ENTER_S,
+                    ease: ROLE_EASE,
+                  }}
+                >
+                  {activeRole}
+                </m.span>
+              </p>
+            </div>
+            <p className="hero-rise max-w-[34rem] text-pretty text-base text-subtle [animation-delay:300ms] md:text-lg">
+              {profile.about}
             </p>
-          </div>
-          <p className="hero-rise max-w-[34rem] text-pretty text-base text-white/65 [animation-delay:300ms] md:text-lg">
-            {profile.about}
-          </p>
-          <div
-            data-hero-actions
-            className="hero-rise flex flex-wrap items-center justify-center gap-3 pt-2 [animation-delay:400ms] md:justify-start"
-          >
-            <a
-              href="/CV-ATS.pdf"
-              download
-              className="press inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 font-medium text-white hover:brightness-110"
+            <div
+              data-hero-actions
+              className="hero-rise flex flex-wrap items-center gap-3 pt-2 [animation-delay:400ms]"
             >
-              <Download className="h-5 w-5" aria-hidden />
-              Download CV
-            </a>
-            <a
-              href="#contact"
-              className="press inline-flex items-center rounded-full border border-white/40 px-6 py-3 font-medium text-white hover:bg-white/10"
-            >
-              Contact
-            </a>
+              <a
+                href="/CV-ATS.pdf"
+                download
+                className="press inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 font-medium text-white hover:brightness-110"
+              >
+                <Download className="h-5 w-5" aria-hidden />
+                Download CV
+              </a>
+              <a
+                href="#contact"
+                className="press inline-flex items-center rounded-full border border-subtle px-6 py-3 font-medium text-fg hover:bg-line/60"
+              >
+                Contact
+              </a>
+            </div>
           </div>
-        </m.div>
-
-        <m.div
-          data-hero-portrait-wrap
-          className="relative flex items-center justify-center max-md:order-first md:justify-self-end"
-          style={reduce ? undefined : { y: portraitY, scale: portraitScale }}
-        >
-          <div
-            data-hero-glow
-            aria-hidden="true"
-            className="hero-rise pointer-events-none absolute -inset-10 rounded-full bg-[radial-gradient(closest-side,rgba(41,151,255,0.32),transparent)] md:-inset-16 lg:-inset-24"
-          />
-          {/* ponytail: the frame is a build-time choice (page.tsx checks public/photo.png); a photo that 404s at runtime would show a broken image instead of the initials. */}
+          {/* Decorative: the name already says who this is, so the card stays out of the accessibility tree. */}
           <div
             data-hero-portrait
-            className="hero-rise relative h-32 w-32 shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-white/20 to-white/5 ring-1 ring-white/20 sm:h-40 sm:w-40 md:h-56 md:w-56 lg:h-72 lg:w-72"
+            aria-hidden="true"
+            className="hero-rise aspect-[4/5] w-44 shrink-0 overflow-hidden rounded-card ring-1 ring-line [animation-delay:500ms] sm:w-52 md:w-60 lg:w-72"
           >
             {photo ? (
               <Image
                 src={photo}
-                alt={`Portrait of ${profile.fullName}`}
+                alt=""
                 width={400}
-                height={400}
+                height={500}
                 loading="eager"
                 fetchPriority="high"
                 className="h-full w-full object-cover"
               />
             ) : (
-              <span
-                aria-hidden="true"
-                className="flex h-full w-full items-center justify-center text-4xl font-semibold tracking-display text-white/60 lg:text-6xl"
-              >
+              <span className="flex h-full w-full items-center justify-center bg-raised text-4xl font-semibold tracking-display text-subtle lg:text-6xl">
                 {initialsOf(profile.fullName)}
               </span>
             )}
           </div>
-        </m.div>
-      </div>
+        </div>
+      </m.div>
     </section>
   );
 }

@@ -46,13 +46,9 @@ describe("DESIGN.md", () => {
     expect(missing).toEqual([]);
   });
 
-  test("the hero gradient stops are documented", () => {
+  test("the hero no longer carries a background gradient", () => {
     const content = readFileSync(path.resolve(root, "src/lib/content.ts"), "utf8");
-    const stops = [
-      ...(content.match(/heroBackground:\s*"([^"]+)"/)?.[1] ?? "").matchAll(/#[0-9a-fA-F]{6}/g),
-    ].map((m) => m[0].toLowerCase());
-    expect(stops.length).toBe(3);
-    for (const stop of stops) expect(Object.values(colors)).toContain(stop);
+    expect(content).not.toMatch(/heroBackground/);
   });
 
   test("component tokens only reference colours that exist", () => {

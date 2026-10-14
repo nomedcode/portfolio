@@ -99,12 +99,22 @@ describe("Hero", () => {
     ).not.toBeInTheDocument();
   });
 
-  test("the headline is just the name, with no greeting", () => {
-    render(<Hero />);
+  test("the headline is just the name on one fluid line, with no greeting", () => {
+    render(<Hero photo="/photo.png" />);
     const h1 = screen.getByRole("heading", { level: 1 });
-    expect(h1).toHaveTextContent(/^Fa'iq Haidar Prasetya$/);
-    expect(h1.textContent).toBe(profile.fullName);
+    expect(h1.textContent?.replace(/\s+/g, " ").trim()).toBe(profile.fullName);
     expect(screen.queryByText(/Hi, I/)).not.toBeInTheDocument();
+    // Big and free to wrap on a phone; from 640px up it's one fluid line instead of stepping by breakpoint.
+    expect(h1).toHaveClass(
+      "text-[2.75rem]",
+      "text-balance",
+      "sm:whitespace-nowrap",
+      "sm:text-[clamp(2rem,6vw,5rem)]"
+    );
+    // The portrait is its own card now, not part of the headline.
+    expect(h1).not.toContainElement(
+      document.querySelector("[data-hero-portrait]") as HTMLElement
+    );
   });
 
   test("offers the CV download first, then contact, both as real links", () => {
@@ -128,13 +138,20 @@ describe("Hero", () => {
     follows(screen.getByText(profile.about), actions);
   });
 
-  test("the primary action is the one Signal Blue pill, the secondary is an outline pill", () => {
+  test("the primary action is the one Signal Blue pill, the secondary is the neutral outline pill", () => {
     render(<Hero />);
     const primary = screen.getByRole("link", { name: "Download CV" });
     const secondary = screen.getByRole("link", { name: "Contact" });
     expect(primary).toHaveClass("bg-accent", "text-white", "rounded-full", "press");
-    expect(secondary).toHaveClass("border", "rounded-full", "press", "text-white");
+    expect(secondary).toHaveClass(
+      "border",
+      "border-subtle",
+      "rounded-full",
+      "press",
+      "text-fg"
+    );
     expect(secondary).not.toHaveClass("bg-accent");
+    expect(secondary).not.toHaveClass("text-white");
   });
 
   test("both actions have a touch target of at least 44px", () => {
@@ -161,98 +178,89 @@ describe("Hero", () => {
     expect(content).toHaveClass("mx-auto", "max-w-6xl", "px-6");
   });
 
-  test("splits into copy on the left and the portrait on the right from md, and stacks the portrait first below it", () => {
+  test("is one left-aligned column: the name on top, then a row with the copy on the left and the portrait on the right from md", () => {
     render(<Hero />);
     const content = document.querySelector("[data-hero-content]") as HTMLElement;
-    expect(content).toHaveClass("grid");
-    expect(content.className).toMatch(/md:grid-cols-\[/);
-    const copy = document.querySelector("[data-hero-copy]") as HTMLElement;
-    const portrait = document.querySelector("[data-hero-portrait-wrap]") as HTMLElement;
-    expect(content).toContainElement(copy);
-    expect(content).toContainElement(portrait);
-    expect(copy).toContainElement(screen.getByRole("heading", { level: 1 }));
-    expect(copy).toHaveClass("text-center", "md:text-left", "items-center", "md:items-start");
-    expect(portrait).toHaveClass("max-md:order-first", "md:justify-self-end");
-    // reading order stays headline first; the order utility only moves the portrait up on small screens
-    follows(copy, portrait);
-  });
-
-  test("sets the headline at five sizes and balances its lines so the name breaks between words, not mid-name", () => {
-    render(<Hero />);
+    expect(content).toHaveClass("flex", "flex-col");
+    expect(content.className).not.toMatch(/grid-cols|text-center|items-center/);
     const h1 = screen.getByRole("heading", { level: 1 });
-    expect(h1).toHaveClass(
-      "font-semibold",
-      "tracking-display",
-      "text-balance",
-      "leading-[1.05]",
-      "text-[2.75rem]",
-      "min-[400px]:text-5xl",
-      "sm:text-6xl",
-      "lg:text-7xl",
-      "xl:text-[5rem]"
-    );
+    expect(content).toContainElement(h1);
+    const row = document.querySelector("[data-hero-row]") as HTMLElement;
+    expect(row).toHaveClass("flex", "flex-col", "md:flex-row", "md:justify-between");
+    const role = document.querySelector("[data-hero-role]") as HTMLElement;
+    const about = screen.getByText(profile.about);
+    const actions = document.querySelector("[data-hero-actions]") as HTMLElement;
+    const portrait = document.querySelector("[data-hero-portrait]") as HTMLElement;
+    expect(actions.className).not.toMatch(/justify-center|md:justify-start/);
+    for (const el of [role, about, actions, portrait]) {
+      expect(row).toContainElement(el);
+    }
+    // Reading order: role, about, actions, portrait last.
+    follows(role, about);
+    follows(about, actions);
+    follows(actions, portrait);
+    expect(document.querySelector("[data-hero-portrait-wrap]")).toBeNull();
+    expect(document.querySelector("[data-hero-copy]")).toBeNull();
   });
 
-  test("rises in on load: portrait, headline, role, about line, then the actions", () => {
+  test("rises in on load: headline, role, about line, actions, then the portrait", () => {
     render(<Hero />);
-    const portrait = document.querySelector("[data-hero-portrait]") as HTMLElement;
     const heading = screen.getByRole("heading", { level: 1 });
     const roleBlock = document.querySelector("[data-hero-role]")
       ?.parentElement as HTMLElement;
     const about = screen.getByText(profile.about);
     const actions = document.querySelector("[data-hero-actions]") as HTMLElement;
-    for (const el of [portrait, heading, roleBlock, about, actions]) {
+    const portrait = document.querySelector("[data-hero-portrait]") as HTMLElement;
+    for (const el of [heading, roleBlock, about, actions, portrait]) {
       expect(el).toHaveClass("hero-rise");
     }
-    expect(portrait).not.toHaveClass("[animation-delay:100ms]");
     expect(heading).toHaveClass("[animation-delay:100ms]");
     expect(roleBlock).toHaveClass("[animation-delay:200ms]");
     expect(about).toHaveClass("[animation-delay:300ms]");
     expect(actions).toHaveClass("[animation-delay:400ms]");
+    expect(portrait).toHaveClass("[animation-delay:500ms]");
   });
 
-  test("shows the photo in a round frame when one is provided, loaded first", () => {
+  test("sits on the neutral page surface in both themes: no dark gradient, no glow, no ring override", () => {
+    render(<Hero />);
+    const hero = screen.getByRole("region", { name: "Introduction" });
+    expect(hero).toHaveClass("bg-page", "text-fg");
+    expect(hero).not.toHaveClass("bg-deep");
+    expect(hero).not.toHaveClass("text-white");
+    expect(hero.className).not.toMatch(/--c-ring/);
+    expect(hero.getAttribute("style") ?? "").not.toMatch(/background/);
+    expect(document.querySelector("[data-hero-glow]")).toBeNull();
+    expect(document.querySelector("[style*='linear-gradient']")).toBeNull();
+  });
+
+  test("shows the photo as a straight 4:5 portrait card beside the copy, decorative and loaded first", () => {
     render(<Hero photo="/photo.png" />);
-    const img = screen.getByRole("img", {
-      name: "Portrait of Fa'iq Haidar Prasetya",
-    });
+    const card = document.querySelector("[data-hero-portrait]") as HTMLElement;
+    expect(card).toHaveAttribute("aria-hidden", "true");
+    const img = card.querySelector("img") as HTMLElement;
+    expect(img).not.toBeNull();
+    expect(img).toHaveAttribute("alt", "");
     expect(img.getAttribute("src")).toContain("photo.png");
     expect(img).toHaveAttribute("loading", "eager");
     expect(img).toHaveAttribute("fetchpriority", "high");
     expect(img).toHaveClass("object-cover");
-    const frame = document.querySelector("[data-hero-portrait]") as HTMLElement;
-    expect(frame).toContainElement(img);
-    expect(frame).toHaveClass("rounded-full", "overflow-hidden");
+    expect(card).toHaveClass("overflow-hidden", "rounded-card", "aspect-[4/5]", "ring-1", "ring-line");
+    expect(card.className).not.toMatch(/rounded-full|rotate-/);
   });
 
-  test("the portrait is a large frame beside the copy from tablet up and a small one above it on a phone", () => {
-    render(<Hero />);
-    const frame = document.querySelector("[data-hero-portrait]") as HTMLElement;
-    expect(frame).toHaveClass("h-32", "w-32", "sm:h-40", "sm:w-40", "md:h-56", "md:w-56", "lg:h-72", "lg:w-72");
+  test("the portrait card is small beside the copy on phones and grows through the breakpoints", () => {
+    render(<Hero photo="/photo.png" />);
+    const card = document.querySelector("[data-hero-portrait]") as HTMLElement;
+    expect(card).toHaveClass("w-44", "sm:w-52", "md:w-60", "lg:w-72", "shrink-0");
   });
 
-  test("without a photo it shows a decorative initials placeholder in the same frame", () => {
+  test("without a photo the same card shows a decorative initials monogram", () => {
     render(<Hero />);
-    const frame = document.querySelector("[data-hero-portrait]") as HTMLElement;
-    expect(frame).toHaveClass("rounded-full", "overflow-hidden");
-    expect(screen.queryByRole("img")).not.toBeInTheDocument();
-    const initials = within(frame).getByText("FP");
-    expect(initials).toHaveAttribute("aria-hidden", "true");
-  });
-
-  test("a soft blue bloom sits behind the portrait, decorative and outside the clipped frame", () => {
-    render(<Hero />);
-    const wrap = document.querySelector("[data-hero-portrait-wrap]") as HTMLElement;
-    const frame = document.querySelector("[data-hero-portrait]") as HTMLElement;
-    const glow = wrap.querySelector("[data-hero-glow]") as HTMLElement;
-    expect(glow).not.toBeNull();
-    expect(glow).toHaveAttribute("aria-hidden", "true");
-    expect(frame).not.toContainElement(glow);
-    follows(glow, frame);
-    // one flat radial wash, no blur filter and no box-shadow to repaint
-    expect(glow.className).toMatch(/radial-gradient/);
-    expect(glow.className).not.toMatch(/blur|shadow/);
-    expect(frame.className).not.toMatch(/shadow-\[/);
+    const card = document.querySelector("[data-hero-portrait]") as HTMLElement;
+    expect(card).toHaveAttribute("aria-hidden", "true");
+    expect(card.querySelector("img")).toBeNull();
+    const initials = within(card).getByText("FP");
+    expect(initials).toHaveClass("bg-raised", "text-subtle");
   });
 
   test("hero-rise is a CSS animation that reduced motion switches off", () => {
@@ -262,13 +270,6 @@ describe("Hero", () => {
       /@media \(prefers-reduced-motion: reduce\)\s*\{([\s\S]*?)\n\}/
     );
     expect(reduced?.[1]).toMatch(/\.hero-rise\s*\{\s*animation:\s*none/);
-  });
-
-  test("scopes a light focus ring to the always-dark hero", () => {
-    render(<Hero />);
-    expect(screen.getByRole("region", { name: "Introduction" })).toHaveClass(
-      "[--c-ring:#2997ff]"
-    );
   });
 
   test("the role line has no control of its own", () => {
@@ -284,10 +285,11 @@ describe("Hero", () => {
     const sizer = document.querySelector(
       "[data-hero-role]"
     )?.parentElement?.querySelector("[aria-hidden='true']") as HTMLElement;
-    for (const cls of ["text-xl", "md:text-2xl", "font-medium"]) {
+    for (const cls of ["text-xl", "sm:text-2xl", "md:text-3xl", "lg:text-4xl", "font-medium"]) {
       expect(visible).toHaveClass(cls);
       expect(sizer).toHaveClass(cls);
     }
+    expect(visible).toHaveClass("text-muted");
     expect([...sizer.children].map((c) => c.textContent)).toEqual(profile.roles);
   });
 
@@ -311,7 +313,7 @@ describe("Hero", () => {
     render(<Hero />);
     const style = roleNode()?.getAttribute("style") ?? "";
     expect(style).not.toMatch(/opacity:\s*0\b/);
-    expect(style).not.toMatch(/translateX\((?!0)/);
+    expect(style).not.toMatch(/translateY\((?!0)/);
   });
 
   test("renders one hero panel without carousel controls", () => {
@@ -355,16 +357,16 @@ describe("Hero", () => {
     expect(queryRotatingRole("DevOps Engineer")).not.toBeInTheDocument();
   });
 
-  test("each new role slides in from the right, sideways only", async () => {
+  test("each new role rolls in from below, vertically only", async () => {
     useFakeClock();
     render(<Hero />);
     await act(async () => {
       vi.advanceTimersByTime(STEP);
     });
     const second = roleNode();
-    expect(enterOffset(second, "X")).toBeGreaterThan(0);
-    expect(enterOffset(second, "Y")).toBeNull();
-    expect(second?.getAttribute("style") ?? "").not.toMatch(/translateY/);
+    expect(enterOffset(second, "Y")).toBeGreaterThan(0);
+    expect(enterOffset(second, "X")).toBeNull();
+    expect(second?.getAttribute("style") ?? "").not.toMatch(/translateX/);
   });
 
   test("keeps going round without end through every role: after the last one the first comes back, one role every three seconds", async () => {

@@ -6,7 +6,6 @@ export type Profile = {
   location: string;
   roles: string[];
   about: string;
-  heroBackground: string;
   email: string;
   socials: Social[];
 };
@@ -58,8 +57,6 @@ export const profile: Profile = {
   ],
   about:
     "Computer Science Undergrad at BINUS, specializing in Cloud Technology, with a strong interest in Cloud Computing, AI/ML, and Data Engineering. Currently building Cloud / Mobile / Web Projects.",
-  heroBackground:
-    "linear-gradient(135deg, #1a1a2e 0%, #16213e 55%, #0f3460 100%)",
   email: "faiqhaidarprasetya0@gmail.com",
   socials: [
     { label: "GitHub", url: "https://github.com/nomedcode" },
