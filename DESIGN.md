@@ -165,7 +165,7 @@ A cool neutral ladder with one blue. Light and dark themes are each composed, no
 
 One centered container (max-width 72rem, 24px side padding) holds everything, including the hero copy, so the hero headline, the header brand and every section heading share one left edge. Only the horizontally scrolling project gallery runs full-bleed; the gallery aligns its first card to the same left edge. Sections use 96px of vertical padding (128px from 768px up) and leave 64px between a section heading and its content. Contact is the one deliberate exception with 112px and 160px of padding to close the page.
 
-Surfaces alternate down the page: the hero on raised, Projects on page, Skills on raised, Certificates on page, Awards on raised, Education on page, Contact on raised, then the footer on raised with a top border. Anchor targets clear the fixed 48px header with a 96px scroll margin.
+Surfaces alternate down the page: the hero on raised, Projects on page, Skills on raised, Certificates on page, Awards on raised, Education on page, Contact on raised, then the footer on raised with a top border. The alternation is deliberate and applies to the hero too: a raised hero is part of the rhythm, not an accent, so no section breaks it. Anchor targets clear the fixed 48px header with a 96px scroll margin.
 
 The hero is left-aligned at every width: the name spans the full container on one fluid line, then a row splits into the copy (role line, about text, actions) on the left and the portrait card on the right from 768px, stacking copy-first below it. It is at least one small viewport tall and grows when the content is taller, so short landscape screens scroll instead of clipping.
 
