@@ -1,6 +1,6 @@
 ---
 name: "Portfolio, Fa'iq Haidar Prasetya"
-description: "A calm, instrument-panel portfolio for a cloud engineering student: a typographic hero on the neutral page surface, then quiet light or dark surfaces with a single blue signal."
+description: "A calm, instrument-panel portfolio for a cloud engineering student: a typographic hero on the raised surface, then quiet light or dark surfaces with a single blue signal."
 colors:
   cloud-white: "#ffffff"
   fog: "#f5f5f7"
@@ -112,12 +112,12 @@ components:
 
 **Creative North Star: "The Quiet Control Room"**
 
-A cloud engineer's portfolio should feel like a well-kept operations console: calm, legible, and nothing blinking without a reason. The page opens on a typographic hero on the neutral page surface (the name on one fluid line with the portrait as a card beside the copy, the role rolling beneath it), then settles into a single column of surfaces that alternate between two close tones. The only chroma outside the brand logos is one blue signal, spent on actions and focus.
+A cloud engineer's portfolio should feel like a well-kept operations console: calm, legible, and nothing blinking without a reason. The page opens on a typographic hero on the raised surface (the name on one fluid line with the portrait as a card beside the copy, the role rolling beneath it), then settles into a single column of surfaces that alternate between two close tones. The only chroma outside the brand logos is one blue signal, spent on actions and focus.
 
 Density is low and the rhythm is steady: one container, one section padding, one heading gap. Motion explains arrival and state, then gets out of the way. The voice is calm, precise and confident; copy is short and names what will happen, not the gesture used to trigger it.
 
 **Key Characteristics:**
-- One typographic hero on the page tone, then page and raised surfaces that alternate down the page.
+- One typographic hero on the raised tone, then raised and page surfaces that alternate down the page.
 - A single blue signal for action and focus; no second accent hue.
 - Depth from tonal layering and one translucent header, not from shadows.
 - A tracking scale that gets tighter as type gets larger.
@@ -165,7 +165,7 @@ A cool neutral ladder with one blue. Light and dark themes are each composed, no
 
 One centered container (max-width 72rem, 24px side padding) holds everything, including the hero copy, so the hero headline, the header brand and every section heading share one left edge. Only the horizontally scrolling project gallery runs full-bleed; the gallery aligns its first card to the same left edge. Sections use 96px of vertical padding (128px from 768px up) and leave 64px between a section heading and its content. Contact is the one deliberate exception with 112px and 160px of padding to close the page.
 
-Surfaces alternate down the page: Projects on page, Skills on raised, Certificates on page, Awards on raised, Education on page, Contact on raised, then the footer on raised with a top border. Anchor targets clear the fixed 48px header with a 96px scroll margin.
+Surfaces alternate down the page: the hero on raised, Projects on page, Skills on raised, Certificates on page, Awards on raised, Education on page, Contact on raised, then the footer on raised with a top border. Anchor targets clear the fixed 48px header with a 96px scroll margin.
 
 The hero is left-aligned at every width: the name spans the full container on one fluid line, then a row splits into the copy (role line, about text, actions) on the left and the portrait card on the right from 768px, stacking copy-first below it. It is at least one small viewport tall and grows when the content is taller, so short landscape screens scroll instead of clipping.
 
@@ -212,12 +212,13 @@ Large, soft, and consistent. Big cards use a 28px radius and small cards 18px; e
 - **Style:** the Skills dialog is a 28px-radius page-tone sheet, up to 768px wide and 85% of the viewport tall, with a scrolling, keyboard-focusable body. It scales from 0.85 out of the Skills card (a spring of 0.4s with no bounce), leaves faster than it arrives, and only fades under reduced motion.
 
 ### Hero
+- **Surface:** the raised tone in both themes (Fog light, Panel dark) with Ink / Frost text, one step off Projects on page below it. Flat: no gradient, no glow, no shadow.
 - **Copy:** headline, role line, the about text (34rem wide, Mist Subtle / Dusk) and the two actions, left-aligned at every width. Each piece rises in on first paint with a 100ms stagger; the portrait arrives last.
 - **Role line:** rotates through the five roles (Cloud Engineer, DevOps Engineer, Site Reliability Engineer, System Administrator, AI Engineer) without end: a 2.6s hold, then 0.4s rolling out upward and 0.45s rolling in from below. A hidden tab holds the countdown. Under reduced motion it shows the first role and never moves. The first role is in the static HTML. There is no pause control, so the line moves by itself for more than five seconds (WCAG 2.2.2 is open, by choice).
 - **Scroll:** as the hero leaves, the copy settles 48px and fades to 20%. These are transforms and opacity only, and reduced motion drops them.
 
 ### Portrait
-- **Style:** a straight 4:5 card at the 28px card radius with a 1px Hairline ring, 176px wide on phones, 208px from 640px, 240px from 768px and 288px from 1024px, sitting right of the copy on the same row. It is decorative: the name already identifies the person, so the card is `aria-hidden` and the photo's alt is empty. The photo ships at 400px so the card stays sharp on dense screens. Without a photo it shows a two-letter monogram in the Display style on a raised fill.
+- **Style:** a straight 4:5 card at the 28px card radius with a 1px Hairline ring, 176px wide on phones, 208px from 640px, 240px from 768px and 288px from 1024px, sitting right of the copy on the same row. It is decorative: the name already identifies the person, so the card is `aria-hidden` and the photo's alt is empty. The photo ships at 400px so the card stays sharp on dense screens. Without a photo it shows a two-letter monogram in the Display style on a page-tone fill, so the card still reads against the raised hero.
 
 ## Do's and Don'ts
 

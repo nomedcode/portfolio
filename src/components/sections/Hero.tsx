@@ -77,7 +77,7 @@ export function Hero({ photo }: { photo?: string }) {
       ref={sectionRef}
       id="top"
       aria-label="Introduction"
-      className="relative min-h-svh bg-page text-fg"
+      className="relative min-h-svh bg-raised text-fg"
     >
       <m.div
         data-hero-content
@@ -169,7 +169,7 @@ export function Hero({ photo }: { photo?: string }) {
                 className="h-full w-full object-cover"
               />
             ) : (
-              <span className="flex h-full w-full items-center justify-center bg-raised text-4xl font-semibold tracking-display text-subtle lg:text-6xl">
+              <span className="flex h-full w-full items-center justify-center bg-page text-4xl font-semibold tracking-display text-subtle lg:text-6xl">
                 {initialsOf(profile.fullName)}
               </span>
             )}

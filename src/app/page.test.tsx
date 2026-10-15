@@ -70,6 +70,7 @@ describe("Assembled page", () => {
 
   test("sections use theme-aware background tokens", () => {
     render(<Home />);
+    expect(document.getElementById("top")).toHaveClass("bg-raised");
     expect(document.getElementById("projects")).toHaveClass("bg-page");
     expect(document.getElementById("skills")).toHaveClass("bg-raised");
     expect(document.getElementById("certificates")).toHaveClass("bg-page");

@@ -221,10 +221,11 @@ describe("Hero", () => {
     expect(portrait).toHaveClass("[animation-delay:500ms]");
   });
 
-  test("sits on the neutral page surface in both themes: no dark gradient, no glow, no ring override", () => {
+  test("sits on the raised surface, one tone off Projects below it: no dark gradient, no glow, no ring override", () => {
     render(<Hero />);
     const hero = screen.getByRole("region", { name: "Introduction" });
-    expect(hero).toHaveClass("bg-page", "text-fg");
+    expect(hero).toHaveClass("bg-raised", "text-fg");
+    expect(hero).not.toHaveClass("bg-page");
     expect(hero).not.toHaveClass("bg-deep");
     expect(hero).not.toHaveClass("text-white");
     expect(hero.className).not.toMatch(/--c-ring/);
@@ -260,7 +261,8 @@ describe("Hero", () => {
     expect(card).toHaveAttribute("aria-hidden", "true");
     expect(card.querySelector("img")).toBeNull();
     const initials = within(card).getByText("FP");
-    expect(initials).toHaveClass("bg-raised", "text-subtle");
+    // The card fill is the page tone: on the raised hero surface a raised fill would vanish.
+    expect(initials).toHaveClass("bg-page", "text-subtle");
   });
 
   test("hero-rise is a CSS animation that reduced motion switches off", () => {
