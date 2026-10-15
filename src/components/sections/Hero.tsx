@@ -110,24 +110,30 @@ export function Hero({ photo }: { photo?: string }) {
                 data-hero-role
                 className="col-start-1 row-start-1 self-center text-xl font-medium text-muted sm:text-2xl md:text-3xl lg:text-4xl"
               >
-                <m.span
-                  key={activeRole}
-                  data-hero-role-text
-                  className="inline-block"
-                  // The first role is part of the static HTML, so it never waits for a script to fade it in.
-                  initial={step === 0 ? false : { opacity: 0, y: ROLE_SLIDE_PX }}
-                  animate={
-                    leaving
-                      ? { opacity: 0, y: -ROLE_SLIDE_PX }
-                      : { opacity: 1, y: 0 }
-                  }
-                  transition={{
-                    duration: leaving ? ROLE_EXIT_MS / 1000 : ROLE_ENTER_S,
-                    ease: ROLE_EASE,
-                  }}
-                >
-                  {activeRole}
-                </m.span>
+                {reduce ? (
+                  <span data-hero-role-text className="inline-block">
+                    {activeRole}
+                  </span>
+                ) : (
+                  <m.span
+                    key={activeRole}
+                    data-hero-role-text
+                    className="inline-block"
+                    // The first role is part of the static HTML, so it never waits for a script to fade it in.
+                    initial={step === 0 ? false : { opacity: 0, y: ROLE_SLIDE_PX }}
+                    animate={
+                      leaving
+                        ? { opacity: 0, y: -ROLE_SLIDE_PX }
+                        : { opacity: 1, y: 0 }
+                    }
+                    transition={{
+                      duration: leaving ? ROLE_EXIT_MS / 1000 : ROLE_ENTER_S,
+                      ease: ROLE_EASE,
+                    }}
+                  >
+                    {activeRole}
+                  </m.span>
+                )}
               </p>
             </div>
             <p className="hero-rise max-w-[34rem] text-pretty text-base text-subtle [animation-delay:300ms] md:text-lg">
