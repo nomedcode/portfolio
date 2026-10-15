@@ -124,7 +124,7 @@ html {
     outline-offset: 2px;
   }
   /* Header floats over the dark hero in light theme; page text color is the only ring that holds there. */
-  .material-light :focus-visible {
+  .glass-header :focus-visible {
     outline-color: var(--c-fg);
   }
 }
@@ -165,32 +165,32 @@ html {
   .gallery-scroll::-webkit-scrollbar {
     display: none;
   }
-  .material-light {
+  .glass-header {
     background: rgba(255, 255, 255, 0.78);
     backdrop-filter: blur(20px) saturate(180%);
     border-top: 1px solid rgba(255, 255, 255, 0.4);
   }
 }
 
-.dark .material-light {
+.dark .glass-header {
   background: rgba(18, 18, 19, 0.6);
   backdrop-filter: blur(20px) saturate(180%);
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 @media (prefers-reduced-transparency: reduce) {
-  .material-light,
-  .dark .material-light {
+  .glass-header,
+  .dark .glass-header {
     background: var(--c-page);
     backdrop-filter: none;
   }
 }
 
 @media (prefers-contrast: more) {
-  /* Solid bar, no blur, defined edge on the side that meets content. `.dark .material-light`
+  /* Solid bar, no blur, defined edge on the side that meets content. `.dark .glass-header`
      is listed on purpose: at (0,2,0) it would otherwise beat these (0,1,0) rules in dark theme. */
-  .material-light,
-  .dark .material-light {
+  .glass-header,
+  .dark .glass-header {
     background: var(--c-page);
     backdrop-filter: none;
     border-top: 0;

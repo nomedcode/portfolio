@@ -48,7 +48,7 @@ describe("reduced-motion CSS", () => {
 
   test("the light glass header is opaque enough not to turn grey over the dark hero", () => {
     const alpha = Number(
-      css.match(/\.material-light\s*\{[^}]*background:\s*rgba\(255,\s*255,\s*255,\s*([\d.]+)\)/)?.[1]
+      css.match(/\.glass-header\s*\{[^}]*background:\s*rgba\(255,\s*255,\s*255,\s*([\d.]+)\)/)?.[1]
     );
     expect(alpha).toBeGreaterThanOrEqual(0.75);
   });});

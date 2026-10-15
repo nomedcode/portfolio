@@ -36,7 +36,7 @@ export function Nav() {
   return (
     <header
       ref={headerRef}
-      className="material-light fixed inset-x-0 top-0 z-50"
+      className="glass-header fixed inset-x-0 top-0 z-50"
     >
       <nav
         aria-label="Main"
