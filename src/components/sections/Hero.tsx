@@ -60,6 +60,7 @@ export function Hero({ photo }: { photo?: string }) {
     document.addEventListener("visibilitychange", onVisibility);
     return () => {
       clearTimeout(timer);
+      setIsRoleExiting(false);
       document.removeEventListener("visibilitychange", onVisibility);
     };
   }, [step, reduce]);
