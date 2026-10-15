@@ -12,13 +12,7 @@ const GAP = 16;
 const FALLBACK_STEP = 356;
 
 // Placeholder islands until real projects land; replace with entries in content.ts then.
-const islands = [
-  "linear-gradient(160deg, #1a1a2e 0%, #0f3460 100%)",
-  "linear-gradient(160deg, #0f0f23 0%, #533483 100%)",
-  "linear-gradient(160deg, #13232a 0%, #264653 100%)",
-  "linear-gradient(160deg, #2b2b2b 0%, #414345 100%)",
-  "linear-gradient(160deg, #0d1f1a 0%, #1b4332 100%)",
-];
+const islands = ["bg-island-1", "bg-island-2", "bg-island-3", "bg-island-4", "bg-island-5"];
 
 const listVariants = (reduce: boolean): Variants => ({
   hidden: {},
@@ -112,14 +106,13 @@ export function Projects() {
           viewport={{ once: true, margin: "-15%" }}
           className="flex w-max gap-4 px-[max(1.5rem,calc((100%_-_72rem)/2_+_1.5rem))]"
         >
-          {islands.map((gradient, i) => (
+          {islands.map((island, i) => (
             <m.li
-              key={gradient}
+              key={island}
               data-gallery-card
               data-reveal
               variants={card}
-              className="relative h-[440px] w-[78vw] shrink-0 snap-start overflow-hidden rounded-card ring-1 ring-inset ring-white/10 sm:w-[340px] md:h-[480px]"
-              style={{ background: gradient }}
+              className={`relative h-[440px] w-[78vw] shrink-0 snap-start overflow-hidden rounded-card ring-1 ring-inset ring-white/10 sm:w-[340px] md:h-[480px] ${island}`}
             >
               <p className="p-6 text-2xl font-semibold leading-tight tracking-title text-white md:text-[28px]">
                 <span className="sr-only">Project {i + 1}: </span>

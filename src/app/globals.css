@@ -20,6 +20,11 @@
   --tracking-display: -0.03em;
   --tracking-heading: -0.02em;
   --tracking-title: -0.01em;
+  --background-image-island-1: linear-gradient(160deg, #1a1a2e 0%, #0f3460 100%);
+  --background-image-island-2: linear-gradient(160deg, #0f0f23 0%, #533483 100%);
+  --background-image-island-3: linear-gradient(160deg, #13232a 0%, #264653 100%);
+  --background-image-island-4: linear-gradient(160deg, #2b2b2b 0%, #414345 100%);
+  --background-image-island-5: linear-gradient(160deg, #0d1f1a 0%, #1b4332 100%);
 }
 
 :root {
