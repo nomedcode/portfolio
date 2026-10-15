@@ -13,6 +13,7 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 const ROLE_HOLD_MS = 2600;
 const ROLE_EXIT_MS = 400;
 const ROLE_ENTER_S = 0.45;
+const ROLE_FADE_S = 0.2;
 // Roles roll vertically like a ticker: the old one leaves upward, the next one arrives from below.
 const ROLE_SLIDE_PX = 24;
 const ROLE_EASE = [0.16, 1, 0.3, 1] as const;
@@ -110,30 +111,26 @@ export function Hero({ photo }: { photo?: string }) {
                 data-hero-role
                 className="col-start-1 row-start-1 self-center text-xl font-medium text-muted sm:text-2xl md:text-3xl lg:text-4xl"
               >
-                {reduce ? (
-                  <span data-hero-role-text className="inline-block">
-                    {activeRole}
-                  </span>
-                ) : (
-                  <m.span
-                    key={activeRole}
-                    data-hero-role-text
-                    className="inline-block"
-                    // The first role is part of the static HTML, so it never waits for a script to fade it in.
-                    initial={step === 0 ? false : { opacity: 0, y: ROLE_SLIDE_PX }}
-                    animate={
-                      leaving
-                        ? { opacity: 0, y: -ROLE_SLIDE_PX }
-                        : { opacity: 1, y: 0 }
-                    }
-                    transition={{
-                      duration: leaving ? ROLE_EXIT_MS / 1000 : ROLE_ENTER_S,
-                      ease: ROLE_EASE,
-                    }}
-                  >
-                    {activeRole}
-                  </m.span>
-                )}
+                <m.span
+                  key={activeRole}
+                  data-hero-role-text
+                  className="inline-block"
+                  // The first role is part of the static HTML, so it never waits for a script to fade it in.
+                  initial={
+                    step === 0 ? false : reduce ? { opacity: 0 } : { opacity: 0, y: ROLE_SLIDE_PX }
+                  }
+                  animate={
+                    leaving
+                      ? { opacity: 0, y: -ROLE_SLIDE_PX }
+                      : { opacity: 1, y: 0 }
+                  }
+                  transition={{
+                    duration: leaving ? ROLE_EXIT_MS / 1000 : reduce ? ROLE_FADE_S : ROLE_ENTER_S,
+                    ease: ROLE_EASE,
+                  }}
+                >
+                  {activeRole}
+                </m.span>
               </p>
             </div>
             <p className="hero-rise max-w-[34rem] text-pretty text-base text-subtle [animation-delay:300ms] md:text-lg">
