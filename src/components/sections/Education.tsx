@@ -17,12 +17,12 @@ export function Education() {
             {education.map((e) => (
               <div
                 key={e.id}
-                className="grid gap-3 p-8 md:grid-cols-[200px_1fr] md:gap-12 md:p-12"
+                className="grid gap-3 p-8 md:grid-cols-[1fr_200px] md:gap-12 md:p-12"
               >
-                <dt className="text-sm font-semibold text-subtle">
+                <dt className="text-sm font-semibold text-subtle md:order-2 md:text-right">
                   {e.period}
                 </dt>
-                <dd className="flex flex-col gap-2">
+                <dd className="flex flex-col gap-2 md:order-1">
                   <GraduationCap className="h-5 w-5 text-accent dark:text-accent-dark" aria-hidden />
                   <p className="text-lg font-semibold leading-snug tracking-title">
                     {e.degree}

@@ -28,6 +28,20 @@ describe("Education", () => {
     }
   });
 
+  test("period sits in a right-hand column on md+ while dt stays before dd in the DOM", () => {
+    const { container } = render(<Education />);
+    const terms = container.querySelectorAll("dt");
+    for (const dt of terms) {
+      expect(dt).toHaveClass("md:order-2", "md:text-right");
+      const dd = dt.parentElement!.querySelector("dd");
+      expect(dd).toHaveClass("md:order-1");
+      expect(dt.parentElement).toHaveClass("md:grid-cols-[1fr_200px]");
+      expect(dt.compareDocumentPosition(dd!)).toBe(
+        Node.DOCUMENT_POSITION_FOLLOWING
+      );
+    }
+  });
+
   test("renders GPA when present and every coursework chip", () => {
     render(<Education />);
     const withGpa = education.filter((e) => e.gpa);
