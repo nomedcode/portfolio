@@ -46,6 +46,10 @@ export function TechStackDialog({
     const y = o.top + o.height / 2 - (d.top + d.height / 2) + h / 2;
     dialog.style.transformOrigin = `${clamp(x, w)}px ${clamp(y, h)}px`;
   }, [reduce, returnFocusRef]);
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
   useEffect(() => {
     const opener = returnFocusRef.current;
     closeRef.current?.focus();
@@ -54,7 +58,7 @@ export function TechStackDialog({
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
-        onClose();
+        onCloseRef.current();
         return;
       }
       if (e.key === "Tab") {
@@ -79,7 +83,7 @@ export function TechStackDialog({
       document.body.style.overflow = prevOverflow;
       opener?.focus();
     };
-  }, [onClose, returnFocusRef]);
+  }, [returnFocusRef]);
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 md:p-8">
