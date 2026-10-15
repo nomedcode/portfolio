@@ -14,6 +14,7 @@ test("hero role is visible again after reduced motion is toggled off mid-exit", 
     { polling: 10, timeout: 10_000 },
   );
 
+  expect(await role.evaluate((el) => Number(getComputedStyle(el).opacity))).toBeLessThan(1);
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.waitForTimeout(100);
   await page.emulateMedia({ reducedMotion: "no-preference" });
