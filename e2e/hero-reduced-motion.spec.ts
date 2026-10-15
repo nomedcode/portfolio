@@ -8,11 +8,18 @@ test("hero role is visible again after reduced motion is toggled off mid-exit", 
   const firstRole = await role.textContent();
 
   await page.waitForFunction(
-    (firstRole) => {
-      const el = document.querySelector<HTMLElement>("[data-hero-role-text]");
-      return !!el && el.textContent !== firstRole && Number(getComputedStyle(el).opacity) < 1;
-    },
+    (firstRole) => document.querySelector("[data-hero-role-text]")?.textContent !== firstRole,
     firstRole,
+    { polling: 10, timeout: 10_000 },
+  );
+  await page.waitForFunction(
+    () => Number(getComputedStyle(document.querySelector<HTMLElement>("[data-hero-role-text]")!).opacity) === 1,
+    undefined,
+    { polling: 10, timeout: 10_000 },
+  );
+  await page.waitForFunction(
+    () => Number(getComputedStyle(document.querySelector<HTMLElement>("[data-hero-role-text]")!).opacity) < 1,
+    undefined,
     { polling: 10, timeout: 10_000 },
   );
 
