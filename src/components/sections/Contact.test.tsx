@@ -182,22 +182,22 @@ describe("Footer", () => {
     render(<Footer />);
     const row = document.querySelector("[data-footer-row]");
     expect(row).toHaveClass("grid");
-    expect(row).toHaveClass("md:grid-cols-[1fr_auto_1fr]");
-    expect(row).toHaveClass("md:items-center");
+    expect(row).toHaveClass("xl:grid-cols-[1fr_auto_1fr]");
+    expect(row).toHaveClass("xl:items-center");
     expect(screen.getByRole("navigation", { name: "Footer" })).toHaveClass(
-      "md:justify-self-center"
+      "xl:justify-self-center"
     );
     expect(document.querySelector("[data-footer-socials]")).toHaveClass(
-      "md:justify-self-end"
+      "xl:justify-self-end"
     );
   });
 
-  test("stacks and centers the three footer groups on narrow screens", () => {
+  test("stacks and centers the three footer groups through tablet widths", () => {
     render(<Footer />);
     const row = document.querySelector("[data-footer-row]");
     expect(row).toHaveClass("justify-items-center");
     expect(row).toHaveClass("text-center");
-    expect(row).toHaveClass("md:text-left");
+    expect(row).toHaveClass("xl:text-left");
     expect(screen.getByRole("navigation", { name: "Footer" })).toHaveClass(
       "justify-center"
     );

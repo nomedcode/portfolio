@@ -171,6 +171,8 @@ The hero is left-aligned at every width: the name spans the full container on on
 
 Breakpoints follow content: 400px (larger hero headline on phones), 640px (larger hero type and portrait), 768px (desktop nav, larger type, wider padding, split hero), 1024px (larger hero type and portrait), 1280px (largest hero headline). The mobile menu is capped to the space under the header and scrolls.
 
+The footer stacks and centers its credit, section navigation and external links below 1280px. From 1280px it uses three columns with the navigation centered; link labels stay on one line while each link group can wrap between links.
+
 ## Elevation & Depth
 
 Tonal layering, with one translucent layer. Cards sit on the page or raised tone separated by a 1px hairline, not by shadows. The header is the only glass: 78% of the surface tone in the light theme (60% in dark) with a 20px blur and 180% saturation, a hairline on the edge that meets content, and solid fallbacks under reduced transparency and higher contrast. The dialog sits on a black 50% scrim.
