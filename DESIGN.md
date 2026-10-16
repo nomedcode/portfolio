@@ -129,7 +129,7 @@ A cool neutral ladder with one blue. Light and dark themes are each composed, no
 
 ### Primary
 - **Signal Blue** (#0066cc): the action color in the light theme. Primary pill buttons (including "Download CV" in the hero), outlined buttons, links and the focus ring.
-- **Beacon Blue** (#2997ff): the same role in the dark theme.
+- **Beacon Blue** (#2997ff): the same role in the dark theme for text, links, icons and the focus ring. Filled buttons keep a Signal Blue fill with white text in both themes — white on Beacon Blue is 3.02:1, below AA.
 
 ### Neutral
 - **Cloud White** (#ffffff) and **Fog** (#f5f5f7): the page and raised surfaces in the light theme.
@@ -138,6 +138,16 @@ A cool neutral ladder with one blue. Light and dark themes are each composed, no
 - **Slate Muted** (#52525b) and **Haze** (#a1a1aa): secondary text. **Mist Subtle** (#6b6b74) and **Dusk** (#8f8f98): metadata.
 - **Hairline** (#e4e4e7) and **Rule Dark** (#2a2a2c): borders and dividers, also the current-section pill at 70%.
 - **Void** (#000000): the deep token in the dark theme.
+
+### Project Islands
+The five placeholder project cards are dark two-stop gradients (160deg), tokenized as `--background-image-island-1` through `-5`:
+1. `#1a1a2e` → `#0f3460`
+2. `#0f0f23` → `#533483`
+3. `#13232a` → `#264653`
+4. `#2b2b2b` → `#414345`
+5. `#0d1f1a` → `#1b4332`
+
+White title text on all five is 12.5:1 or better.
 
 ### Named Rules
 **The One Blue Rule.** Signal Blue and Beacon Blue are the only chroma the interface itself uses. Everything else is neutral; brand logos bring their own color.
