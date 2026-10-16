@@ -92,7 +92,7 @@ export function Hero({ photo }: { photo?: string }) {
         </h1>
         <div
           data-hero-row
-          className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between md:gap-12"
+          className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between md:gap-12"
         >
           <div className="flex flex-col gap-6">
             <div className="hero-rise grid w-fit max-w-full [animation-delay:200ms]">

@@ -19,11 +19,12 @@ const listVariants = (reduce: boolean): Variants => ({
   show: { transition: { staggerChildren: reduce ? 0 : 0.13 } },
 });
 
-// No y-offset: a vertical rise would clip the card's bottom edge against the scroller's overflow-y-hidden box.
+// The rise stays inside 12px of scroller padding (py-3/-my-3 below), so the card never crosses the clip edge.
 const cardVariants = (reduce: boolean): Variants => ({
-  hidden: { opacity: 0 },
+  hidden: { opacity: 0, y: 12 },
   show: {
     opacity: 1,
+    y: 0,
     transition: motionTransition(reduce, { duration: 0.5, ease: "easeOut" }),
   },
 });
@@ -97,7 +98,7 @@ export function Projects() {
         role="region"
         aria-label="Projects gallery"
         tabIndex={0}
-        className="gallery-scroll mt-16 snap-x snap-mandatory overflow-x-auto overflow-y-hidden scroll-px-[max(1.5rem,calc((100%_-_72rem)/2_+_1.5rem))] focus-visible:-outline-offset-2"
+        className="gallery-scroll -mb-3 mt-16 snap-x snap-mandatory overflow-x-auto overflow-y-hidden scroll-px-[max(1.5rem,calc((100%_-_72rem)/2_+_1.5rem))] pb-3 focus-visible:-outline-offset-2"
       >
         <m.ul
           role="list"
