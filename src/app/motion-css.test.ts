@@ -51,4 +51,11 @@ describe("reduced-motion CSS", () => {
       css.match(/\.glass-header\s*\{[^}]*background:\s*rgba\(255,\s*255,\s*255,\s*([\d.]+)\)/)?.[1]
     );
     expect(alpha).toBeGreaterThanOrEqual(0.75);
+  });
+
+  test("the glass header draws its hairline on the edge that meets content", () => {
+    for (const rule of css.matchAll(/\.glass-header\s*\{([^}]*backdrop-filter:\s*blur[^}]*)\}/g)) {
+      expect(rule[1]).not.toMatch(/border-top:\s*[^0]/);
+      expect(rule[1]).toMatch(/border-bottom:\s*1px solid/);
+    }
   });});

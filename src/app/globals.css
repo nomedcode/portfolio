@@ -171,14 +171,14 @@ html {
   .glass-header {
     background: rgba(255, 255, 255, 0.78);
     backdrop-filter: blur(20px) saturate(180%);
-    border-top: 1px solid rgba(255, 255, 255, 0.4);
+    border-bottom: 1px solid var(--c-line);
   }
 }
 
 .dark .glass-header {
   background: rgba(18, 18, 19, 0.6);
   backdrop-filter: blur(20px) saturate(180%);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--c-line);
 }
 
 @media (prefers-reduced-transparency: reduce) {
