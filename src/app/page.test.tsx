@@ -1,6 +1,4 @@
 import { render, screen } from "@testing-library/react";
-import { existsSync } from "node:fs";
-import path from "node:path";
 import { describe, expect, test } from "vitest";
 import Home from "./page";
 
@@ -50,15 +48,6 @@ describe("Assembled page", () => {
     expect(
       certs!.compareDocumentPosition(awards!) & Node.DOCUMENT_POSITION_FOLLOWING
     ).toBeTruthy();
-  });
-
-  test("hero shows public/photo.png when the file exists and the placeholder when it does not", () => {
-    const hasPhoto = existsSync(path.join(process.cwd(), "public", "photo.png"));
-    render(<Home />);
-    const chip = document.querySelector("[data-hero-portrait]");
-    expect(chip).not.toBeNull();
-    // The portrait is decorative (aria-hidden), so assert on the DOM, not the accessibility tree.
-    expect(chip!.querySelectorAll("img")).toHaveLength(hasPhoto ? 1 : 0);
   });
 
   test("nav exposes the theme toggle", () => {

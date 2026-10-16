@@ -2,7 +2,6 @@
 
 import { m, useScroll, useTransform } from "framer-motion";
 import { Download } from "lucide-react";
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { profile } from "@/lib/content";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
@@ -18,13 +17,7 @@ const ROLE_FADE_S = 0.2;
 const ROLE_SLIDE_PX = 24;
 const ROLE_EASE = [0.16, 1, 0.3, 1] as const;
 
-// First and last word, e.g. "Fa'iq Haidar Prasetya" -> "FP".
-function initialsOf(fullName: string) {
-  const words = fullName.trim().split(/\s+/);
-  return (words[0][0] + (words.length > 1 ? words[words.length - 1][0] : "")).toUpperCase();
-}
-
-export function Hero({ photo }: { photo?: string }) {
+export function Hero() {
   const [step, setStep] = useState(0);
   const [isRoleExiting, setIsRoleExiting] = useState(false);
   const reduce = useReducedMotion();
@@ -90,11 +83,7 @@ export function Hero({ photo }: { photo?: string }) {
         <h1 className="hero-rise text-balance text-display font-semibold leading-[1.05] tracking-display [animation-delay:100ms] sm:whitespace-nowrap sm:text-display-fluid">
           {profile.fullName}
         </h1>
-        <div
-          data-hero-row
-          className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between md:gap-12"
-        >
-          <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6">
             <div className="hero-rise grid w-fit max-w-full [animation-delay:200ms]">
               {/* All roles share one grid cell: the widest sets the width and one line sets the height, so the block never jumps as roles change. */}
               <div
@@ -156,29 +145,6 @@ export function Hero({ photo }: { photo?: string }) {
               </a>
             </div>
           </div>
-          {/* Decorative: the name already says who this is, so the card stays out of the accessibility tree. */}
-          <div
-            data-hero-portrait
-            aria-hidden="true"
-            className="hero-rise relative aspect-[4/5] w-44 shrink-0 overflow-hidden rounded-card ring-1 ring-line [animation-delay:500ms] sm:w-52 md:aspect-auto md:w-72 md:self-stretch lg:w-80"
-          >
-            {photo ? (
-              <Image
-                src={photo}
-                alt=""
-                width={400}
-                height={500}
-                loading="eager"
-                fetchPriority="high"
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-            ) : (
-              <span className="absolute inset-0 flex items-center justify-center bg-page text-4xl font-semibold tracking-display text-subtle lg:text-6xl">
-                {initialsOf(profile.fullName)}
-              </span>
-            )}
-          </div>
-        </div>
       </m.div>
     </section>
   );

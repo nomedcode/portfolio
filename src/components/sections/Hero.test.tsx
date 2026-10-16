@@ -100,7 +100,7 @@ describe("Hero", () => {
   });
 
   test("the headline is just the name on one fluid line, with no greeting", () => {
-    render(<Hero photo="/photo.png" />);
+    render(<Hero />);
     const h1 = screen.getByRole("heading", { level: 1 });
     expect(h1.textContent?.replace(/\s+/g, " ").trim()).toBe(profile.fullName);
     expect(screen.queryByText(/Hi, I/)).not.toBeInTheDocument();
@@ -110,10 +110,6 @@ describe("Hero", () => {
       "text-balance",
       "sm:whitespace-nowrap",
       "sm:text-display-fluid"
-    );
-    // The portrait is its own card now, not part of the headline.
-    expect(h1).not.toContainElement(
-      document.querySelector("[data-hero-portrait]") as HTMLElement
     );
   });
 
@@ -178,49 +174,41 @@ describe("Hero", () => {
     expect(content).toHaveClass("mx-auto", "max-w-6xl", "px-6");
   });
 
-  test("is one left-aligned column: the name on top, then a row with the copy on the left and the portrait on the right from md", () => {
+  test("is one left-aligned column: name, role, about line, then actions; no portrait", () => {
     render(<Hero />);
     const content = document.querySelector("[data-hero-content]") as HTMLElement;
     expect(content).toHaveClass("flex", "flex-col");
     expect(content.className).not.toMatch(/grid-cols|text-center|items-center/);
     const h1 = screen.getByRole("heading", { level: 1 });
     expect(content).toContainElement(h1);
-    const row = document.querySelector("[data-hero-row]") as HTMLElement;
-    expect(row).toHaveClass("flex", "flex-col", "md:flex-row", "md:justify-between");
-    // The row top-aligns from md: the portrait starts level with the role line, the compact composition holds.
-    expect(row).toHaveClass("md:items-start");
     const role = document.querySelector("[data-hero-role]") as HTMLElement;
     const about = screen.getByText(profile.about);
     const actions = document.querySelector("[data-hero-actions]") as HTMLElement;
-    const portrait = document.querySelector("[data-hero-portrait]") as HTMLElement;
     expect(actions.className).not.toMatch(/justify-center|md:justify-start/);
-    for (const el of [role, about, actions, portrait]) {
-      expect(row).toContainElement(el);
-    }
-    // Reading order: role, about, actions, portrait last.
+    // Reading order: name, role, about, actions. The portrait card is gone.
+    follows(h1, role);
     follows(role, about);
     follows(about, actions);
-    follows(actions, portrait);
+    expect(document.querySelector("[data-hero-portrait]")).toBeNull();
     expect(document.querySelector("[data-hero-portrait-wrap]")).toBeNull();
     expect(document.querySelector("[data-hero-copy]")).toBeNull();
+    expect(document.querySelector("[data-hero-row]")).toBeNull();
   });
 
-  test("rises in on load: headline, role, about line, actions, then the portrait", () => {
+  test("rises in on load: headline, role, about line, then actions", () => {
     render(<Hero />);
     const heading = screen.getByRole("heading", { level: 1 });
     const roleBlock = document.querySelector("[data-hero-role]")
       ?.parentElement as HTMLElement;
     const about = screen.getByText(profile.about);
     const actions = document.querySelector("[data-hero-actions]") as HTMLElement;
-    const portrait = document.querySelector("[data-hero-portrait]") as HTMLElement;
-    for (const el of [heading, roleBlock, about, actions, portrait]) {
+    for (const el of [heading, roleBlock, about, actions]) {
       expect(el).toHaveClass("hero-rise");
     }
     expect(heading).toHaveClass("[animation-delay:100ms]");
     expect(roleBlock).toHaveClass("[animation-delay:200ms]");
     expect(about).toHaveClass("[animation-delay:300ms]");
     expect(actions).toHaveClass("[animation-delay:400ms]");
-    expect(portrait).toHaveClass("[animation-delay:500ms]");
   });
 
   test("sits on the raised surface, one tone off Projects below it: no dark gradient, no glow, no ring override", () => {
@@ -234,39 +222,6 @@ describe("Hero", () => {
     expect(hero.getAttribute("style") ?? "").not.toMatch(/background/);
     expect(document.querySelector("[data-hero-glow]")).toBeNull();
     expect(document.querySelector("[style*='linear-gradient']")).toBeNull();
-  });
-
-  test("shows the photo as a straight 4:5 portrait card beside the copy, decorative and loaded first", () => {
-    render(<Hero photo="/photo.png" />);
-    const card = document.querySelector("[data-hero-portrait]") as HTMLElement;
-    expect(card).toHaveAttribute("aria-hidden", "true");
-    const img = card.querySelector("img") as HTMLElement;
-    expect(img).not.toBeNull();
-    expect(img).toHaveAttribute("alt", "");
-    expect(img.getAttribute("src")).toContain("photo.png");
-    expect(img).toHaveAttribute("loading", "eager");
-    expect(img).toHaveAttribute("fetchpriority", "high");
-    expect(img).toHaveClass("object-cover");
-    expect(card).toHaveClass("overflow-hidden", "rounded-card", "aspect-[4/5]", "ring-1", "ring-line");
-    expect(card.className).not.toMatch(/rounded-full|rotate-/);
-  });
-
-  test("the portrait card is small beside the copy on phones and grows through the breakpoints", () => {
-    render(<Hero photo="/photo.png" />);
-    const card = document.querySelector("[data-hero-portrait]") as HTMLElement;
-    expect(card).toHaveClass("w-44", "sm:w-52", "md:w-72", "lg:w-80", "shrink-0");
-    // From md the card stretches to the row height so its bottom sits level with the action buttons.
-    expect(card).toHaveClass("md:self-stretch", "md:aspect-auto");
-  });
-
-  test("without a photo the same card shows a decorative initials monogram", () => {
-    render(<Hero />);
-    const card = document.querySelector("[data-hero-portrait]") as HTMLElement;
-    expect(card).toHaveAttribute("aria-hidden", "true");
-    expect(card.querySelector("img")).toBeNull();
-    const initials = within(card).getByText("FP");
-    // The card fill is the page tone: on the raised hero surface a raised fill would vanish.
-    expect(initials).toHaveClass("bg-page", "text-subtle");
   });
 
   test("hero-rise is a CSS animation that reduced motion switches off", () => {

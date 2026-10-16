@@ -1,5 +1,3 @@
-import { existsSync } from "node:fs";
-import path from "node:path";
 import { Nav } from "@/components/Nav/Nav";
 import { Awards } from "@/components/sections/Awards";
 import { Certificates } from "@/components/sections/Certificates";
@@ -12,10 +10,6 @@ import { SkillsBanner } from "@/components/sections/SkillsBanner";
 import { MotionProvider } from "@/components/ui/MotionProvider";
 
 export default function Home() {
-  // Evaluated at build time (static export): drop public/photo.png in and the hero frame fills with it.
-  const photo = existsSync(path.join(process.cwd(), "public", "photo.png"))
-    ? "/photo.png"
-    : undefined;
   return (
     <>
       <a
@@ -27,7 +21,7 @@ export default function Home() {
       <Nav />
       <MotionProvider>
         <main id="main">
-          <Hero photo={photo} />
+          <Hero />
           <Projects />
           <SkillsBanner />
           <Certificates />

@@ -112,7 +112,7 @@ components:
 
 **Creative North Star: "The Quiet Control Room"**
 
-A cloud engineer's portfolio should feel like a well-kept operations console: calm, legible, and nothing blinking without a reason. The page opens on a typographic hero on the raised surface (the name on one fluid line with the portrait as a card beside the copy, the role rolling beneath it), then settles into a single column of surfaces that alternate between two close tones. The only chroma outside the brand logos is one blue signal, spent on actions and focus.
+A cloud engineer's portfolio should feel like a well-kept operations console: calm, legible, and nothing blinking without a reason. The page opens on a typographic hero on the raised surface (the name on one fluid line, the role rolling beneath it), then settles into a single column of surfaces that alternate between two close tones. The only chroma outside the brand logos is one blue signal, spent on actions and focus.
 
 Density is low and the rhythm is steady: one container, one section padding, one heading gap. Motion explains arrival and state, then gets out of the way. The voice is calm, precise and confident; copy is short and names what will happen, not the gesture used to trigger it.
 
@@ -161,7 +161,7 @@ White title text on all five is 12.5:1 or better.
 **Character:** one family, three weights (400, 500, 600). Hierarchy comes from size, weight and tracking, not from a second typeface.
 
 ### Hierarchy
-- **Display** (600, line-height 1.05, tracking -0.03em): the hero headline, which is just the name, set at 44px with balanced wrapping below 640px and fluidly at clamp(32px, 6vw, 80px) above it, where it always stays on one line; and the Contact heading (60px). The portrait monogram uses it at 36px (60px from 1024px).
+- **Display** (600, line-height 1.05, tracking -0.03em): the hero headline, which is just the name, set at 44px with balanced wrapping below 640px and fluidly at clamp(32px, 6vw, 80px) above it, where it always stays on one line; and the Contact heading (60px).
 - **Headline** (600, 48px, 36px below 768px, tracking -0.02em): every section heading.
 - **Title** (600, 18px to 28px, tracking -0.01em, leading-snug on the 18px ones): card titles, dialog title, project cards.
 - **Body** (400, 16px to 20px, line-height 1.4 to 1.56): about text and card copy, in secondary text colors; prose stays within about 70 characters.
@@ -177,9 +177,9 @@ One centered container (max-width 72rem, 24px side padding) holds everything, in
 
 Surfaces alternate down the page: the hero on raised, Projects on page, Skills on raised, Certificates on page, Awards on raised, Education on page, Contact on raised, then the footer on raised with a top border. The alternation is deliberate and applies to the hero too: a raised hero is part of the rhythm, not an accent, so no section breaks it. Anchor targets clear the fixed 48px header with a 96px scroll margin.
 
-The hero is left-aligned at every width: the name spans the full container on one fluid line, then a row splits into the copy (role line, about text, actions) on the left and the portrait card on the right from 768px, stacking copy-first below it. It is at least one small viewport tall and grows when the content is taller, so short landscape screens scroll instead of clipping.
+The hero is left-aligned at every width: the name spans the full container on one fluid line, then the copy (role line, about text, actions) follows in one column. It is at least one small viewport tall and grows when the content is taller, so short landscape screens scroll instead of clipping.
 
-Breakpoints follow content: 400px (larger hero headline on phones), 640px (larger hero type and portrait), 768px (desktop nav, larger type, wider padding, split hero), 1024px (larger hero type and portrait), 1280px (largest hero headline). The mobile menu is capped to the space under the header and scrolls.
+Breakpoints follow content: 400px (larger hero headline on phones), 640px (larger hero type), 768px (desktop nav, larger type, wider padding), 1024px (larger hero type), 1280px (largest hero headline). The mobile menu is capped to the space under the header and scrolls.
 
 The footer stacks and centers its credit, section navigation and external links below 1280px. From 1280px it uses three columns with the navigation centered; link labels stay on one line while each link group can wrap between links.
 
@@ -195,7 +195,7 @@ Tonal layering, with one translucent layer. Cards sit on the page or raised tone
 
 ## Shapes
 
-Large, soft, and consistent. Big cards use a 28px radius and small cards 18px; every control and chip is a full pill, and the hero portrait is a 4:5 card at the 28px card radius. Borders are always 1px in Hairline or Rule Dark, and inset 1px white rings (10% to 20%) edge the dark gradient project cards.
+Large, soft, and consistent. Big cards use a 28px radius and small cards 18px; every control and chip is a full pill. Borders are always 1px in Hairline or Rule Dark, and inset 1px white rings (10% to 20%) edge the dark gradient project cards.
 
 ## Components
 
@@ -225,12 +225,9 @@ Large, soft, and consistent. Big cards use a 28px radius and small cards 18px; e
 
 ### Hero
 - **Surface:** the raised tone in both themes (Fog light, Panel dark) with Ink / Frost text, one step off Projects on page below it. Flat: no gradient, no glow, no shadow.
-- **Copy:** headline, role line, the about text (34rem wide, Mist Subtle / Dusk) and the two actions, left-aligned at every width. Each piece rises in on first paint with a 100ms stagger; the portrait arrives last.
-- **Role line:** rotates through the five roles (Cloud Engineer, DevOps Engineer, Site Reliability Engineer, System Administrator, AI Engineer) without end: a 2.6s hold, then 0.4s rolling out upward and 0.45s rolling in from below. A hidden tab holds the countdown. Under reduced motion it shows the first role and never moves. The first role is in the static HTML. There is no pause control, so the line moves by itself for more than five seconds (WCAG 2.2.2 is open, by choice).
+- **Copy:** headline, role line, the about text (34rem wide, Mist Subtle / Dusk) and the two actions, left-aligned at every width. Each piece rises in on first paint with a 100ms stagger; the actions arrive last.
+- **Role line:** rotates through the five roles (Cloud Engineer, DevOps Engineer, Site Reliability Engineer, System Administrator, AI Engineer) without end: a 2.6s hold, then 0.4s rolling out upward and 0.6s rolling in from below. A hidden tab holds the countdown. Under reduced motion it shows the first role and never moves. The first role is in the static HTML. There is no pause control, so the line moves by itself for more than five seconds (WCAG 2.2.2 is open, by choice).
 - **Scroll:** as the hero leaves, the copy settles 48px and fades to 20%. These are transforms and opacity only, and reduced motion drops them.
-
-### Portrait
-- **Style:** a 4:5 card at the 28px card radius with a 1px Hairline ring, 176px wide on phones and 208px from 640px, stacking below the copy; from 768px it sits right of the copy on the same row, 288px wide (320px from 1024px), stretching to the copy column's height so its bottom edge meets the action buttons. It is decorative: the name already identifies the person, so the card is `aria-hidden` and the photo's alt is empty. The photo ships at 400px so the card stays sharp on dense screens. Without a photo it shows a two-letter monogram in the Display style on a page-tone fill, so the card still reads against the raised hero.
 
 ## Do's and Don'ts
 
