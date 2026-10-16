@@ -24,7 +24,6 @@ const devicon = [
   "nextdotjs",
   "tailwindcss",
   "framer",
-  "bun",
   "laravel",
   "nodedotjs",
   "kotlin",
@@ -45,7 +44,8 @@ const devicon = [
   "figma",
 ];
 
-// devicon does not carry these, so they stay a Simple Icons mark or a hand-written one.
+// devicon does not carry these, so they stay a Simple Icons mark or a hand-written one. Bun is the exception that
+// proves the rule: devicon ships a full-colour Bun, but the line-art Simple Icons mark reads better at chip size.
 const notOnDevicon = [
   "gsap",
   "langflow",
@@ -54,6 +54,7 @@ const notOnDevicon = [
   "ollama",
   "modelcontextprotocol",
   "cisco",
+  "bun",
 ];
 
 // Marks drawn in one colour with no fixed fill, so BrandIcon paints them with the per-theme fill.
@@ -69,7 +70,7 @@ describe("skillIcons", () => {
       expect(icon?.viewBox, slug).toBe("0 0 128 128");
       expect(icon?.hex, slug).toMatch(/^[0-9A-Fa-f]{6}$/);
     }
-    expect(devicon).toHaveLength(39);
+    expect(devicon).toHaveLength(38);
   });
 
   test("Google Cloud keeps devicon's four Google colours", () => {
@@ -161,7 +162,7 @@ describe("skillIcons", () => {
       expect(icon?.layers, slug).toBeUndefined();
       expect(icon?.hex, slug).toMatch(/^[0-9A-Fa-f]{6}$/);
     }
-    expect(notOnDevicon).toHaveLength(7);
+    expect(notOnDevicon).toHaveLength(8);
     // the Kiro ghost has two eyes cut out of it; the Hermes mark is merged into one even-odd path on the 24 unit grid
     expect(getSkillIcon("kiro")?.fillRule).toBe("evenodd");
     expect(getSkillIcon("hermes")?.fillRule).toBe("evenodd");

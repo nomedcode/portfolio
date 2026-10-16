@@ -170,11 +170,12 @@ describe("iconFills", () => {
 
   test("the devicon originals keep their brand colours, and the few under 3:1 are named here, not hidden", () => {
     // A deliberate tradeoff: devicon's "original" artwork is used verbatim, so it is never run through the 3:1 fit.
-    // Only nine marks are theme-fitted (the seven devicon does not carry, plus the monochrome AWS and Motion); the
-    // rest carry fixed colours. These are the only ones under 3:1 on a surface. Logos are WCAG-exempt (1.4.3 and
-    // 1.4.11 exclude logotypes), the banner cloud is aria-hidden, and each popup chip names its skill.
-    expect(fittedIcons).toHaveLength(9);
-    expect(fixedColourIcons).toHaveLength(usedIcons.length - 9);
+    // Only ten marks are theme-fitted (the seven devicon does not carry, the line-art Bun, plus the monochrome AWS
+    // and Motion); the rest carry fixed colours. These are the only ones under 3:1 on a surface. Logos are
+    // WCAG-exempt (1.4.3 and 1.4.11 exclude logotypes), the banner cloud is aria-hidden, and each popup chip names
+    // its skill.
+    expect(fittedIcons).toHaveLength(10);
+    expect(fixedColourIcons).toHaveLength(usedIcons.length - 10);
     const under = (surfaces: readonly string[]) =>
       fixedColourIcons
         .filter(({ icon }) => bestContrast(icon, surfaces) < 3)

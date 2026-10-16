@@ -46,9 +46,10 @@ describe("Skills banner", () => {
     const svgs = document.querySelectorAll("[data-preview-logo] svg");
     expect(svgs).toHaveLength(expectedLogoCount());
     expect(document.querySelectorAll("svg.dark\\:invert")).toHaveLength(0);
-    // nine marks are theme-fitted: the seven devicon does not carry, plus the monochrome AWS and Motion. The other
-    // thirty-eight carry their own brand colours (the devicon originals and the uxwing Hugging Face), so no --icon-l.
-    const selfColoured = 38;
+    // ten marks are theme-fitted: the seven devicon does not carry, the line-art Bun, plus the monochrome AWS and
+    // Motion. The other thirty-seven carry their own brand colours (the devicon originals and the uxwing Hugging
+    // Face), so no --icon-l.
+    const selfColoured = 37;
     const withFills = [...svgs].filter((s) =>
       (s as SVGElement).style.getPropertyValue("--icon-l")
     );

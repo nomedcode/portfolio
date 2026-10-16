@@ -141,9 +141,10 @@ describe("TechStackDialog motion", () => {
       skillCategories.reduce((n, c) => n + c.skills.length, 0)
     );
     expect(dialog.querySelectorAll("svg.dark\\:invert")).toHaveLength(0);
-    // nine marks are theme-fitted: the seven devicon does not carry, plus the monochrome AWS and Motion. The other
-    // thirty-eight carry their own brand colours (the devicon originals and the uxwing Hugging Face), so no --icon-l.
-    const selfColoured = 38;
+    // nine marks are theme-fitted: the seven devicon does not carry, plus the monochrome AWS and Motion, and the
+    // line-style Bun. The other thirty-seven carry their own brand colours (the devicon originals and the uxwing
+    // Hugging Face), so no --icon-l.
+    const selfColoured = 37;
     const branded = [...svgs].filter((svg) =>
       (svg as SVGElement).style.getPropertyValue("--icon-l")
     );
