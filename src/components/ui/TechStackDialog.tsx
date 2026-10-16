@@ -15,7 +15,7 @@ const listVariants: Variants = {
 
 const chipVariants: Variants = {
   hidden: { opacity: 0, y: 8 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
 };
 
 // The dialog is nested in the banner, so walk up to body, inerting siblings at every level.

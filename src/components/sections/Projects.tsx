@@ -16,16 +16,17 @@ const islands = ["bg-island-1", "bg-island-2", "bg-island-3", "bg-island-4", "bg
 
 const listVariants = (reduce: boolean): Variants => ({
   hidden: {},
-  show: { transition: { staggerChildren: reduce ? 0 : 0.13 } },
+  show: { transition: { staggerChildren: reduce ? 0 : 0.15 } },
 });
 
 // The rise stays inside 12px of scroller padding (py-3/-my-3 below), so the card never crosses the clip edge.
+// Slow fade, faster rise: Apple's entrance recipe (0.9s opacity, 0.7s translate).
 const cardVariants = (reduce: boolean): Variants => ({
   hidden: { opacity: 0, y: 12 },
   show: {
     opacity: 1,
     y: 0,
-    transition: motionTransition(reduce, { duration: 0.5, ease: "easeOut" }),
+    transition: motionTransition(reduce, { duration: 0.9, ease: "easeOut" }),
   },
 });
 

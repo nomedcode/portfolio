@@ -24,7 +24,7 @@ export function Reveal({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-15%" }}
       transition={motionTransition(reduce, {
-        duration: 0.6,
+        duration: 0.9,
         ease: "easeOut",
         delay,
       })}
