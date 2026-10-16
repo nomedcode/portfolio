@@ -10,7 +10,7 @@ import { SkillMark } from "./SkillMark";
 
 const listVariants: Variants = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.02 } },
+  show: { transition: { staggerChildren: 0.035 } },
 };
 
 const chipVariants: Variants = {

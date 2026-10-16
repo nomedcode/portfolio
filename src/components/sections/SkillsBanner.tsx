@@ -22,7 +22,7 @@ function warmDialog() {
 
 const cloudVariants = (reduce: boolean): Variants => ({
   hidden: {},
-  show: { transition: { staggerChildren: reduce ? 0 : 0.02 } },
+  show: { transition: { staggerChildren: reduce ? 0 : 0.035 } },
 });
 
 const logoVariants = (reduce: boolean): Variants => ({
