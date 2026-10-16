@@ -230,7 +230,7 @@ Large, soft, and consistent. Big cards use a 28px radius and small cards 18px; e
 - **Scroll:** as the hero leaves, the copy settles 48px and fades to 20%. These are transforms and opacity only, and reduced motion drops them.
 
 ### Portrait
-- **Style:** a straight 4:5 card at the 28px card radius with a 1px Hairline ring, 176px wide on phones, 208px from 640px, 240px from 768px and 288px from 1024px, sitting right of the copy on the same row. It is decorative: the name already identifies the person, so the card is `aria-hidden` and the photo's alt is empty. The photo ships at 400px so the card stays sharp on dense screens. Without a photo it shows a two-letter monogram in the Display style on a page-tone fill, so the card still reads against the raised hero.
+- **Style:** a 4:5 card at the 28px card radius with a 1px Hairline ring, 176px wide on phones and 208px from 640px, stacking below the copy; from 768px it sits right of the copy on the same row, 288px wide (320px from 1024px), stretching to the copy column's height so its bottom edge meets the action buttons. It is decorative: the name already identifies the person, so the card is `aria-hidden` and the photo's alt is empty. The photo ships at 400px so the card stays sharp on dense screens. Without a photo it shows a two-letter monogram in the Display style on a page-tone fill, so the card still reads against the raised hero.
 
 ## Do's and Don'ts
 
