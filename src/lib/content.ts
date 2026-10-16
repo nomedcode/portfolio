@@ -91,7 +91,7 @@ export const skillCategories: SkillCategory[] = [
       { name: "Terraform", icon: "terraform" },
       { name: "Docker", icon: "docker" },
       { name: "Kubernetes", icon: "kubernetes" },
-      { name: "nginx", icon: "nginx" },
+      { name: "NGINX", icon: "nginx" },
       { name: "GitHub Actions", icon: "githubactions" },
     ],
   },

@@ -187,6 +187,8 @@ describe("Hero", () => {
     expect(content).toContainElement(h1);
     const row = document.querySelector("[data-hero-row]") as HTMLElement;
     expect(row).toHaveClass("flex", "flex-col", "md:flex-row", "md:justify-between");
+    // The row bottom-aligns from md, so the portrait's bottom edge sits level with the action buttons.
+    expect(row).toHaveClass("md:items-end");
     const role = document.querySelector("[data-hero-role]") as HTMLElement;
     const about = screen.getByText(profile.about);
     const actions = document.querySelector("[data-hero-actions]") as HTMLElement;

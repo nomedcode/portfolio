@@ -112,7 +112,7 @@ describe("skills", () => {
         "Terraform",
         "Docker",
         "Kubernetes",
-        "nginx",
+        "NGINX",
         "GitHub Actions",
       ],
     });
