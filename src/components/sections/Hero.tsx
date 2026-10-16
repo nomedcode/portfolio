@@ -12,7 +12,7 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 // way to stop it. Upgrade path: pause while the hero is hovered or focused, or stop after one pass.
 const ROLE_HOLD_MS = 2600;
 const ROLE_EXIT_MS = 400;
-const ROLE_ENTER_S = 0.45;
+const ROLE_ENTER_S = 0.6;
 const ROLE_FADE_S = 0.2;
 // Roles roll vertically like a ticker: the old one leaves upward, the next one arrives from below.
 const ROLE_SLIDE_PX = 24;

@@ -16,15 +16,14 @@ const islands = ["bg-island-1", "bg-island-2", "bg-island-3", "bg-island-4", "bg
 
 const listVariants = (reduce: boolean): Variants => ({
   hidden: {},
-  show: { transition: { staggerChildren: reduce ? 0 : 0.08 } },
+  show: { transition: { staggerChildren: reduce ? 0 : 0.13 } },
 });
 
+// No y-offset: a vertical rise would clip the card's bottom edge against the scroller's overflow-y-hidden box.
 const cardVariants = (reduce: boolean): Variants => ({
-  hidden: { opacity: 0, y: 24, scale: 0.96 },
+  hidden: { opacity: 0 },
   show: {
     opacity: 1,
-    y: 0,
-    scale: 1,
     transition: motionTransition(reduce, { duration: 0.5, ease: "easeOut" }),
   },
 });

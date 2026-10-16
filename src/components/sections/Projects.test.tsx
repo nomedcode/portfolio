@@ -191,11 +191,11 @@ describe("Projects", () => {
     }
   });
 
-  test("cards start hidden and rise with a slight scale by default", () => {
+  test("cards start hidden and fade in, with no vertical rise that the scroller would clip", () => {
     render(<Projects />);
     const style = screen.getAllByRole("listitem")[0].firstElementChild?.getAttribute("style");
     expect(style).toContain("opacity: 0");
-    expect(style).toContain("translateY(24px)");
+    expect(style ?? "").not.toMatch(/translateY|scale/);
   });
 
   test("under reduced motion cards paint the same hidden first frame (matches the server HTML); the fade-only change lives in the transition", () => {
