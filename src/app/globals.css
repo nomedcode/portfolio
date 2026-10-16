@@ -96,10 +96,10 @@ html {
   }
 }
 
-/* Same rise as Reveal (20px, 0.6s ease-out) but pure CSS, so the hero plays on first paint and never waits for hydration. */
+/* Same rise as Reveal (20px, 0.6s ease-out) but pure CSS, so the hero plays on first paint and never waits for hydration.
+   No opacity: a fade hides the copy until it finishes, which holds mobile LCP past 3s. */
 @keyframes hero-rise {
   from {
-    opacity: 0;
     transform: translateY(20px);
   }
 }

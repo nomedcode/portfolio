@@ -274,6 +274,12 @@ describe("Hero", () => {
     expect(reduced?.[1]).toMatch(/\.hero-rise\s*\{\s*animation:\s*none/);
   });
 
+  test("hero-rise moves without fading, so the copy paints on the first frame and LCP is not held behind an opacity ramp", () => {
+    const keyframes = css.match(/@keyframes hero-rise\s*\{([\s\S]*?)\n\}/);
+    expect(keyframes?.[1]).toMatch(/transform:\s*translateY\(20px\)/);
+    expect(keyframes?.[1]).not.toMatch(/opacity/);
+  });
+
   test("the role line has no control of its own", () => {
     render(<Hero />);
     const roleBlock = document.querySelector("[data-hero-role]")
