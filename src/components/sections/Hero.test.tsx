@@ -254,7 +254,9 @@ describe("Hero", () => {
   test("the portrait card is small beside the copy on phones and grows through the breakpoints", () => {
     render(<Hero photo="/photo.png" />);
     const card = document.querySelector("[data-hero-portrait]") as HTMLElement;
-    expect(card).toHaveClass("w-44", "sm:w-52", "md:w-60", "lg:w-72", "shrink-0");
+    expect(card).toHaveClass("w-44", "sm:w-52", "md:w-72", "lg:w-80", "shrink-0");
+    // From md the card stretches to the row height so its bottom sits level with the action buttons.
+    expect(card).toHaveClass("md:self-stretch", "md:aspect-auto");
   });
 
   test("without a photo the same card shows a decorative initials monogram", () => {

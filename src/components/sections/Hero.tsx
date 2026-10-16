@@ -160,7 +160,7 @@ export function Hero({ photo }: { photo?: string }) {
           <div
             data-hero-portrait
             aria-hidden="true"
-            className="hero-rise aspect-[4/5] w-44 shrink-0 overflow-hidden rounded-card ring-1 ring-line [animation-delay:500ms] sm:w-52 md:w-60 lg:w-72"
+            className="hero-rise relative aspect-[4/5] w-44 shrink-0 overflow-hidden rounded-card ring-1 ring-line [animation-delay:500ms] sm:w-52 md:aspect-auto md:w-72 md:self-stretch lg:w-80"
           >
             {photo ? (
               <Image
@@ -170,10 +170,10 @@ export function Hero({ photo }: { photo?: string }) {
                 height={500}
                 loading="eager"
                 fetchPriority="high"
-                className="h-full w-full object-cover"
+                className="absolute inset-0 h-full w-full object-cover"
               />
             ) : (
-              <span className="flex h-full w-full items-center justify-center bg-page text-4xl font-semibold tracking-display text-subtle lg:text-6xl">
+              <span className="absolute inset-0 flex items-center justify-center bg-page text-4xl font-semibold tracking-display text-subtle lg:text-6xl">
                 {initialsOf(profile.fullName)}
               </span>
             )}
