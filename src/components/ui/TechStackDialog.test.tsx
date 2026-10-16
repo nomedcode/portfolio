@@ -80,6 +80,17 @@ describe("TechStackDialog order", () => {
   });
 });
 
+describe("TechStackDialog modal", () => {
+  test("while open, the page behind the dialog is inert and the dialog is not; closing restores the page", () => {
+    const { opener, dialog } = renderDialog();
+    expect(opener).toHaveAttribute("inert");
+    expect(dialog.closest("[inert]")).toBeNull();
+    expect(screen.getByRole("button", { name: "Close" }).closest("[inert]")).toBeNull();
+    cleanup();
+    expect(opener).not.toHaveAttribute("inert");
+  });
+});
+
 describe("TechStackDialog motion", () => {
   test("opens from the Skills card: it scales out of the card's position", () => {
     mockBoxes(

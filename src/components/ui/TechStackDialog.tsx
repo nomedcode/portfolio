@@ -17,6 +17,19 @@ const chipVariants: Variants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } },
 };
 
+// The dialog is nested in the banner, so walk up to body, inerting siblings at every level.
+function inertOutside(root: HTMLElement | null) {
+  const marked: Element[] = [];
+  for (let node = root; node && node !== document.body; node = node.parentElement) {
+    for (const sibling of Array.from(node.parentElement?.children ?? [])) {
+      if (sibling === node || sibling.hasAttribute("inert")) continue;
+      sibling.setAttribute("inert", "");
+      marked.push(sibling);
+    }
+  }
+  return () => marked.forEach((el) => el.removeAttribute("inert"));
+}
+
 export function TechStackDialog({
   onClose,
   returnFocusRef,
@@ -24,6 +37,7 @@ export function TechStackDialog({
   onClose: () => void;
   returnFocusRef: React.RefObject<HTMLElement | null>;
 }) {
+  const rootRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const reduce = useReducedMotion();
@@ -55,6 +69,7 @@ export function TechStackDialog({
     closeRef.current?.focus();
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    const restoreInert = inertOutside(rootRef.current);
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
@@ -81,12 +96,16 @@ export function TechStackDialog({
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = prevOverflow;
+      restoreInert();
       opener?.focus();
     };
   }, [returnFocusRef]);
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 md:p-8">
+    <div
+      ref={rootRef}
+      className="fixed inset-0 z-[60] flex items-center justify-center p-4 md:p-8"
+    >
       <m.div
         className="absolute inset-0 bg-black/50"
         initial={{ opacity: 0 }}
