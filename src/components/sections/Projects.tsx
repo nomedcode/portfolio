@@ -40,6 +40,9 @@ export function Projects() {
     if (!el) return () => {};
     el.addEventListener("scroll", callback, { passive: true });
     window.addEventListener("resize", callback);
+    // Measure once on mount: the snapshot is "00" until an event fires, so without this the right arrow reads
+    // disabled on first paint even when the gallery overflows.
+    callback();
     return () => {
       el.removeEventListener("scroll", callback);
       window.removeEventListener("resize", callback);
@@ -107,18 +110,24 @@ export function Projects() {
           className="flex w-max gap-4 px-[max(1.5rem,calc((100%_-_72rem)/2_+_1.5rem))]"
         >
           {islands.map((island, i) => (
-            <m.li
+            // The li owns the snap geometry and never moves; the entrance transform runs on the inner card, so
+            // scroll-snap has a stable target and never re-fires mid-animation (which also flickered the arrows).
+            <li
               key={island}
               data-gallery-card
               data-reveal
-              variants={card}
-              className={`relative h-[440px] w-[78vw] shrink-0 snap-start overflow-hidden rounded-card ring-1 ring-inset ring-white/10 sm:w-[340px] md:h-[480px] ${island}`}
+              className="h-[440px] w-[78vw] shrink-0 snap-start sm:w-[340px] md:h-[480px]"
             >
-              <p className="p-6 text-2xl font-semibold leading-tight tracking-title text-white md:text-title-lg">
-                <span className="sr-only">Project {i + 1}: </span>
-                Coming soon
-              </p>
-            </m.li>
+              <m.div
+                variants={card}
+                className={`relative h-full w-full overflow-hidden rounded-card ring-1 ring-inset ring-white/10 ${island}`}
+              >
+                <p className="p-6 text-2xl font-semibold leading-tight tracking-title text-white md:text-title-lg">
+                  <span className="sr-only">Project {i + 1}: </span>
+                  Coming soon
+                </p>
+              </m.div>
+            </li>
           ))}
         </m.ul>
       </div>

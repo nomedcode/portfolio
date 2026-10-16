@@ -109,6 +109,29 @@ describe("Projects", () => {
     ).toBeInTheDocument();
   });
 
+  test("the right arrow reads enabled on mount, before any scroll event, when the gallery overflows", () => {
+    // Mock overflow before render, so the mount-time snapshot already sees it; no scroll/resize event fires here.
+    const proto = HTMLElement.prototype;
+    const real = {
+      scrollWidth: Object.getOwnPropertyDescriptor(proto, "scrollWidth"),
+      clientWidth: Object.getOwnPropertyDescriptor(proto, "clientWidth"),
+      scrollLeft: Object.getOwnPropertyDescriptor(proto, "scrollLeft"),
+    };
+    Object.defineProperty(proto, "scrollWidth", { configurable: true, get() { return this.hasAttribute("data-gallery") ? 2000 : 0; } });
+    Object.defineProperty(proto, "clientWidth", { configurable: true, get() { return this.hasAttribute("data-gallery") ? 500 : 0; } });
+    Object.defineProperty(proto, "scrollLeft", { configurable: true, get() { return 0; } });
+    try {
+      render(<Projects />);
+      expect(
+        screen.getByRole("button", { name: "Scroll projects right" })
+      ).toBeEnabled();
+    } finally {
+      for (const [key, d] of Object.entries(real)) {
+        if (d) Object.defineProperty(proto, key, d);
+      }
+    }
+  });
+
   test("right arrow scrolls the gallery by one card", async () => {
     const user = userEvent.setup();
     const { container } = render(<Projects />);
@@ -160,9 +183,17 @@ describe("Projects", () => {
     expect(scrollBy.mock.calls[0][0].behavior).toBe("auto");
   });
 
+  test("the snap-aligned card never animates: the transform lives on its child, so the snap point cannot jump", () => {
+    const { container } = render(<Projects />);
+    for (const li of container.querySelectorAll("[data-gallery-card]")) {
+      expect(li.getAttribute("style") ?? "").not.toMatch(/transform|opacity/);
+      expect(li.firstElementChild?.getAttribute("style") ?? "").toMatch(/opacity|transform/);
+    }
+  });
+
   test("cards start hidden and rise with a slight scale by default", () => {
     render(<Projects />);
-    const style = screen.getAllByRole("listitem")[0].getAttribute("style");
+    const style = screen.getAllByRole("listitem")[0].firstElementChild?.getAttribute("style");
     expect(style).toContain("opacity: 0");
     expect(style).toContain("translateY(24px)");
   });
@@ -171,7 +202,7 @@ describe("Projects", () => {
     const { unmount } = render(<Projects />);
     const normal = screen
       .getAllByRole("listitem")
-      .map((card) => card.getAttribute("style"));
+      .map((card) => card.firstElementChild?.getAttribute("style"));
     unmount();
     const originalMatchMedia = window.matchMedia;
     vi.spyOn(window, "matchMedia").mockImplementation((query) => ({
@@ -180,7 +211,7 @@ describe("Projects", () => {
     }));
     render(<Projects />);
     expect(
-      screen.getAllByRole("listitem").map((card) => card.getAttribute("style"))
+      screen.getAllByRole("listitem").map((card) => card.firstElementChild?.getAttribute("style"))
     ).toEqual(normal);
   });
 });
