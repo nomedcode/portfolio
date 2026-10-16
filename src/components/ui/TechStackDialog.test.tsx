@@ -81,6 +81,13 @@ describe("TechStackDialog order", () => {
 });
 
 describe("TechStackDialog modal", () => {
+  test("renders directly under body, so no transformed ancestor can trap its fixed position", () => {
+    const { dialog } = renderDialog();
+    // The dialog sits inside a wrapper div (the scrim's parent); that wrapper is body's child.
+    const top = dialog.parentElement;
+    expect(top?.parentElement).toBe(document.body);
+  });
+
   test("while open, the page behind the dialog is inert and the dialog is not; closing restores the page", () => {
     const { opener, dialog } = renderDialog();
     expect(opener).toHaveAttribute("inert");

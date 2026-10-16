@@ -3,6 +3,7 @@
 import { m, type Variants } from "framer-motion";
 import { X } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { skillCategories } from "@/lib/content";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { SkillMark } from "./SkillMark";
@@ -101,7 +102,9 @@ export function TechStackDialog({
     };
   }, [returnFocusRef]);
 
-  return (
+  // Portal to body: the banner's Reveal wrapper transforms during entrance, and a fixed dialog
+  // inside a transformed ancestor positions against it instead of the viewport.
+  return createPortal(
     <div
       ref={rootRef}
       className="fixed inset-0 z-[60] flex items-center justify-center p-4 md:p-8"
@@ -195,6 +198,7 @@ export function TechStackDialog({
           </div>
         </div>
       </m.div>
-    </div>
+    </div>,
+    document.body
   );
 }
