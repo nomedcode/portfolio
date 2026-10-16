@@ -191,11 +191,11 @@ describe("Projects", () => {
     }
   });
 
-  test("cards start hidden and rise 12px, inside the scroller's padding headroom so nothing clips", () => {
+  test("cards start hidden and rise 32px, inside the scroller's padding headroom so nothing clips", () => {
     render(<Projects />);
     const style = screen.getAllByRole("listitem")[0].firstElementChild?.getAttribute("style");
     expect(style).toContain("opacity: 0");
-    expect(style).toContain("translateY(12px)");
+    expect(style).toContain("translateY(32px)");
     expect(style ?? "").not.toContain("scale");
   });
 

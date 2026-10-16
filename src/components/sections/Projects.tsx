@@ -19,14 +19,17 @@ const listVariants = (reduce: boolean): Variants => ({
   show: { transition: { staggerChildren: reduce ? 0 : 0.15 } },
 });
 
-// The rise stays inside 12px of scroller padding (py-3/-my-3 below), so the card never crosses the clip edge.
-// Slow fade, faster rise: Apple's entrance recipe (0.9s opacity, 0.7s translate).
+// The rise stays inside 32px of scroller padding (pb-8/-mb-8 below), so the card never crosses the clip edge.
+// Apple's entrance recipe: the rise (0.7s) lands before the fade (0.9s) completes, so cards settle as they appear.
 const cardVariants = (reduce: boolean): Variants => ({
-  hidden: { opacity: 0, y: 12 },
+  hidden: { opacity: 0, y: 32 },
   show: {
     opacity: 1,
     y: 0,
-    transition: motionTransition(reduce, { duration: 0.9, ease: "easeOut" }),
+    transition: motionTransition(reduce, {
+      y: { duration: 0.7, ease: "easeOut" },
+      opacity: { duration: 0.9, ease: "easeOut" },
+    }),
   },
 });
 
@@ -99,7 +102,7 @@ export function Projects() {
         role="region"
         aria-label="Projects gallery"
         tabIndex={0}
-        className="gallery-scroll -mb-3 mt-16 snap-x snap-mandatory overflow-x-auto overflow-y-hidden scroll-px-[max(1.5rem,calc((100%_-_72rem)/2_+_1.5rem))] pb-3 focus-visible:-outline-offset-2"
+        className="gallery-scroll -mb-8 mt-16 snap-x snap-mandatory overflow-x-auto overflow-y-hidden scroll-px-[max(1.5rem,calc((100%_-_72rem)/2_+_1.5rem))] pb-8 focus-visible:-outline-offset-2"
       >
         <m.ul
           role="list"
