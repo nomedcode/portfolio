@@ -106,10 +106,10 @@ describe("Hero", () => {
     expect(screen.queryByText(/Hi, I/)).not.toBeInTheDocument();
     // Big and free to wrap on a phone; from 640px up it's one fluid line instead of stepping by breakpoint.
     expect(h1).toHaveClass(
-      "text-[2.75rem]",
+      "text-display",
       "text-balance",
       "sm:whitespace-nowrap",
-      "sm:text-[clamp(2rem,6vw,5rem)]"
+      "sm:text-display-fluid"
     );
     // The portrait is its own card now, not part of the headline.
     expect(h1).not.toContainElement(

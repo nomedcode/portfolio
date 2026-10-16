@@ -114,7 +114,7 @@ export function Projects() {
               variants={card}
               className={`relative h-[440px] w-[78vw] shrink-0 snap-start overflow-hidden rounded-card ring-1 ring-inset ring-white/10 sm:w-[340px] md:h-[480px] ${island}`}
             >
-              <p className="p-6 text-2xl font-semibold leading-tight tracking-title text-white md:text-[28px]">
+              <p className="p-6 text-2xl font-semibold leading-tight tracking-title text-white md:text-title-lg">
                 <span className="sr-only">Project {i + 1}: </span>
                 Coming soon
               </p>

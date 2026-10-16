@@ -87,7 +87,7 @@ export function Hero({ photo }: { photo?: string }) {
         style={reduce ? undefined : { y: copyY, opacity: copyOpacity }}
       >
         {/* The name may wrap to two lines on a phone; from 640px up it must fit one line, so the size scales with the viewport. */}
-        <h1 className="hero-rise text-balance text-[2.75rem] font-semibold leading-[1.05] tracking-display [animation-delay:100ms] sm:whitespace-nowrap sm:text-[clamp(2rem,6vw,5rem)]">
+        <h1 className="hero-rise text-balance text-display font-semibold leading-[1.05] tracking-display [animation-delay:100ms] sm:whitespace-nowrap sm:text-display-fluid">
           {profile.fullName}
         </h1>
         <div

@@ -31,7 +31,7 @@ const SIZES: Record<string, number> = {
   "text-5xl": 48,
   "text-6xl": 60,
   "text-7xl": 72,
-  "text-[28px]": 28,
+  "text-title-lg": 28,
 };
 
 function largestSize(el: Element): number | null {
