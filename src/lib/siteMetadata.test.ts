@@ -4,8 +4,9 @@ import { siteMetadata, siteUrl } from "./siteMetadata";
 
 describe("siteMetadata", () => {
   test("resolves relative URLs against the production domain", () => {
-    expect(siteUrl).toBe("https://faiq.codes");
-    expect(String(siteMetadata.metadataBase)).toBe("https://faiq.codes/");
+    // The apex 308-redirects to www, so canonical and og:url must name the host that actually serves 200.
+    expect(siteUrl).toBe("https://www.faiq.codes");
+    expect(String(siteMetadata.metadataBase)).toBe("https://www.faiq.codes/");
     expect(siteMetadata.alternates?.canonical).toBe("/");
   });
 
