@@ -4,7 +4,9 @@ import { siteMetadata } from "@/lib/siteMetadata";
 import { themeInitScript } from "@/lib/themeInit";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+// The font stack puts the OS face first, so Inter is only the primary face off Apple platforms. Preloading it
+// spent 48 KB on every Apple device for a file they never render; it still loads on demand where it is used.
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter", preload: false });
 
 export const metadata = siteMetadata;
 
