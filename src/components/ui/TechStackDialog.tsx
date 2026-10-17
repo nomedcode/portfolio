@@ -1,6 +1,7 @@
 "use client";
 
-import { m, type Variants } from "framer-motion";
+import type { Variants } from "motion/react";
+import * as m from "motion/react-m";
 import { X } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { createPortal } from "react-dom";

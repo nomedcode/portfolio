@@ -1,6 +1,7 @@
 "use client";
 
-import { m, type Variants } from "framer-motion";
+import type { Variants } from "motion/react";
+import * as m from "motion/react-m";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useCallback, useMemo, useRef, useSyncExternalStore } from "react";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
