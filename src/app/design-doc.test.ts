@@ -41,7 +41,8 @@ describe("DESIGN.md", () => {
     const tokens = [...css.matchAll(/--(?:c|color)-[\w-]+:\s*(#[0-9a-fA-F]{6})/g)].map((m) =>
       m[1].toLowerCase()
     );
-    expect(tokens.length).toBeGreaterThanOrEqual(15);
+    // 14 hex-valued tokens across the light and dark blocks (7 each). The unused --c-deep was removed.
+    expect(tokens.length).toBeGreaterThanOrEqual(14);
     const missing = tokens.filter((hex) => !documented.has(hex));
     expect(missing).toEqual([]);
   });
@@ -66,6 +67,24 @@ describe("DESIGN.md", () => {
     const radii = block("rounded");
     expect(radii).toContain(`card: "${css.match(/--radius-card:\s*(\d+px)/)?.[1]}"`);
     expect(radii).toContain(`card-sm: "${css.match(/--radius-card-sm:\s*(\d+px)/)?.[1]}"`);
+  });
+
+  test("the documented motion recipe matches the code, so timings cannot drift silently", () => {
+    const reveal = readFileSync(path.resolve(root, "src/components/ui/Reveal.tsx"), "utf8");
+    const revealDuration = reveal.match(/duration:\s*([\d.]+)/)?.[1];
+    expect(revealDuration).toBe("0.9");
+    expect(design).toContain(`${revealDuration}s`);
+
+    const projects = readFileSync(
+      path.resolve(root, "src/components/sections/Projects.tsx"),
+      "utf8"
+    );
+    expect(projects).toMatch(/y:\s*32\b/);
+    expect(design).toContain("32px");
+
+    // The theme fade duration is documented in prose and implemented in the stylesheet.
+    expect(css).toMatch(/background-color 200ms/);
+    expect(design).toContain("200ms");
   });
 
   test("contains no email address or other contact detail", () => {

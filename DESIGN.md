@@ -11,7 +11,6 @@ colors:
   signal-blue: "#0066cc"
   console: "#121212"
   panel: "#1f1f20"
-  void: "#000000"
   frost: "#f5f5f7"
   rule-dark: "#2a2a2c"
   haze: "#a1a1aa"
@@ -137,7 +136,6 @@ A cool neutral ladder with one blue. Light and dark themes are each composed, no
 - **Ink** (#09090b) and **Frost** (#f5f5f7): primary text in light and dark.
 - **Slate Muted** (#52525b) and **Haze** (#a1a1aa): secondary text. **Mist Subtle** (#6b6b74) and **Dusk** (#8f8f98): metadata.
 - **Hairline** (#e4e4e7) and **Rule Dark** (#2a2a2c): borders and dividers, also the current-section pill at 70%.
-- **Void** (#000000): the deep token in the dark theme.
 
 ### Project Islands
 The five placeholder project cards are dark two-stop gradients (160deg), tokenized as `--background-image-island-1` through `-5`:
@@ -173,13 +171,13 @@ White title text on all five is 12.5:1 or better.
 
 ## Layout
 
-One centered container (max-width 72rem, 24px side padding) holds everything, including the hero copy, so the hero headline, the header brand and every section heading share one left edge. Only the horizontally scrolling project gallery runs full-bleed; the gallery aligns its first card to the same left edge. Sections use 96px of vertical padding (128px from 768px up) and leave 64px between a section heading and its content. Contact is the one deliberate exception with 112px and 160px of padding to close the page.
+One centered container (max-width 72rem, 24px side padding) holds everything, including the hero copy, so the hero headline, the header brand and every section share one left edge. Section headings are centered inside that container; the Skills heading sits left inside its card. Only the horizontally scrolling project gallery runs full-bleed; the gallery aligns its first card to the same left edge. Sections use 96px of vertical padding (128px from 768px up) and leave 64px between a section heading and its content. Contact is the one deliberate exception: a narrower 56rem column with 112px and 160px of padding to close the page.
 
 Surfaces alternate down the page: the hero on raised, Projects on page, Skills on raised, Certificates on page, Awards on raised, Education on page, Contact on raised, then the footer on raised with a top border. The alternation is deliberate and applies to the hero too: a raised hero is part of the rhythm, not an accent, so no section breaks it. Anchor targets clear the fixed 48px header with a 96px scroll margin.
 
 The hero is left-aligned at every width: the name spans the full container on one fluid line, then the copy (role line, about text, actions) follows in one column. It is at least one small viewport tall and grows when the content is taller, so short landscape screens scroll instead of clipping.
 
-Breakpoints follow content: 400px (larger hero headline on phones), 640px (larger hero type), 768px (desktop nav, larger type, wider padding), 1024px (larger hero type), 1280px (largest hero headline). The mobile menu is capped to the space under the header and scrolls.
+Breakpoints follow content: 640px (hero type switches to the fluid display), 768px (desktop nav, larger type, wider padding), 1024px (larger hero type), 1280px (the footer's three-column layout). Below 640px the hero name is a fixed 44px and wraps if needed; from 640px it scales at 6.5vw with a 44px floor and an 80px ceiling, so it never drops below the fixed size or the 48px section headings. The mobile menu is capped to the space under the header and scrolls.
 
 The footer stacks and centers its credit, section navigation and external links below 1280px. From 1280px it uses three columns with the navigation centered; link labels stay on one line while each link group can wrap between links.
 
@@ -234,7 +232,7 @@ Large, soft, and consistent. Big cards use a 28px radius and small cards 18px; e
 ### Do:
 - **Do** keep the page container at 72rem with 24px sides and sections at 96px (128px wide) with a 64px heading gap.
 - **Do** use Signal Blue (#0066cc) or Beacon Blue (#2997ff) for actions and focus, and nothing else chromatic.
-- **Do** let a theme switch fade surface, text and border colours for 250ms (`theme-fade`, skipped under reduced motion). Otherwise animate only transform and opacity, enter with the Reveal rise (20px over 0.6s, once, at 15% inside the viewport), and give every animation a reduced-motion path that fades in 200ms or less.
+- **Do** let a theme switch fade surface, text and border colours for 200ms (`theme-fade`, skipped under reduced motion; SVG internals are excluded so the toggle stays off the long-task budget). Otherwise animate only transform and opacity: the Reveal rise is 20px over 0.9s, once, at 15% inside the viewport; project cards rise 32px over 0.7s while fading over 0.9s, staggered 0.15s; the hero entrance is CSS at 0.6s. Give every animation a reduced-motion path that fades in 200ms or less.
 - **Do** write labels as the outcome ("View all skills"), not the gesture ("Click to see all").
 - **Do** keep images in `public/` small: the build ships them as they are.
 
