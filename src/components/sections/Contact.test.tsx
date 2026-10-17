@@ -25,7 +25,7 @@ describe("Contact", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        "Open to internships, freelance, and project collaborations."
+        "Available for internships, freelance work, and small projects."
       )
     ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Email me" })).toHaveAttribute(

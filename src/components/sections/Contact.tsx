@@ -37,7 +37,7 @@ export function Contact() {
         </Reveal>
         <Reveal delay={0.1}>
           <p className="text-lg text-muted">
-            Open to internships, freelance, and project collaborations.
+            Available for internships, freelance work, and small projects.
           </p>
           <p className="mt-2 text-sm text-subtle">{profile.location}</p>
         </Reveal>
