@@ -34,6 +34,11 @@ describe("Contact", () => {
     );
   });
 
+  test("names the location, so the page says where the work happens", () => {
+    render(<Contact />);
+    expect(screen.getByText(profile.location)).toBeInTheDocument();
+  });
+
   test("renders on a theme-aware raised background", () => {
     render(<Contact />);
     const section = document.getElementById("contact");

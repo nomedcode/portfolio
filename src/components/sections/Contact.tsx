@@ -39,6 +39,7 @@ export function Contact() {
           <p className="text-lg text-muted">
             Open to internships, freelance, and project collaborations.
           </p>
+          <p className="mt-2 text-sm text-subtle">{profile.location}</p>
         </Reveal>
         <Reveal
           delay={0.2}

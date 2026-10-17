@@ -31,6 +31,9 @@ export function Certificates() {
               <h3 className="text-xl font-semibold tracking-title text-fg md:text-2xl">
                 {credlyBadge.name}
               </h3>
+              <p className="text-sm text-subtle">
+                Issued by {credlyBadge.issuer}
+              </p>
               <ul className="mt-1 flex flex-wrap justify-center gap-2 sm:justify-start">
                 {credlyBadge.skills.map((s) => (
                   <li
