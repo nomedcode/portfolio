@@ -66,8 +66,10 @@ describe("Projects", () => {
       expect(card).toHaveTextContent("Coming soon");
       expect(card).toHaveClass("snap-start", "shrink-0", "h-[440px]");
       expect(card).toHaveAttribute("data-gallery-card");
-      // The layout's noscript rule keys on data-reveal, so cards stay visible without JS.
-      expect(card).toHaveAttribute("data-reveal");
+      // The noscript rule keys on data-reveal, so it must sit on the element that actually carries opacity:0:
+      // the inner animated card, not the snap-aligned li. Otherwise the card stays invisible without JS.
+      expect(card).not.toHaveAttribute("data-reveal");
+      expect(card.firstElementChild).toHaveAttribute("data-reveal");
     }
     expect(screen.queryByRole("link")).not.toBeInTheDocument();
   });

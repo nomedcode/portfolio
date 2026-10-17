@@ -119,11 +119,11 @@ export function Projects() {
             <li
               key={island}
               data-gallery-card
-              data-reveal
               className="h-[440px] w-[78vw] shrink-0 snap-start sm:w-[340px] md:h-[480px]"
             >
               <m.div
                 variants={card}
+                data-reveal
                 className={`relative h-full w-full overflow-hidden rounded-card ring-1 ring-inset ring-white/10 ${island}`}
               >
                 <p className="p-6 text-2xl font-semibold leading-tight tracking-title text-white md:text-title-lg">

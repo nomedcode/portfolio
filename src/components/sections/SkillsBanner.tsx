@@ -99,6 +99,7 @@ export function SkillsBanner() {
                     key={id}
                     variants={logo}
                     data-preview-logo
+                    data-reveal
                     data-skill={id}
                     className="flex h-7 w-7 items-center justify-center"
                   >

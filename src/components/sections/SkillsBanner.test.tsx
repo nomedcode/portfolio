@@ -85,6 +85,17 @@ describe("Skills banner", () => {
     spy.mockRestore();
   });
 
+  test("preview logos carry data-reveal, so the noscript rule unhides them when JS never runs", () => {
+    render(<SkillsBanner />);
+    const logos = [...document.querySelectorAll("[data-preview-logo]")];
+    expect(logos.length).toBeGreaterThan(0);
+    for (const logo of logos) {
+      // The element that carries opacity:0 must be the one the noscript rule targets.
+      expect(logo).toHaveAttribute("data-reveal");
+      expect(logo.getAttribute("style") ?? "").toContain("opacity: 0");
+    }
+  });
+
   test("renders one banner card with the Skills label and every skill logo", () => {
     render(<SkillsBanner />);
     expect(screen.getByRole("heading", { name: "Skills" })).toBeInTheDocument();
