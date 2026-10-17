@@ -32,10 +32,30 @@ function contentOrderWithoutFeatured() {
 }
 
 describe("Skills banner", () => {
-  test("keeps one fixed order, on the server and after mount: the main cloud skills first, then the rest in content order", () => {
+  test("keeps one fixed order, on the server and after mount, with the infra run swapped ahead of the web run", () => {
     const html = renderToStaticMarkup(<SkillsBanner />);
     const serverIds = [...html.matchAll(/data-skill="([^"]+)"/g)].map((m) => m[1]);
-    expect(serverIds).toEqual([...featuredSkillIcons, ...contentOrderWithoutFeatured()]);
+
+    // Same skills as before, featured first; only the placement of two runs changes.
+    expect(serverIds.slice(0, featuredSkillIcons.length)).toEqual(featuredSkillIcons);
+    expect([...serverIds].sort()).toEqual(
+      [...featuredSkillIcons, ...contentOrderWithoutFeatured()].sort()
+    );
+
+    // The banner trades the infra run for the web run. The dialog keeps its categories.
+    // The web run now sits where the infra run was, immediately before NGINX.
+    const web = serverIds.indexOf("gsap");
+    expect(serverIds.slice(web, web + 3)).toEqual(["gsap", "nodedotjs", "bun"]);
+    expect(serverIds[web + 3]).toBe("nginx");
+
+    // The infra run now sits where the web run was, immediately before Laravel.
+    const infra = serverIds.indexOf("terraform");
+    expect(serverIds.slice(infra, infra + 3)).toEqual([
+      "terraform",
+      "docker",
+      "kubernetes",
+    ]);
+    expect(serverIds[infra + 3]).toBe("laravel");
 
     const { unmount } = render(<SkillsBanner />);
     const clientIds = [...document.querySelectorAll("[data-preview-logo]")].map((li) =>
