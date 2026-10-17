@@ -15,7 +15,9 @@
   --radius-card: 28px;
   --radius-card-sm: 18px;
   --text-display: 2.75rem;
-  --text-display-fluid: clamp(2rem, 6vw, 5rem);
+  /* The floor matches --text-display (at 640px 6vw was only 38.4px, so the name shrank at the breakpoint), and
+     6.5vw keeps the h1 above the 48px section headings from 768px instead of crossing back under them. */
+  --text-display-fluid: clamp(2.75rem, 6.5vw, 5rem);
   --text-title-lg: 1.75rem;
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
     var(--font-inter), ui-sans-serif, system-ui, sans-serif;
