@@ -37,6 +37,19 @@ describe("Awards", () => {
     expect(container.querySelector(".grid")?.className).toContain("auto-fit");
   });
 
+  test("caps the card at the Certificates width, so one long award does not run the full container", () => {
+    // At the full 72rem container a single card ran ~170 characters per line.
+    const { container } = render(<Awards />);
+    expect(container.querySelector(".grid")?.className).toContain("max-w-3xl");
+  });
+
+  test("sets the description at body size, not caption size", () => {
+    render(<Awards />);
+    for (const a of awards) {
+      expect(screen.getByText(a.description)).toHaveClass("text-base");
+    }
+  });
+
   test("articles stand out as page-white cards on the raised section", () => {
     const { container } = render(<Awards />);
     const articles = container.querySelectorAll("article");
