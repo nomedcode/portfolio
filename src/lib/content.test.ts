@@ -141,10 +141,10 @@ describe("skills", () => {
 });
 
 describe("awards", () => {
-  test("lists the consolidated gold medals and the I2ASPO semi grand award", () => {
+  test("lists the gold medals and the I2ASPO semi grand award as one entry", () => {
+    // Both cards described the same abstract, so the second read as padding rather than a second achievement.
     expect(awards.map((a) => a.title)).toEqual([
-      "3x Gold Medals",
-      "Semi Grand Award",
+      "3x Gold Medals + Semi Grand Award",
     ]);
   });
 

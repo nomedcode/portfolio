@@ -167,20 +167,12 @@ export const skillCategories: SkillCategory[] = [
 
 export const awards: Award[] = [
   {
-    id: "gold-medals",
-    title: "3x Gold Medals",
+    id: "gold-medals-and-semi-grand-award",
+    title: "3x Gold Medals + Semi Grand Award",
     year: "2023 — 2024",
     issuer: "AISEEF · I2ASPO · ISIF",
     description:
-      "Gold medals at AISEEF 2024 (Innovation Science), I2ASPO 2023 (Functional Food), and ISIF 2023 (Life Sciences) for the extended abstract on Bangle-derived sesquiterpenoids as a pancreatic cancer drug candidate.",
-  },
-  {
-    id: "i2aspo-semi-grand-award",
-    title: "Semi Grand Award",
-    year: "2023",
-    issuer: "I2ASPO",
-    description:
-      "Semi Grand Award at I2ASPO 2023 for the extended abstract on Bangle-derived sesquiterpenoids as a pancreatic cancer drug candidate.",
+      "Gold medals at AISEEF 2024 (Innovation Science), I2ASPO 2023 (Functional Food), and ISIF 2023 (Life Sciences), plus the Semi Grand Award at I2ASPO 2023, for the extended abstract on Bangle-derived sesquiterpenoids as a pancreatic cancer drug candidate.",
   },
 ];
 
