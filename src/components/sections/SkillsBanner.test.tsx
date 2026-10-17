@@ -1,9 +1,21 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, test, vi } from "vitest";
+import { describe, expect, test } from "vitest";
 import { featuredSkillIcons, skillCategories } from "@/lib/content";
 import { SkillsBanner } from "./SkillsBanner";
+
+const css = readFileSync(path.resolve(__dirname, "../../app/globals.css"), "utf8");
+
+function cssBlock(motion: "reduce" | "no-preference") {
+  return (
+    css.match(
+      new RegExp(`@media \\(prefers-reduced-motion: ${motion}\\)\\s*\\{([\\s\\S]*?)\\n\\}`)
+    )?.[1] ?? ""
+  );
+}
 
 function expectedLogoCount() {
   const expected = new Set<string>();
@@ -56,33 +68,22 @@ describe("Skills banner", () => {
     expect(withFills).toHaveLength(svgs.length - selfColoured);
   });
 
-  test("preview logos start hidden and pop in from a point by default", () => {
+  test("preview logos start hidden and are staggered by an index, so the CSS can pop them in", () => {
     render(<SkillsBanner />);
-    const style = document
-      .querySelector("[data-preview-logo]")
-      ?.getAttribute("style");
-    expect(style).toContain("opacity: 0");
-    expect(style).toContain("scale(0)");
+    const logos = [...document.querySelectorAll("[data-preview-logo]")];
+    expect(logos[0]).toHaveClass("preview-logo");
+    expect(logos[0]).toHaveStyle({ "--i": "0" });
+    expect(logos[1]).toHaveStyle({ "--i": "1" });
+    // The animation lives in CSS now, so the icon paths never enter the client bundle.
+    const css = readFileSync(path.resolve(__dirname, "../../app/globals.css"), "utf8");
+    expect(css).toMatch(/\.preview-in \.preview-logo\s*\{[^}]*animation:\s*logo-pop/);
   });
 
-  test("under reduced motion the logos paint the same hidden first frame (matches the server HTML); the fade-only change lives in the transition", () => {
-    const { unmount } = render(<SkillsBanner />);
-    const normal = [
-      ...document.querySelectorAll("[data-preview-logo]"),
-    ].map((logo) => logo.getAttribute("style"));
-    unmount();
-    const originalMatchMedia = window.matchMedia;
-    const spy = vi.spyOn(window, "matchMedia").mockImplementation((query) => ({
-      ...originalMatchMedia(query),
-      matches: query === "(prefers-reduced-motion: reduce)",
-    }));
-    render(<SkillsBanner />);
-    expect(
-      [...document.querySelectorAll("[data-preview-logo]")].map((logo) =>
-        logo.getAttribute("style")
-      )
-    ).toEqual(normal);
-    spy.mockRestore();
+  test("reduced motion swaps the pop for a short fade in CSS, so the markup is unchanged", () => {
+    const reduced = cssBlock("reduce");
+    expect(reduced).toMatch(
+      /\.preview-in \.preview-logo\s*\{[^}]*animation:\s*logo-fade 200ms/
+    );
   });
 
   test("preview logos carry data-reveal, so the noscript rule unhides them when JS never runs", () => {
@@ -90,9 +91,9 @@ describe("Skills banner", () => {
     const logos = [...document.querySelectorAll("[data-preview-logo]")];
     expect(logos.length).toBeGreaterThan(0);
     for (const logo of logos) {
-      // The element that carries opacity:0 must be the one the noscript rule targets.
+      // The hidden first frame comes from .preview-logo, so the noscript rule has to target this element.
       expect(logo).toHaveAttribute("data-reveal");
-      expect(logo.getAttribute("style") ?? "").toContain("opacity: 0");
+      expect(logo).toHaveClass("preview-logo");
     }
   });
 

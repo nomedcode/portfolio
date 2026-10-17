@@ -5,7 +5,6 @@
 @theme inline {
   --color-page: var(--c-page);
   --color-raised: var(--c-raised);
-  --color-deep: var(--c-deep);
   --color-fg: var(--c-fg);
   --color-line: var(--c-line);
   --color-muted: var(--c-muted);
@@ -35,7 +34,6 @@
 :root {
   --c-page: #ffffff;
   --c-raised: #f5f5f7;
-  --c-deep: #09090b;
   --c-fg: #09090b;
   --c-line: #e4e4e7;
   --c-muted: #52525b;
@@ -47,7 +45,6 @@
 .dark {
   --c-page: #121212;
   --c-raised: #1f1f20;
-  --c-deep: #000000;
   --c-fg: #f5f5f7;
   --c-line: #2a2a2c;
   --c-muted: #a1a1aa;
@@ -81,6 +78,10 @@ html {
   .menu-in {
     animation-name: menu-fade;
   }
+  .preview-in .preview-logo {
+    animation: logo-fade 200ms ease-out backwards;
+    animation-delay: 0ms;
+  }
   .theme-fade,
   .theme-fade *,
   .theme-fade *::before,
@@ -92,12 +93,14 @@ html {
 /* A theme switch fades surface, text and border colours for a moment instead of cutting. ThemeToggle adds the
    class for 250ms; the rule lives under no-preference so reduced motion never sees it. */
 @media (prefers-reduced-motion: no-preference) {
+  /* SVG internals are excluded: a brand mark changing colour mid-fade is imperceptible, and matching every
+     <path> in the tree was the bulk of the style recalc. The svg roots still transition their fill. */
   .theme-fade,
-  .theme-fade *,
-  .theme-fade *::before,
-  .theme-fade *::after {
-    transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease,
-      fill 200ms ease, stroke 200ms ease !important;
+  .theme-fade *:not(svg, svg *) {
+    transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease !important;
+  }
+  .theme-fade svg {
+    transition: fill 200ms ease, stroke 200ms ease !important;
   }
 }
 
@@ -118,6 +121,21 @@ html {
 }
 
 @keyframes menu-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+/* The Skills cloud pops in from a point, staggered by --i. CSS rather than JS keeps the 47 icon paths out of the
+   client bundle. */
+@keyframes logo-pop {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+}
+
+@keyframes logo-fade {
   from {
     opacity: 0;
   }
@@ -169,6 +187,15 @@ html {
   }
   .gallery-scroll::-webkit-scrollbar {
     display: none;
+  }
+  /* Hidden until the list scrolls into view (PreviewReveal adds .preview-in); the noscript rule still wins. */
+  .preview-logo {
+    opacity: 0;
+  }
+  .preview-in .preview-logo {
+    animation: logo-pop 400ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: calc(var(--i, 0) * 35ms);
+    opacity: 1;
   }
   .glass-header {
     background: rgba(255, 255, 255, 0.78);
