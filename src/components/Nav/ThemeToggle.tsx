@@ -43,7 +43,12 @@ export function ThemeToggle() {
     }
     root.classList.toggle("dark");
     try {
-      window.localStorage.setItem("theme", dark ? "light" : "dark");
+      // Read the class back: the observer has not re-rendered yet, so `dark` is the pre-toggle value and a
+      // quick double press would persist the opposite theme.
+      window.localStorage.setItem(
+        "theme",
+        root.classList.contains("dark") ? "dark" : "light"
+      );
     } catch {}
   };
 

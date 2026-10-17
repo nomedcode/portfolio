@@ -63,6 +63,18 @@ describe("ThemeToggle", () => {
     expect(document.documentElement).not.toHaveClass("theme-fade");
   });
 
+  test("two presses before the observer re-renders still persist the final theme", () => {
+    // The MutationObserver callback has not run between these clicks, so `dark` is still the render-time value.
+    // Persisting from that closure writes the opposite of the class that is actually on <html>.
+    vi.useFakeTimers();
+    render(<ThemeToggle />);
+    const btn = screen.getByRole("button", { name: "Toggle dark mode" });
+    fireEvent.click(btn);
+    fireEvent.click(btn);
+    expect(document.documentElement).not.toHaveClass("dark");
+    expect(window.localStorage.getItem("theme")).toBe("light");
+  });
+
   test("reduced motion switches themes at once, with no fade class", () => {
     vi.useFakeTimers();
     const original = window.matchMedia;
