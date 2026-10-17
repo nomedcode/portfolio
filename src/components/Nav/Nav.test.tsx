@@ -27,6 +27,17 @@ describe("Nav", () => {
     }
   });
 
+  test("the current section carries a non-colour cue that clears the 3:1 floor", () => {
+    render(<Nav />);
+    for (const s of sections) {
+      const link = screen.getAllByRole("link", { name: s.label })[0];
+      // The hairline wash is 1.17:1 against the glass header, so it cannot be the only indicator.
+      expect(link).toHaveClass("aria-[current=location]:underline");
+      expect(link).toHaveClass("aria-[current=location]:decoration-2");
+      expect(link).toHaveClass("aria-[current=location]:decoration-fg");
+    }
+  });
+
   test("desktop section links hover as a rounded wash, not an underline", () => {
     render(<Nav />);
     for (const s of sections) {
@@ -195,12 +206,13 @@ describe("Nav current section", () => {
     );
   });
 
-  test("the current desktop link has a fill and a ring, so it never reads as hover, with an underline fallback for forced colours", () => {
+  test("the current desktop link has a fill and an underline, so it never reads as hover", () => {
     render(<Nav />);
     enter("education");
     const link = document.querySelector("[aria-current]") as HTMLElement;
     expect(link.className).toContain("aria-[current=location]:bg-line/70");
-    expect(link.className).toContain("aria-[current=location]:ring-1");
+    // The 1px hairline ring was 1.25:1 against the glass header; the underline is text-colour, 19.9:1.
+    expect(link.className).toContain("aria-[current=location]:underline");
     expect(link.className).toContain(
       "forced-colors:aria-[current=location]:underline"
     );
