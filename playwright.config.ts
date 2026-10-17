@@ -4,7 +4,8 @@ export default defineConfig({
   testDir: "e2e",
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  use: { baseURL: "http://localhost:3100" },
+  // 127.0.0.1 rather than localhost: the static server binds IPv4 loopback only, and "localhost" can resolve to ::1.
+  use: { baseURL: "http://127.0.0.1:3100" },
   projects: [
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },
     { name: "firefox", use: { ...devices["Desktop Firefox"] } },
@@ -12,7 +13,7 @@ export default defineConfig({
   ],
   webServer: {
     command: process.env.CI ? "npm run build && node scripts/serve-static.mjs out 3100" : "npx next dev -p 3100",
-    url: "http://localhost:3100",
+    url: "http://127.0.0.1:3100",
     reuseExistingServer: !process.env.CI,
     timeout: process.env.CI ? 300_000 : 120_000,
   },
