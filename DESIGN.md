@@ -135,7 +135,7 @@ A cool neutral ladder with one blue. Light and dark themes are each composed, no
 - **Console** (#121212) and **Panel** (#1f1f20): the page and raised surfaces in the dark theme.
 - **Ink** (#09090b) and **Frost** (#f5f5f7): primary text in light and dark.
 - **Slate Muted** (#52525b) and **Haze** (#a1a1aa): secondary text. **Mist Subtle** (#6b6b74) and **Dusk** (#8f8f98): metadata.
-- **Hairline** (#e4e4e7) and **Rule Dark** (#2a2a2c): borders and dividers, also the current-section pill at 70%.
+- **Hairline** (#e4e4e7) and **Rule Dark** (#2a2a2c): borders and dividers.
 
 ### Project Islands
 The five placeholder project cards are dark two-stop gradients (160deg), tokenized as `--background-image-island-1` through `-5`:
@@ -207,7 +207,7 @@ Large, soft, and consistent. Big cards use a 28px radius and small cards 18px; e
 
 ### Navigation
 - **Style:** fixed 48px glass bar; brand left, section links centered, the theme toggle right (with the menu button below 768px). Links are 12px medium pills in full-contrast text; on hover they take a Hairline wash at 60%.
-- **Current section:** the link for the section under the reading line gets a Hairline pill at 70% with a 1px inset Hairline ring, so it never reads as hover (an underline under forced colors), and `aria-current="location"`. Nothing is current over the hero.
+- **Current section:** no visual treatment. The link for the section under the reading line still carries `aria-current="location"` for assistive technology, but it looks like every other link. Nothing is current over the hero.
 - **Mobile:** a hamburger opens a solid panel under the bar that drops 8px in over 200ms (plain fade under reduced motion), scrolls when short, and closes on Escape or any press outside the header.
 
 ### Chips

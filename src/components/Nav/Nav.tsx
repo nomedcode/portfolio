@@ -54,7 +54,7 @@ export function Nav() {
               key={s.id}
               href={`#${s.id}`}
               aria-current={active === s.id ? "location" : undefined}
-              className="press hit-area rounded-full px-3 py-1.5 text-xs font-medium text-fg underline-offset-4 hover:bg-line/60 aria-[current=location]:bg-line/70 aria-[current=location]:underline aria-[current=location]:decoration-2 aria-[current=location]:decoration-fg forced-colors:aria-[current=location]:underline"
+              className="press hit-area rounded-full px-3 py-1.5 text-xs font-medium text-fg hover:bg-line/60"
             >
               {s.label}
             </a>
@@ -90,7 +90,7 @@ export function Nav() {
                 <a
                   href={`#${s.id}`}
                   aria-current={active === s.id ? "location" : undefined}
-                  className="press hit-area w-full justify-start text-sm font-medium text-fg underline-offset-4 aria-[current=location]:font-semibold aria-[current=location]:underline"
+                  className="press hit-area w-full justify-start text-sm font-medium text-fg"
                   onClick={() => setOpen(false)}
                 >
                   {s.label}

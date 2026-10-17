@@ -27,14 +27,12 @@ describe("Nav", () => {
     }
   });
 
-  test("the current section carries a non-colour cue that clears the 3:1 floor", () => {
+  test("the current section gets no visual treatment, only aria-current for assistive tech", () => {
     render(<Nav />);
     for (const s of sections) {
       const link = screen.getAllByRole("link", { name: s.label })[0];
-      // The hairline wash is 1.17:1 against the glass header, so it cannot be the only indicator.
-      expect(link).toHaveClass("aria-[current=location]:underline");
-      expect(link).toHaveClass("aria-[current=location]:decoration-2");
-      expect(link).toHaveClass("aria-[current=location]:decoration-fg");
+      expect(link.className).not.toContain("aria-[current=location]:");
+      expect(link).not.toHaveClass("underline");
     }
   });
 
@@ -206,19 +204,15 @@ describe("Nav current section", () => {
     );
   });
 
-  test("the current desktop link has a fill and an underline, so it never reads as hover", () => {
+  test("the current desktop link looks like the rest: no fill and no underline", () => {
     render(<Nav />);
     enter("education");
     const link = document.querySelector("[aria-current]") as HTMLElement;
-    expect(link.className).toContain("aria-[current=location]:bg-line/70");
-    // The 1px hairline ring was 1.25:1 against the glass header; the underline is text-colour, 19.9:1.
-    expect(link.className).toContain("aria-[current=location]:underline");
-    expect(link.className).toContain(
-      "forced-colors:aria-[current=location]:underline"
-    );
+    expect(link).toHaveAttribute("aria-current", "location");
+    expect(link.className).not.toContain("aria-[current=location]:");
   });
 
-  test("the open mobile menu marks the same section", async () => {
+  test("the open mobile menu marks the same section for assistive tech only", async () => {
     const user = userEvent.setup();
     render(<Nav />);
     await user.click(screen.getByRole("button", { name: "Toggle menu" }));
@@ -226,9 +220,7 @@ describe("Nav current section", () => {
     const panel = document.getElementById("mobile-menu") as HTMLElement;
     const current = panel.querySelector("[aria-current]");
     expect(current).toHaveAttribute("href", "#contact");
-    expect(current?.className).toContain(
-      "aria-[current=location]:font-semibold"
-    );
+    expect(current?.className).not.toContain("aria-[current=location]:");
   });
 });
 
