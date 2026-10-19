@@ -216,6 +216,9 @@ Large, soft, and consistent. Big cards use a 28px radius and small cards 18px; e
 ### Chips
 - **Style:** pill, page-tone fill, 12px secondary text, 4px by 12px padding. Skill chips in the dialog use a 1px Hairline border and 14px text with the brand logo.
 
+### Footer
+- **Links:** section and social links sit at Slate Muted and take full-contrast Ink on hover. The Download CV link is the exception: it sits at Ink and takes Signal Blue on hover (Beacon Blue in dark), matching the page's other blue affordances. No underlines anywhere in the footer.
+
 ### Cards / Containers
 - **Corner style:** 28px for the Skills banner, Education list and project islands; 18px for Awards, Certificates and the dialog's category cards.
 - **Background:** page or raised tone, alternating with the section behind it. Project islands are dark gradients with white 24px to 28px titles.

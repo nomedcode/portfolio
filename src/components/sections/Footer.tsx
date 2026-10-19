@@ -32,7 +32,7 @@ export function Footer() {
           <a
             href="/CV-ATS.pdf"
             download
-            className="press hit-area font-medium text-fg"
+            className="press hit-area font-medium text-fg hover:text-accent dark:hover:text-accent-dark"
           >
             Download CV
           </a>

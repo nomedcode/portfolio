@@ -198,6 +198,22 @@ describe("Footer", () => {
     );
   });
 
+  test("the CV download takes the signal blue on hover, in each theme", () => {
+    render(<Footer />);
+    const cv = screen.getByRole("link", { name: "Download CV" });
+    // Signal Blue light / Beacon Blue dark, the pair every other blue affordance uses. Measured on the raised
+    // footer surface: 5.1:1 light and 5.5:1 dark, both above AA for body-size text.
+    expect(cv).toHaveClass("hover:text-accent", "dark:hover:text-accent-dark");
+    for (const [theme, colour] of [
+      ["light", "accent"],
+      ["dark", "accent-dark"],
+    ] as const) {
+      const hex = theme === "light" ? "#0066cc" : "#2997ff";
+      expect(contrastRatio(hex, token(theme, "raised")), `${colour} in ${theme}`)
+        .toBeGreaterThanOrEqual(4.5);
+    }
+  });
+
   test("balances credit, nav, and socials as centered thirds on wide screens", () => {
     render(<Footer />);
     const row = document.querySelector("[data-footer-row]");
