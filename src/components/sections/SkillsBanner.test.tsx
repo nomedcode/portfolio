@@ -1,9 +1,21 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, test, vi } from "vitest";
+import { describe, expect, test } from "vitest";
 import { featuredSkillIcons, skillCategories } from "@/lib/content";
 import { SkillsBanner } from "./SkillsBanner";
+
+const css = readFileSync(path.resolve(__dirname, "../../app/globals.css"), "utf8");
+
+function cssBlock(motion: "reduce" | "no-preference") {
+  return (
+    css.match(
+      new RegExp(`@media \\(prefers-reduced-motion: ${motion}\\)\\s*\\{([\\s\\S]*?)\\n\\}`)
+    )?.[1] ?? ""
+  );
+}
 
 function expectedLogoCount() {
   const expected = new Set<string>();
@@ -20,10 +32,30 @@ function contentOrderWithoutFeatured() {
 }
 
 describe("Skills banner", () => {
-  test("keeps one fixed order, on the server and after mount: the main cloud skills first, then the rest in content order", () => {
+  test("keeps one fixed order, on the server and after mount, with the infra run swapped ahead of the web run", () => {
     const html = renderToStaticMarkup(<SkillsBanner />);
     const serverIds = [...html.matchAll(/data-skill="([^"]+)"/g)].map((m) => m[1]);
-    expect(serverIds).toEqual([...featuredSkillIcons, ...contentOrderWithoutFeatured()]);
+
+    // Same skills as before, featured first; only the placement of two runs changes.
+    expect(serverIds.slice(0, featuredSkillIcons.length)).toEqual(featuredSkillIcons);
+    expect([...serverIds].sort()).toEqual(
+      [...featuredSkillIcons, ...contentOrderWithoutFeatured()].sort()
+    );
+
+    // The banner trades the infra run for the web run. The dialog keeps its categories.
+    // The web run now sits where the infra run was, immediately before NGINX.
+    const web = serverIds.indexOf("gsap");
+    expect(serverIds.slice(web, web + 3)).toEqual(["gsap", "nodedotjs", "bun"]);
+    expect(serverIds[web + 3]).toBe("nginx");
+
+    // The infra run now sits where the web run was, immediately before Laravel.
+    const infra = serverIds.indexOf("terraform");
+    expect(serverIds.slice(infra, infra + 3)).toEqual([
+      "terraform",
+      "docker",
+      "kubernetes",
+    ]);
+    expect(serverIds[infra + 3]).toBe("laravel");
 
     const { unmount } = render(<SkillsBanner />);
     const clientIds = [...document.querySelectorAll("[data-preview-logo]")].map((li) =>
@@ -56,33 +88,33 @@ describe("Skills banner", () => {
     expect(withFills).toHaveLength(svgs.length - selfColoured);
   });
 
-  test("preview logos start hidden and pop in from a point by default", () => {
+  test("preview logos start hidden and are staggered by an index, so the CSS can pop them in", () => {
     render(<SkillsBanner />);
-    const style = document
-      .querySelector("[data-preview-logo]")
-      ?.getAttribute("style");
-    expect(style).toContain("opacity: 0");
-    expect(style).toContain("scale(0)");
+    const logos = [...document.querySelectorAll("[data-preview-logo]")];
+    expect(logos[0]).toHaveClass("preview-logo");
+    expect(logos[0]).toHaveStyle({ "--i": "0" });
+    expect(logos[1]).toHaveStyle({ "--i": "1" });
+    // The animation lives in CSS now, so the icon paths never enter the client bundle.
+    const css = readFileSync(path.resolve(__dirname, "../../app/globals.css"), "utf8");
+    expect(css).toMatch(/\.preview-in \.preview-logo\s*\{[^}]*animation:\s*logo-pop/);
   });
 
-  test("under reduced motion the logos paint the same hidden first frame (matches the server HTML); the fade-only change lives in the transition", () => {
-    const { unmount } = render(<SkillsBanner />);
-    const normal = [
-      ...document.querySelectorAll("[data-preview-logo]"),
-    ].map((logo) => logo.getAttribute("style"));
-    unmount();
-    const originalMatchMedia = window.matchMedia;
-    const spy = vi.spyOn(window, "matchMedia").mockImplementation((query) => ({
-      ...originalMatchMedia(query),
-      matches: query === "(prefers-reduced-motion: reduce)",
-    }));
+  test("reduced motion swaps the pop for a short fade in CSS, so the markup is unchanged", () => {
+    const reduced = cssBlock("reduce");
+    expect(reduced).toMatch(
+      /\.preview-in \.preview-logo\s*\{[^}]*animation:\s*logo-fade 200ms/
+    );
+  });
+
+  test("preview logos carry data-reveal, so the noscript rule unhides them when JS never runs", () => {
     render(<SkillsBanner />);
-    expect(
-      [...document.querySelectorAll("[data-preview-logo]")].map((logo) =>
-        logo.getAttribute("style")
-      )
-    ).toEqual(normal);
-    spy.mockRestore();
+    const logos = [...document.querySelectorAll("[data-preview-logo]")];
+    expect(logos.length).toBeGreaterThan(0);
+    for (const logo of logos) {
+      // The hidden first frame comes from .preview-logo, so the noscript rule has to target this element.
+      expect(logo).toHaveAttribute("data-reveal");
+      expect(logo).toHaveClass("preview-logo");
+    }
   });
 
   test("renders one banner card with the Skills label and every skill logo", () => {

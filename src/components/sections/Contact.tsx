@@ -37,8 +37,9 @@ export function Contact() {
         </Reveal>
         <Reveal delay={0.1}>
           <p className="text-lg text-muted">
-            Open to internships, freelance, and project collaborations.
+            Available for internships, freelance work, and small projects.
           </p>
+          <p className="mt-2 text-sm text-subtle">{profile.location}</p>
         </Reveal>
         <Reveal
           delay={0.2}
@@ -46,7 +47,7 @@ export function Contact() {
         >
           <a
             href={`mailto:${profile.email}`}
-            className="press inline-flex items-center gap-3 rounded-full bg-accent py-3 pl-3 pr-7 font-medium text-white"
+            className="press inline-flex items-center gap-3 rounded-full bg-accent py-3 pl-3 pr-7 font-medium text-white hover:brightness-110"
           >
             {/* The mark is meant for a light ground: its red and blue parts fall to about 1.6:1 on the blue button and reach 3.5:1 on white. */}
             <span

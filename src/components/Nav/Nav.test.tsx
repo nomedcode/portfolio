@@ -27,6 +27,15 @@ describe("Nav", () => {
     }
   });
 
+  test("the current section gets no visual treatment, only aria-current for assistive tech", () => {
+    render(<Nav />);
+    for (const s of sections) {
+      const link = screen.getAllByRole("link", { name: s.label })[0];
+      expect(link.className).not.toContain("aria-[current=location]:");
+      expect(link).not.toHaveClass("underline");
+    }
+  });
+
   test("desktop section links hover as a rounded wash, not an underline", () => {
     render(<Nav />);
     for (const s of sections) {
@@ -34,6 +43,24 @@ describe("Nav", () => {
       expect(link).toHaveClass("rounded-full", "hover:bg-line/60");
       expect(link).not.toHaveClass("hover:underline");
     }
+  });
+
+  // The bar reads as one surface: every control in it answers a pointer the same way.
+  test("the brand and the menu button answer a pointer the way the rest of the bar does", () => {
+    render(<Nav />);
+    expect(screen.getByRole("link", { name: profile.name })).toHaveClass(
+      "hover:bg-line/60"
+    );
+    expect(screen.getByRole("button", { name: "Toggle menu" })).toHaveClass(
+      "hover:bg-line/60"
+    );
+  });
+
+  test("the brand's hover pill keeps its text on the container's left edge", () => {
+    render(<Nav />);
+    const brand = screen.getByRole("link", { name: profile.name });
+    // px-2 would push the text 8px in from the gutter the hero and every section share; -ml-2 cancels it.
+    expect(brand).toHaveClass("px-2", "-ml-2");
   });
 
   test("keeps the CV download out of the header: the bar is the brand, the sections and the theme toggle", async () => {
@@ -78,6 +105,44 @@ describe("Nav", () => {
     render(<Nav />);
     await user.click(screen.getByRole("button", { name: "Toggle menu" }));
     expect(document.getElementById("mobile-menu")).toHaveClass("menu-in");
+  });
+
+  test("the mobile menu links stagger in, one after the next", async () => {
+    const user = userEvent.setup();
+    render(<Nav />);
+    await user.click(screen.getByRole("button", { name: "Toggle menu" }));
+    const panel = document.getElementById("mobile-menu") as HTMLElement;
+    const items = [...panel.querySelectorAll<HTMLElement>("[data-menu-item]")];
+    expect(items).toHaveLength(sections.length);
+    items.forEach((item, i) => {
+      expect(item).toHaveClass("menu-item");
+      // The stylesheet reads --i for the delay, so the index has to reach the element.
+      expect(item.style.getPropertyValue("--i")).toBe(String(i));
+    });
+  });
+
+  test("the mobile menu links take the footer's hover: muted at rest, full contrast under the pointer", async () => {
+    const user = userEvent.setup();
+    render(<Nav />);
+    await user.click(screen.getByRole("button", { name: "Toggle menu" }));
+    const panel = document.getElementById("mobile-menu") as HTMLElement;
+    for (const link of panel.querySelectorAll("a")) {
+      expect(link).toHaveClass("text-muted", "hover:text-fg");
+    }
+  });
+
+  test("the mobile menu rows are split by a hairline, with none above the first", async () => {
+    const user = userEvent.setup();
+    render(<Nav />);
+    await user.click(screen.getByRole("button", { name: "Toggle menu" }));
+    const list = document.querySelector("#mobile-menu ul") as HTMLElement;
+    // divide-y puts the border on every child but the first, so the panel's own top border is not doubled.
+    expect(list).toHaveClass("divide-y", "divide-line");
+    // The rows own their spacing; a flex gap would leave the divider floating in mid-air.
+    expect(list).not.toHaveClass("gap-3");
+    for (const link of list.querySelectorAll("a")) {
+      expect(link).toHaveClass("py-3");
+    }
   });
 
   test("tapping outside the header closes the menu without stealing focus", async () => {
@@ -195,18 +260,15 @@ describe("Nav current section", () => {
     );
   });
 
-  test("the current desktop link has a fill and a ring, so it never reads as hover, with an underline fallback for forced colours", () => {
+  test("the current desktop link looks like the rest: no fill and no underline", () => {
     render(<Nav />);
     enter("education");
     const link = document.querySelector("[aria-current]") as HTMLElement;
-    expect(link.className).toContain("aria-[current=location]:bg-line/70");
-    expect(link.className).toContain("aria-[current=location]:ring-1");
-    expect(link.className).toContain(
-      "forced-colors:aria-[current=location]:underline"
-    );
+    expect(link).toHaveAttribute("aria-current", "location");
+    expect(link.className).not.toContain("aria-[current=location]:");
   });
 
-  test("the open mobile menu marks the same section", async () => {
+  test("the open mobile menu marks the same section for assistive tech only", async () => {
     const user = userEvent.setup();
     render(<Nav />);
     await user.click(screen.getByRole("button", { name: "Toggle menu" }));
@@ -214,9 +276,7 @@ describe("Nav current section", () => {
     const panel = document.getElementById("mobile-menu") as HTMLElement;
     const current = panel.querySelector("[aria-current]");
     expect(current).toHaveAttribute("href", "#contact");
-    expect(current?.className).toContain(
-      "aria-[current=location]:font-semibold"
-    );
+    expect(current?.className).not.toContain("aria-[current=location]:");
   });
 });
 

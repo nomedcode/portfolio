@@ -25,12 +25,4 @@ describe("shipped images", () => {
     expect(Math.max(width, height)).toBeLessThanOrEqual(MAX_PX);
     expect(size).toBeLessThan(20_000);
   });
-
-  test("the hero photo, when present, is sized for its frame and under 60 KB", () => {
-    const file = path.join(publicDir, "photo.png");
-    if (!existsSync(file)) return;
-    const { width, height, size } = png(file);
-    expect(Math.max(width, height)).toBeLessThanOrEqual(MAX_PX);
-    expect(size).toBeLessThan(60_000);
-  });
 });

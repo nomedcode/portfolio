@@ -41,6 +41,13 @@ describe("Certificates", () => {
     expect(screen.getByText("View Credential")).toBeInTheDocument();
   });
 
+  test("names the issuer, which is what makes the credential checkable", () => {
+    render(<Certificates />);
+    expect(
+      screen.getByText(`Issued by ${credlyBadge.issuer}`)
+    ).toBeInTheDocument();
+  });
+
   test("announces that the credential opens in a new tab", () => {
     render(<Certificates />);
     expect(screen.getByRole("link")).toHaveAccessibleName(/opens in new tab/);

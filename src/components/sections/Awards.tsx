@@ -12,7 +12,9 @@ export function Awards() {
     >
       <div className="mx-auto max-w-6xl px-6">
         <SectionHeading id="awards-heading" title="Awards" />
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,18rem),1fr))] gap-6">
+        {/* One card at the full container width ran ~170 characters per line. Cap it at the same 48rem the
+            Certificates card uses, so the two single-card sections read as a pair and the prose keeps a measure. */}
+        <div className="mx-auto grid max-w-3xl grid-cols-[repeat(auto-fit,minmax(min(100%,18rem),1fr))] gap-6">
           {awards.map((a, i) => (
             <Reveal key={a.id} delay={i * 0.05} className="h-full">
               <article className="flex h-full flex-col gap-3 rounded-card-sm bg-page p-8 md:p-10">
@@ -23,7 +25,7 @@ export function Awards() {
                 <p className="text-sm text-subtle">
                   <span>{a.issuer}</span> · <span>{a.year}</span>
                 </p>
-                <p className="text-sm text-muted">{a.description}</p>
+                <p className="text-base text-muted">{a.description}</p>
               </article>
             </Reveal>
           ))}

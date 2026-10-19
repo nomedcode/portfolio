@@ -23,7 +23,7 @@ export function Footer() {
             </a>
           ))}
         </nav>
-        <div data-footer-socials className="flex flex-wrap justify-center gap-5 whitespace-nowrap xl:justify-self-end">
+        <div data-footer-socials className="dot-separated flex flex-wrap justify-center gap-y-2 whitespace-nowrap xl:justify-self-end">
           {profile.socials.map((s) => (
             <a key={s.label} href={s.url} className="press hit-area hover:text-fg">
               {s.label}
@@ -32,7 +32,7 @@ export function Footer() {
           <a
             href="/CV-ATS.pdf"
             download
-            className="press hit-area font-medium text-fg hover:underline"
+            className="press hit-area font-medium text-fg hover:text-accent dark:hover:text-accent-dark"
           >
             Download CV
           </a>

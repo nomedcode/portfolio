@@ -1,6 +1,7 @@
 import {
   act,
   cleanup,
+  fireEvent,
   render,
   screen,
   within,
@@ -66,6 +67,7 @@ function preferReducedMotion() {
 afterEach(() => {
   cleanup();
   vi.useRealTimers();
+  vi.unstubAllGlobals();
   vi.restoreAllMocks();
 });
 
@@ -240,6 +242,21 @@ describe("Hero", () => {
     expect(within(roleBlock).queryAllByRole("button")).toHaveLength(0);
   });
 
+  test("exposes every role to assistive technology, not only the one on screen", () => {
+    render(<Hero />);
+    const list = document.querySelector("[data-hero-roles-list]");
+    expect(list).not.toBeNull();
+    expect(list).toHaveClass("sr-only");
+    for (const role of profile.roles) {
+      expect(list).toHaveTextContent(role);
+    }
+    // The animated line repeats one of them, so it is hidden from the accessibility tree.
+    expect(document.querySelector("[data-hero-role]")).toHaveAttribute(
+      "aria-hidden",
+      "true"
+    );
+  });
+
   test("the hidden width sizer uses the visible role's type size, so the line keeps its width as roles change", () => {
     render(<Hero />);
     const visible = document.querySelector("[data-hero-role]") as HTMLElement;
@@ -354,6 +371,89 @@ describe("Hero", () => {
     expect(
       screen.getByRole("heading", { name: "Fa'iq Haidar Prasetya" })
     ).toBeInTheDocument();
+  });
+
+  test("holds the role still while the pointer is over the role line, then resumes when it leaves", async () => {
+    useFakeClock();
+    render(<Hero />);
+    // The hero fills the viewport, so the pause target is the moving line itself.
+    const roleBlock = document.querySelector("[data-hero-role]")
+      ?.parentElement as HTMLElement;
+    await act(async () => {
+      fireEvent.pointerEnter(roleBlock);
+    });
+    await act(async () => {
+      vi.advanceTimersByTime(STEP * 4);
+    });
+    expect(rotatingRole("Cloud Engineer")).toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.pointerLeave(roleBlock);
+    });
+    await act(async () => {
+      vi.advanceTimersByTime(STEP);
+    });
+    expect(rotatingRole("DevOps Engineer")).toBeInTheDocument();
+  });
+
+  test("holds the role still while keyboard focus is inside the hero", async () => {
+    useFakeClock();
+    render(<Hero />);
+    const cv = screen.getByRole("link", { name: /Download CV/ });
+    await act(async () => {
+      cv.focus();
+    });
+    await act(async () => {
+      vi.advanceTimersByTime(STEP * 3);
+    });
+    expect(rotatingRole("Cloud Engineer")).toBeInTheDocument();
+
+    await act(async () => {
+      cv.blur();
+    });
+    await act(async () => {
+      vi.advanceTimersByTime(STEP);
+    });
+    expect(rotatingRole("DevOps Engineer")).toBeInTheDocument();
+  });
+
+  test("holds the role still while the hero is scrolled out of view", async () => {
+    useFakeClock();
+    let trigger: (isIntersecting: boolean) => void = () => {};
+    vi.stubGlobal(
+      "IntersectionObserver",
+      class {
+        constructor(cb: IntersectionObserverCallback) {
+          trigger = (isIntersecting) =>
+            cb(
+              [{ isIntersecting } as IntersectionObserverEntry],
+              this as unknown as IntersectionObserver
+            );
+        }
+        observe() {}
+        unobserve() {}
+        disconnect() {}
+        takeRecords() {
+          return [];
+        }
+      }
+    );
+    render(<Hero />);
+    await act(async () => {
+      trigger(false);
+    });
+    await act(async () => {
+      vi.advanceTimersByTime(STEP * 4);
+    });
+    expect(rotatingRole("Cloud Engineer")).toBeInTheDocument();
+
+    await act(async () => {
+      trigger(true);
+    });
+    await act(async () => {
+      vi.advanceTimersByTime(STEP);
+    });
+    expect(rotatingRole("DevOps Engineer")).toBeInTheDocument();
   });
 
   test("clears its timers on unmount without errors", () => {

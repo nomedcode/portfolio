@@ -1,14 +1,16 @@
 "use client";
 
-import { m, useScroll, useTransform } from "framer-motion";
+import { useScroll, useTransform } from "motion/react";
+import * as m from "motion/react-m";
 import { Download } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { profile } from "@/lib/content";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
-// ponytail: the role line rotates forever and has no pause control, at the owner's request. That leaves WCAG 2.2.2
-// (Level A) open for anything that moves by itself for more than five seconds. Ceiling: reduced motion is the only
-// way to stop it. Upgrade path: pause while the hero is hovered or focused, or stop after one pass.
+// The role line rotates forever. It stops while the pointer is over the hero, while keyboard focus is inside it, while
+// the hero is scrolled out of view, and while the tab is hidden. WCAG 2.2.2 (Level A) is still open by owner choice:
+// there is no explicit pause control, so a user who cannot hover or focus cannot stop it. Upgrade path: a visible
+// pause/play button, or stop after one pass.
 const ROLE_HOLD_MS = 2600;
 const ROLE_EXIT_MS = 400;
 const ROLE_ENTER_S = 0.6;
@@ -20,14 +22,27 @@ const ROLE_EASE = [0.16, 1, 0.3, 1] as const;
 export function Hero() {
   const [step, setStep] = useState(0);
   const [isRoleExiting, setIsRoleExiting] = useState(false);
+  const [paused, setPaused] = useState(false);
+  const [inView, setInView] = useState(true);
   const reduce = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
   const count = profile.roles.length;
   const activeRole = profile.roles[reduce ? 0 : step % count];
   const leaving = isRoleExiting && !reduce;
 
+  // Stop rotating once the hero has scrolled away: that is the only pause a touch user ever gets.
   useEffect(() => {
-    if (reduce) return;
+    const el = sectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(([entry]) =>
+      setInView(entry.isIntersecting)
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (reduce || paused || !inView) return;
 
     let timer: ReturnType<typeof setTimeout> | undefined;
     let phase: "hold" | "exit" = "hold";
@@ -57,7 +72,7 @@ export function Hero() {
       setIsRoleExiting(false);
       document.removeEventListener("visibilitychange", onVisibility);
     };
-  }, [step, reduce]);
+  }, [step, reduce, paused, inView]);
 
   // The hero recedes as the next section arrives: the copy settles and fades.
   const { scrollYProgress } = useScroll({
@@ -73,6 +88,12 @@ export function Hero() {
       id="top"
       aria-label="Introduction"
       className="relative min-h-svh bg-raised text-fg"
+      onFocusCapture={() => setPaused(true)}
+      onBlurCapture={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+          setPaused(false);
+        }
+      }}
     >
       <m.div
         data-hero-content
@@ -84,7 +105,13 @@ export function Hero() {
           {profile.fullName}
         </h1>
         <div className="flex flex-col gap-6">
-            <div className="hero-rise grid w-fit max-w-full [animation-delay:200ms]">
+            {/* The pause target is the line that moves, not the whole hero: the hero fills the viewport, so a
+                section-wide hover would keep the ticker stopped for as long as the pointer is in the window. */}
+            <div
+              className="hero-rise grid w-fit max-w-full [animation-delay:200ms]"
+              onPointerEnter={() => setPaused(true)}
+              onPointerLeave={() => setPaused(false)}
+            >
               {/* All roles share one grid cell: the widest sets the width and one line sets the height, so the block never jumps as roles change. */}
               <div
                 aria-hidden="true"
@@ -96,8 +123,13 @@ export function Hero() {
                   </span>
                 ))}
               </div>
+              {/* The visible line only ever holds one role, so the full set is given to assistive tech once. */}
+              <p data-hero-roles-list className="sr-only">
+                Roles: {profile.roles.join(", ")}
+              </p>
               <p
                 data-hero-role
+                aria-hidden="true"
                 className="col-start-1 row-start-1 self-center text-xl font-medium text-muted sm:text-2xl md:text-3xl lg:text-4xl"
               >
                 <m.span

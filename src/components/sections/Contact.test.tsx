@@ -25,13 +25,18 @@ describe("Contact", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        "Open to internships, freelance, and project collaborations."
+        "Available for internships, freelance work, and small projects."
       )
     ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Email me" })).toHaveAttribute(
       "href",
       `mailto:${profile.email}`
     );
+  });
+
+  test("names the location, so the page says where the work happens", () => {
+    render(<Contact />);
+    expect(screen.getByText(profile.location)).toBeInTheDocument();
   });
 
   test("renders on a theme-aware raised background", () => {
@@ -124,6 +129,14 @@ describe("Contact", () => {
     expect(cv).toHaveClass("py-4");
   });
 
+  // The filled action lifts its brightness, the same way the hero's filled action does.
+  test("the filled Email button answers a pointer, like the hero's filled action", () => {
+    render(<Contact />);
+    expect(screen.getByRole("link", { name: "Email me" })).toHaveClass(
+      "hover:brightness-110"
+    );
+  });
+
   test("the red stripe and the blue base reach 3:1 on the white badge, which they do not on the blue button", () => {
     const onBadge = "#ffffff";
     const onButton = "#0066cc";
@@ -178,6 +191,29 @@ describe("Footer", () => {
     ).toBe(true);
   });
 
+  test("the CV download does not underline itself on hover", () => {
+    render(<Footer />);
+    expect(screen.getByRole("link", { name: "Download CV" })).not.toHaveClass(
+      "hover:underline"
+    );
+  });
+
+  test("the CV download takes the signal blue on hover, in each theme", () => {
+    render(<Footer />);
+    const cv = screen.getByRole("link", { name: "Download CV" });
+    // Signal Blue light / Beacon Blue dark, the pair every other blue affordance uses. Measured on the raised
+    // footer surface: 5.1:1 light and 5.5:1 dark, both above AA for body-size text.
+    expect(cv).toHaveClass("hover:text-accent", "dark:hover:text-accent-dark");
+    for (const [theme, colour] of [
+      ["light", "accent"],
+      ["dark", "accent-dark"],
+    ] as const) {
+      const hex = theme === "light" ? "#0066cc" : "#2997ff";
+      expect(contrastRatio(hex, token(theme, "raised")), `${colour} in ${theme}`)
+        .toBeGreaterThanOrEqual(4.5);
+    }
+  });
+
   test("balances credit, nav, and socials as centered thirds on wide screens", () => {
     render(<Footer />);
     const row = document.querySelector("[data-footer-row]");
@@ -208,5 +244,29 @@ describe("Footer", () => {
     expect(
       screen.getByText(new RegExp(`© ${new Date().getFullYear()}`))
     ).toHaveClass("whitespace-nowrap");
+  });
+
+  test("separates the social row with the credit line's middot, and leaves the section row alone", () => {
+    render(<Footer />);
+    const nav = screen.getByRole("navigation", { name: "Footer" });
+    const socials = document.querySelector("[data-footer-socials]");
+    expect(socials).toHaveClass("dot-separated");
+    expect(nav).not.toHaveClass("dot-separated");
+    // jsdom does not resolve generated content, so the rule itself is read from the stylesheet.
+    expect(css).toMatch(
+      /\.dot-separated > \*:not\(:first-child\)::before\s*\{[^}]*content:\s*"·"/
+    );
+    // The separator replaces the gap: a dot plus a gap would read as a floating dot in its own slot.
+    expect(socials).not.toHaveClass("gap-5");
+  });
+
+  test("the section row spaces its links with a gap, not a separator", () => {
+    render(<Footer />);
+    const nav = screen.getByRole("navigation", { name: "Footer" });
+    expect(nav).toHaveClass("gap-x-6");
+    // The phone-only two-column pairing existed to keep separators off a wrapped line; with no separators it is
+    // dead weight, and the row goes back to a simple centred wrap.
+    expect(nav).not.toHaveClass("max-sm:grid", "dot-separated-nav");
+    expect(css).not.toMatch(/\.dot-separated-nav/);
   });
 });

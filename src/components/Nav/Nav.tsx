@@ -1,6 +1,7 @@
 "use client";
 
 import { Menu, X } from "lucide-react";
+import type { CSSProperties } from "react";
 import { useEffect, useRef, useState } from "react";
 import { useActiveSection } from "@/hooks/useActiveSection";
 import { profile, sections } from "@/lib/content";
@@ -44,7 +45,7 @@ export function Nav() {
       >
         <a
           href="#top"
-          className="press hit-area text-sm font-semibold text-fg md:justify-self-start"
+          className="press hit-area -ml-2 rounded-full px-2 py-1 text-sm font-semibold text-fg hover:bg-line/60 md:justify-self-start"
         >
           {profile.name}
         </a>
@@ -54,7 +55,7 @@ export function Nav() {
               key={s.id}
               href={`#${s.id}`}
               aria-current={active === s.id ? "location" : undefined}
-              className="press hit-area rounded-full px-3 py-1.5 text-xs font-medium text-fg underline-offset-4 hover:bg-line/60 aria-[current=location]:bg-line/70 aria-[current=location]:ring-1 aria-[current=location]:ring-inset aria-[current=location]:ring-line forced-colors:aria-[current=location]:underline"
+              className="press hit-area rounded-full px-3 py-1.5 text-xs font-medium text-fg hover:bg-line/60"
             >
               {s.label}
             </a>
@@ -65,7 +66,7 @@ export function Nav() {
           <button
             ref={toggleRef}
             type="button"
-            className="press hit-area rounded-full p-2 md:hidden"
+            className="press hit-area rounded-full p-2 text-fg hover:bg-line/60 md:hidden"
             aria-label="Toggle menu"
             aria-expanded={open}
             aria-controls={open ? "mobile-menu" : undefined}
@@ -84,13 +85,18 @@ export function Nav() {
           id="mobile-menu"
           className="menu-in max-h-[calc(100dvh-3.25rem)] overflow-y-auto overscroll-contain border-t border-line bg-page px-6 py-4 md:hidden"
         >
-          <ul className="flex flex-col gap-3">
-            {sections.map((s) => (
-              <li key={s.id}>
+          <ul className="flex flex-col divide-y divide-line">
+            {sections.map((s, i) => (
+              <li
+                key={s.id}
+                data-menu-item
+                className="menu-item"
+                style={{ "--i": i } as CSSProperties}
+              >
                 <a
                   href={`#${s.id}`}
                   aria-current={active === s.id ? "location" : undefined}
-                  className="press hit-area w-full justify-start text-sm font-medium text-fg underline-offset-4 aria-[current=location]:font-semibold aria-[current=location]:underline"
+                  className="press hit-area w-full justify-start py-3 text-sm font-medium text-muted hover:text-fg"
                   onClick={() => setOpen(false)}
                 >
                   {s.label}

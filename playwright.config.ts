@@ -4,6 +4,8 @@ export default defineConfig({
   testDir: "e2e",
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
+  // localhost, not 127.0.0.1: next dev's HMR websocket rejects the 127.0.0.1 host header, and Turbopack's dev
+  // client holds hydration until that connection settles. The static server answers on both.
   use: { baseURL: "http://localhost:3100" },
   projects: [
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },
