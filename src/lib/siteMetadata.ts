@@ -4,8 +4,8 @@ import { profile } from "./content";
 // The apex 308-redirects to www, so the canonical and og:url must name the host that serves 200 directly.
 export const siteUrl = "https://www.faiq.codes";
 
-// The title names the role so a search result says what the page is, not just whose it is.
-const title = `${profile.fullName} | Cloud Engineering Student`;
+// The title says whose page it is and what it is.
+const title = `${profile.fullName} | Personal Portfolio`;
 const description =
   "Cloud engineering student at BINUS University in Bandung. AWS re/Start learner with a Google Cloud Computing Foundations certificate.";
 

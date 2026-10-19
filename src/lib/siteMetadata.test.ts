@@ -16,9 +16,9 @@ describe("siteMetadata", () => {
     expect(String(siteMetadata.description).length).toBeLessThanOrEqual(160);
   });
 
-  test("the title names the role, not just the word portfolio", () => {
+  test("the title says whose page it is and what it is", () => {
     const title = String(siteMetadata.title);
-    expect(title).toContain("Cloud");
+    expect(title).toContain("Personal Portfolio");
     expect(title.length).toBeLessThanOrEqual(60);
   });
 
