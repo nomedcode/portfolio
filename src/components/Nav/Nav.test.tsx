@@ -131,6 +131,20 @@ describe("Nav", () => {
     }
   });
 
+  test("the mobile menu rows are split by a hairline, with none above the first", async () => {
+    const user = userEvent.setup();
+    render(<Nav />);
+    await user.click(screen.getByRole("button", { name: "Toggle menu" }));
+    const list = document.querySelector("#mobile-menu ul") as HTMLElement;
+    // divide-y puts the border on every child but the first, so the panel's own top border is not doubled.
+    expect(list).toHaveClass("divide-y", "divide-line");
+    // The rows own their spacing; a flex gap would leave the divider floating in mid-air.
+    expect(list).not.toHaveClass("gap-3");
+    for (const link of list.querySelectorAll("a")) {
+      expect(link).toHaveClass("py-3");
+    }
+  });
+
   test("tapping outside the header closes the menu without stealing focus", async () => {
     const user = userEvent.setup();
     render(

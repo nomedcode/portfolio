@@ -85,7 +85,7 @@ export function Nav() {
           id="mobile-menu"
           className="menu-in max-h-[calc(100dvh-3.25rem)] overflow-y-auto overscroll-contain border-t border-line bg-page px-6 py-4 md:hidden"
         >
-          <ul className="flex flex-col gap-3">
+          <ul className="flex flex-col divide-y divide-line">
             {sections.map((s, i) => (
               <li
                 key={s.id}
@@ -96,7 +96,7 @@ export function Nav() {
                 <a
                   href={`#${s.id}`}
                   aria-current={active === s.id ? "location" : undefined}
-                  className="press hit-area w-full justify-start text-sm font-medium text-muted hover:text-fg"
+                  className="press hit-area w-full justify-start py-3 text-sm font-medium text-muted hover:text-fg"
                   onClick={() => setOpen(false)}
                 >
                   {s.label}
