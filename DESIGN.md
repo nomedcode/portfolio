@@ -181,6 +181,8 @@ Breakpoints follow content: 640px (hero type switches to the fluid display), 768
 
 The footer stacks and centers its credit, section navigation and external links below 1280px. From 1280px it uses three columns with the navigation centered; link labels stay on one line while each link group can wrap between links.
 
+The viewport opts into the full screen (`viewport-fit=cover`) so the page can paint under a notch. The body and the fixed header then inset their own content by `safe-area-inset-left` / `-right`, which is zero on every device without a notch, so the gutters only move where the inset exists.
+
 ## Elevation & Depth
 
 Tonal layering, with one translucent layer. Cards sit on the page or raised tone separated by a 1px hairline, not by shadows. The header is the only glass: 78% of the surface tone in the light theme (60% in dark) with a 20px blur and 180% saturation, a hairline on the edge that meets content, and solid fallbacks under reduced transparency and higher contrast. The dialog sits on a black 50% scrim.
@@ -208,6 +210,7 @@ Large, soft, and consistent. Big cards use a 28px radius and small cards 18px; e
 ### Navigation
 - **Style:** fixed 48px glass bar; brand left, section links centered, the theme toggle right (with the menu button below 768px). Links are 12px medium pills in full-contrast text; on hover they take a Hairline wash at 60%.
 - **Current section:** no visual treatment. The link for the section under the reading line still carries `aria-current="location"` for assistive technology, but it looks like every other link. Nothing is current over the hero.
+- **Hover:** every control in the bar takes the same Hairline wash at 60%, including the brand and the menu button. The brand's pill cancels its own 8px side padding with a negative margin, so the name stays on the same left edge as the hero and every section.
 - **Mobile:** a hamburger opens a solid panel under the bar that drops 8px in over 200ms (plain fade under reduced motion), scrolls when short, and closes on Escape or any press outside the header.
 
 ### Chips
@@ -220,6 +223,9 @@ Large, soft, and consistent. Big cards use a 28px radius and small cards 18px; e
 
 ### Dialog
 - **Style:** the Skills dialog is a 28px-radius page-tone sheet, up to 768px wide and 85% of the viewport tall, with a scrolling, keyboard-focusable body. It scales from 0.85 out of the Skills card (a spring of 0.4s with no bounce), leaves faster than it arrives, and only fades under reduced motion.
+
+### Not Found
+- **Style:** the static export's 404 page, centered on the page tone. A small secondary "404" over the display-size headline, one line of body copy, then the neutral outline pill linking home. It carries no header or footer: the page is a dead end, so nothing competes with the way back.
 
 ### Hero
 - **Surface:** the raised tone in both themes (Fog light, Panel dark) with Ink / Frost text, one step off Projects on page below it. Flat: no gradient, no glow, no shadow.

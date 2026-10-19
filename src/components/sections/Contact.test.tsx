@@ -129,6 +129,14 @@ describe("Contact", () => {
     expect(cv).toHaveClass("py-4");
   });
 
+  // The filled action lifts its brightness, the same way the hero's filled action does.
+  test("the filled Email button answers a pointer, like the hero's filled action", () => {
+    render(<Contact />);
+    expect(screen.getByRole("link", { name: "Email me" })).toHaveClass(
+      "hover:brightness-110"
+    );
+  });
+
   test("the red stripe and the blue base reach 3:1 on the white badge, which they do not on the blue button", () => {
     const onBadge = "#ffffff";
     const onButton = "#0066cc";

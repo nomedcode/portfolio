@@ -44,7 +44,7 @@ export function Nav() {
       >
         <a
           href="#top"
-          className="press hit-area text-sm font-semibold text-fg md:justify-self-start"
+          className="press hit-area -ml-2 rounded-full px-2 py-1 text-sm font-semibold text-fg hover:bg-line/60 md:justify-self-start"
         >
           {profile.name}
         </a>
@@ -65,7 +65,7 @@ export function Nav() {
           <button
             ref={toggleRef}
             type="button"
-            className="press hit-area rounded-full p-2 md:hidden"
+            className="press hit-area rounded-full p-2 text-fg hover:bg-line/60 md:hidden"
             aria-label="Toggle menu"
             aria-expanded={open}
             aria-controls={open ? "mobile-menu" : undefined}

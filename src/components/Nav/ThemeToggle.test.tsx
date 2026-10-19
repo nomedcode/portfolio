@@ -6,6 +6,7 @@ import { ThemeToggle } from "./ThemeToggle";
 describe("ThemeToggle", () => {
   afterEach(() => {
     document.documentElement.classList.remove("dark", "theme-fade");
+    document.head.querySelectorAll('meta[name="theme-color"]').forEach((m) => m.remove());
     window.localStorage.clear();
     vi.useRealTimers();
     vi.restoreAllMocks();
@@ -30,6 +31,23 @@ describe("ThemeToggle", () => {
     await user.click(btn);
     expect(document.documentElement).not.toHaveClass("dark");
     expect(window.localStorage.getItem("theme")).toBe("light");
+  });
+
+  test("repaints the browser chrome with the page, not the OS", async () => {
+    const user = userEvent.setup();
+    render(<ThemeToggle />);
+    const btn = screen.getByRole("button", { name: "Toggle dark mode" });
+
+    await user.click(btn);
+    expect(
+      document.head.querySelector('meta[name="theme-color"]')
+    ).toHaveAttribute("content", "#121212");
+
+    await user.click(btn);
+    expect(
+      document.head.querySelector('meta[name="theme-color"]')
+    ).toHaveAttribute("content", "#ffffff");
+    expect(document.head.querySelectorAll('meta[name="theme-color"]')).toHaveLength(1);
   });
 
   test("reflects an already-dark document as pressed", async () => {

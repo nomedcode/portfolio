@@ -108,7 +108,7 @@ export function TechStackDialog({
   return createPortal(
     <div
       ref={rootRef}
-      className="fixed inset-0 z-[60] flex items-center justify-center p-4 md:p-8"
+      className="fixed inset-0 z-[60] flex items-center justify-center p-4 [padding-left:max(1rem,env(safe-area-inset-left))] [padding-right:max(1rem,env(safe-area-inset-right))] md:p-8 md:[padding-left:max(2rem,env(safe-area-inset-left))] md:[padding-right:max(2rem,env(safe-area-inset-right))]"
     >
       <m.div
         className="absolute inset-0 bg-black/50"

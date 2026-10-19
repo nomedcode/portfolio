@@ -45,6 +45,24 @@ describe("Nav", () => {
     }
   });
 
+  // The bar reads as one surface: every control in it answers a pointer the same way.
+  test("the brand and the menu button answer a pointer the way the rest of the bar does", () => {
+    render(<Nav />);
+    expect(screen.getByRole("link", { name: profile.name })).toHaveClass(
+      "hover:bg-line/60"
+    );
+    expect(screen.getByRole("button", { name: "Toggle menu" })).toHaveClass(
+      "hover:bg-line/60"
+    );
+  });
+
+  test("the brand's hover pill keeps its text on the container's left edge", () => {
+    render(<Nav />);
+    const brand = screen.getByRole("link", { name: profile.name });
+    // px-2 would push the text 8px in from the gutter the hero and every section share; -ml-2 cancels it.
+    expect(brand).toHaveClass("px-2", "-ml-2");
+  });
+
   test("keeps the CV download out of the header: the bar is the brand, the sections and the theme toggle", async () => {
     const user = userEvent.setup();
     render(<Nav />);

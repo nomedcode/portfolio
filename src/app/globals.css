@@ -142,6 +142,15 @@ html {
 }
 
 @layer base {
+  /* Drops the ~300ms wait a browser adds to every tap in case it becomes a double-tap zoom. Pinch zoom still works. */
+  a,
+  button {
+    touch-action: manipulation;
+  }
+  /* Only non-zero when the viewport opts into the full screen (viewport-fit=cover), so the notch never clips a gutter. */
+  body {
+    padding-inline: env(safe-area-inset-left) env(safe-area-inset-right);
+  }
   :focus-visible {
     outline: 2px solid var(--c-ring);
     outline-offset: 2px;
@@ -184,6 +193,8 @@ html {
   .gallery-scroll {
     scrollbar-width: none;
     -ms-overflow-style: none;
+    /* Without this, a swipe that reaches the gallery's end chains to the page and reads as a back gesture on iOS. */
+    overscroll-behavior-x: contain;
   }
   .gallery-scroll::-webkit-scrollbar {
     display: none;
@@ -201,6 +212,9 @@ html {
     background: rgba(255, 255, 255, 0.78);
     backdrop-filter: blur(20px) saturate(180%);
     border-bottom: 1px solid var(--c-line);
+    /* The bar is fixed to the viewport, so it does not inherit the body's gutter: it insets its own content instead,
+       while the tint still reaches both edges. */
+    padding-inline: env(safe-area-inset-left) env(safe-area-inset-right);
   }
 }
 

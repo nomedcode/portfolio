@@ -47,7 +47,7 @@ export function Contact() {
         >
           <a
             href={`mailto:${profile.email}`}
-            className="press inline-flex items-center gap-3 rounded-full bg-accent py-3 pl-3 pr-7 font-medium text-white"
+            className="press inline-flex items-center gap-3 rounded-full bg-accent py-3 pl-3 pr-7 font-medium text-white hover:brightness-110"
           >
             {/* The mark is meant for a light ground: its red and blue parts fall to about 1.6:1 on the blue button and reach 3.5:1 on white. */}
             <span

@@ -19,7 +19,7 @@ export default function Home() {
       />
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[70] focus:rounded-full focus:bg-page focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-fg"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-[max(1rem,env(safe-area-inset-left))] focus:top-[max(1rem,env(safe-area-inset-top))] focus:z-[70] focus:rounded-full focus:bg-page focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-fg"
       >
         Skip to main content
       </a>

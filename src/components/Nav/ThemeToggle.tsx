@@ -3,6 +3,7 @@
 import { Moon, Sun } from "lucide-react";
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { applyThemeColor } from "@/lib/themeChrome";
 
 const FADE_MS = 250;
 
@@ -42,6 +43,8 @@ export function ThemeToggle() {
       fadeTimer.current = setTimeout(() => root.classList.remove("theme-fade"), FADE_MS);
     }
     root.classList.toggle("dark");
+    // The browser bar follows the page, not the OS: without this a manual switch leaves it on the old surface.
+    applyThemeColor(root);
     try {
       // Read the class back: the observer has not re-rendered yet, so `dark` is the pre-toggle value and a
       // quick double press would persist the opposite theme.
