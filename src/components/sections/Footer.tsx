@@ -15,7 +15,7 @@ export function Footer() {
         </p>
         <nav
           aria-label="Footer"
-          className="flex flex-wrap justify-center gap-x-6 gap-y-2 whitespace-nowrap xl:justify-self-center"
+          className="dot-separated dot-separated-nav flex flex-wrap justify-center gap-y-2 whitespace-nowrap xl:justify-self-center"
         >
           {sections.map((s) => (
             <a key={s.id} href={`#${s.id}`} className="press hit-area hover:text-fg">
@@ -23,7 +23,7 @@ export function Footer() {
             </a>
           ))}
         </nav>
-        <div data-footer-socials className="flex flex-wrap justify-center gap-5 whitespace-nowrap xl:justify-self-end">
+        <div data-footer-socials className="dot-separated flex flex-wrap justify-center gap-y-2 whitespace-nowrap xl:justify-self-end">
           {profile.socials.map((s) => (
             <a key={s.label} href={s.url} className="press hit-area hover:text-fg">
               {s.label}

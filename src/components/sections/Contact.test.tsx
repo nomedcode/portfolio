@@ -245,4 +245,32 @@ describe("Footer", () => {
       screen.getByText(new RegExp(`© ${new Date().getFullYear()}`))
     ).toHaveClass("whitespace-nowrap");
   });
+
+  test("separates its link rows with the same middot the credit line uses", () => {
+    render(<Footer />);
+    expect(screen.getByRole("navigation", { name: "Footer" })).toHaveClass(
+      "dot-separated"
+    );
+    expect(document.querySelector("[data-footer-socials]")).toHaveClass(
+      "dot-separated"
+    );
+    // jsdom does not resolve generated content, so the rule itself is read from the stylesheet.
+    expect(css).toMatch(
+      /\.dot-separated > \*:not\(:first-child\)::before\s*\{[^}]*content:\s*"·"/
+    );
+    // The separator replaces the gap: a dot plus a gap would read as a floating dot in its own slot.
+    expect(document.querySelector("[data-footer-socials]")).not.toHaveClass("gap-5");
+  });
+
+  test("the section row drops the separator where it would wrap onto a new line", () => {
+    render(<Footer />);
+    // Six section links need ~522px on one line; a phone gives them 312px, so the row wraps and CSS cannot
+    // hide a separator that lands at the start of a line. The group falls back to a plain gap below 640px.
+    expect(screen.getByRole("navigation", { name: "Footer" })).toHaveClass(
+      "dot-separated-nav"
+    );
+    expect(css).toMatch(
+      /@media \(max-width: 639\.98px\)\s*\{\s*\.dot-separated-nav\s*\{[^}]*column-gap:\s*1\.5rem[^}]*\}\s*\.dot-separated-nav > \*:not\(:first-child\)::before\s*\{[^}]*content:\s*none/
+    );
+  });
 });

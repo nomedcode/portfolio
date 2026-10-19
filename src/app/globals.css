@@ -207,6 +207,27 @@ html {
       min-height: 44px;
     }
   }
+  /* Footer link rows read as one line, the way the credit line already does. The separator is generated, so it
+     wraps with its own link instead of being left alone at the end of a line, and it adds no DOM. 8px each side
+     matches the " · " the credit line uses; the row's own gap is reserved for the case where no dot is shown. */
+  .dot-separated {
+    column-gap: 0;
+  }
+  .dot-separated > *:not(:first-child)::before {
+    content: "·";
+    color: var(--c-subtle);
+    margin-inline: 0.5rem;
+  }
+  /* The six section links need ~444px on one line and a phone gives them 312px, so the group wraps. CSS cannot see
+     a line start, so a wrapped line would begin with a stray separator; below 640px the group takes a plain gap. */
+  @media (max-width: 639.98px) {
+    .dot-separated-nav {
+      column-gap: 1.5rem;
+    }
+    .dot-separated-nav > *:not(:first-child)::before {
+      content: none;
+    }
+  }
   .gallery-scroll {
     scrollbar-width: none;
     -ms-overflow-style: none;
