@@ -15,7 +15,7 @@ export function Footer() {
         </p>
         <nav
           aria-label="Footer"
-          className="dot-separated dot-separated-nav flex flex-wrap justify-center gap-y-2 whitespace-nowrap max-sm:grid max-sm:grid-cols-2 xl:justify-self-center"
+          className="flex flex-wrap justify-center gap-x-6 gap-y-2 whitespace-nowrap xl:justify-self-center"
         >
           {sections.map((s) => (
             <a key={s.id} href={`#${s.id}`} className="press hit-area hover:text-fg">

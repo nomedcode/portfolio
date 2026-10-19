@@ -218,7 +218,7 @@ Large, soft, and consistent. Big cards use a 28px radius and small cards 18px; e
 
 ### Footer
 - **Links:** section and social links sit at Slate Muted and take full-contrast Ink on hover. The Download CV link is the exception: it sits at Ink and takes Signal Blue on hover (Beacon Blue in dark), matching the page's other blue affordances. No underlines anywhere in the footer.
-- **Separators:** both link rows read as one line, split by the same middot the credit line uses (`·`, 8px each side, Mist Subtle). The separator is generated content on each link, not a gap, so it travels with its own link when the row wraps. The six section links need ~444px on one line; below 640px they do not fit, so that row becomes a two-column grid of three pairs and the separator moves to the second link of each pair, which keeps a dot between every two links and never at the start of a line.
+- **Separators:** the social row reads as one line, split by the same middot the credit line uses (`·`, 8px each side, Mist Subtle). The separator is generated content on each link, not a gap, so it travels with its own link when the row wraps. The section row has no separator: its six links sit on a 24px gap and wrap as a plain centred list.
 
 ### Cards / Containers
 - **Corner style:** 28px for the Skills banner, Education list and project islands; 18px for Awards, Certificates and the dialog's category cards.

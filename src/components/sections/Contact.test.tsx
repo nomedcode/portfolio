@@ -246,35 +246,27 @@ describe("Footer", () => {
     ).toHaveClass("whitespace-nowrap");
   });
 
-  test("separates its link rows with the same middot the credit line uses", () => {
+  test("separates the social row with the credit line's middot, and leaves the section row alone", () => {
     render(<Footer />);
-    expect(screen.getByRole("navigation", { name: "Footer" })).toHaveClass(
-      "dot-separated"
-    );
-    expect(document.querySelector("[data-footer-socials]")).toHaveClass(
-      "dot-separated"
-    );
+    const nav = screen.getByRole("navigation", { name: "Footer" });
+    const socials = document.querySelector("[data-footer-socials]");
+    expect(socials).toHaveClass("dot-separated");
+    expect(nav).not.toHaveClass("dot-separated");
     // jsdom does not resolve generated content, so the rule itself is read from the stylesheet.
     expect(css).toMatch(
       /\.dot-separated > \*:not\(:first-child\)::before\s*\{[^}]*content:\s*"·"/
     );
     // The separator replaces the gap: a dot plus a gap would read as a floating dot in its own slot.
-    expect(document.querySelector("[data-footer-socials]")).not.toHaveClass("gap-5");
+    expect(socials).not.toHaveClass("gap-5");
   });
 
-  test("the section row keeps its separators on a phone by pairing the links", () => {
+  test("the section row spaces its links with a gap, not a separator", () => {
     render(<Footer />);
     const nav = screen.getByRole("navigation", { name: "Footer" });
-    // Six section links need ~444px on one line; a phone gives them 312px, so the row wraps and a separator
-    // would land at the start of a line. Two columns make every pair a row, so a dot only ever sits between two
-    // links: the odd rule is switched off and the even one puts it back.
-    expect(nav).toHaveClass("dot-separated-nav", "max-sm:grid", "max-sm:grid-cols-2");
-    const mobile = css.match(/@media \(max-width: 639\.98px\)\s*\{([\s\S]*?)\n  \}/)?.[1] ?? "";
-    expect(mobile).toMatch(
-      /\.dot-separated-nav > \*:not\(:first-child\)::before\s*\{[^}]*content:\s*none/
-    );
-    expect(mobile).toMatch(
-      /\.dot-separated-nav > \*:nth-child\(even\)::before\s*\{[^}]*content:\s*"·"/
-    );
+    expect(nav).toHaveClass("gap-x-6");
+    // The phone-only two-column pairing existed to keep separators off a wrapped line; with no separators it is
+    // dead weight, and the row goes back to a simple centred wrap.
+    expect(nav).not.toHaveClass("max-sm:grid", "dot-separated-nav");
+    expect(css).not.toMatch(/\.dot-separated-nav/);
   });
 });

@@ -207,9 +207,9 @@ html {
       min-height: 44px;
     }
   }
-  /* Footer link rows read as one line, the way the credit line already does. The separator is generated, so it
-     wraps with its own link instead of being left alone at the end of a line, and it adds no DOM. 8px each side
-     matches the " · " the credit line uses; the row's own gap is reserved for the case where no dot is shown. */
+  /* The footer's social row reads as one line, the way the credit line already does. A generated separator rather
+     than a gap: it wraps with its own link instead of being left alone at the end of a line, and it needs no DOM.
+     8px each side matches the " · " the credit line uses. */
   .dot-separated {
     column-gap: 0;
   }
@@ -217,20 +217,6 @@ html {
     content: "·";
     color: var(--c-subtle);
     margin-inline: 0.5rem;
-  }
-  /* The six section links need ~444px on one line and a phone gives them 312px, so the row wraps. CSS cannot see
-     a line start, so a wrapped line would begin with a stray separator. The nav turns into a two-column grid on a
-     phone (max-sm:grid in Footer.tsx) so every pair is a row; here the separator is switched to the even items only,
-     which is the left-hand link of each pair. */
-  @media (max-width: 639.98px) {
-    .dot-separated-nav > *:not(:first-child)::before {
-      content: none;
-      margin-inline: 0;
-    }
-    .dot-separated-nav > *:nth-child(even)::before {
-      content: "·";
-      margin-inline: 0.5rem;
-    }
   }
   .gallery-scroll {
     scrollbar-width: none;
