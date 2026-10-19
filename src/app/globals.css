@@ -78,6 +78,9 @@ html {
   .menu-in {
     animation-name: menu-fade;
   }
+  .menu-item {
+    animation: none;
+  }
   .preview-in .preview-logo {
     animation: logo-fade 200ms ease-out backwards;
     animation-delay: 0ms;
@@ -117,6 +120,14 @@ html {
   from {
     opacity: 0;
     transform: translateY(-8px);
+  }
+}
+
+/* The panel's links follow it in, one behind the next: the same --i stagger the Skills cloud uses. */
+@keyframes menu-item-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
   }
 }
 
@@ -168,6 +179,12 @@ html {
   }
   .menu-in {
     animation: menu-in 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  /* The panel lands first, then its links rise in behind it. Delays stay inside the panel's own 200ms so the menu
+     never feels like it is still assembling after the user has started reading it. */
+  .menu-in .menu-item {
+    animation: menu-item-in 260ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: calc(var(--i, 0) * 40ms);
   }
   .press {
     transition: transform 100ms ease-out;

@@ -191,6 +191,13 @@ describe("Footer", () => {
     ).toBe(true);
   });
 
+  test("the CV download does not underline itself on hover", () => {
+    render(<Footer />);
+    expect(screen.getByRole("link", { name: "Download CV" })).not.toHaveClass(
+      "hover:underline"
+    );
+  });
+
   test("balances credit, nav, and socials as centered thirds on wide screens", () => {
     render(<Footer />);
     const row = document.querySelector("[data-footer-row]");

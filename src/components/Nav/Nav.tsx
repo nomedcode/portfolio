@@ -1,6 +1,7 @@
 "use client";
 
 import { Menu, X } from "lucide-react";
+import type { CSSProperties } from "react";
 import { useEffect, useRef, useState } from "react";
 import { useActiveSection } from "@/hooks/useActiveSection";
 import { profile, sections } from "@/lib/content";
@@ -85,12 +86,17 @@ export function Nav() {
           className="menu-in max-h-[calc(100dvh-3.25rem)] overflow-y-auto overscroll-contain border-t border-line bg-page px-6 py-4 md:hidden"
         >
           <ul className="flex flex-col gap-3">
-            {sections.map((s) => (
-              <li key={s.id}>
+            {sections.map((s, i) => (
+              <li
+                key={s.id}
+                data-menu-item
+                className="menu-item"
+                style={{ "--i": i } as CSSProperties}
+              >
                 <a
                   href={`#${s.id}`}
                   aria-current={active === s.id ? "location" : undefined}
-                  className="press hit-area w-full justify-start text-sm font-medium text-fg"
+                  className="press hit-area w-full justify-start text-sm font-medium text-muted hover:text-fg"
                   onClick={() => setOpen(false)}
                 >
                   {s.label}

@@ -107,6 +107,30 @@ describe("Nav", () => {
     expect(document.getElementById("mobile-menu")).toHaveClass("menu-in");
   });
 
+  test("the mobile menu links stagger in, one after the next", async () => {
+    const user = userEvent.setup();
+    render(<Nav />);
+    await user.click(screen.getByRole("button", { name: "Toggle menu" }));
+    const panel = document.getElementById("mobile-menu") as HTMLElement;
+    const items = [...panel.querySelectorAll<HTMLElement>("[data-menu-item]")];
+    expect(items).toHaveLength(sections.length);
+    items.forEach((item, i) => {
+      expect(item).toHaveClass("menu-item");
+      // The stylesheet reads --i for the delay, so the index has to reach the element.
+      expect(item.style.getPropertyValue("--i")).toBe(String(i));
+    });
+  });
+
+  test("the mobile menu links take the footer's hover: muted at rest, full contrast under the pointer", async () => {
+    const user = userEvent.setup();
+    render(<Nav />);
+    await user.click(screen.getByRole("button", { name: "Toggle menu" }));
+    const panel = document.getElementById("mobile-menu") as HTMLElement;
+    for (const link of panel.querySelectorAll("a")) {
+      expect(link).toHaveClass("text-muted", "hover:text-fg");
+    }
+  });
+
   test("tapping outside the header closes the menu without stealing focus", async () => {
     const user = userEvent.setup();
     render(

@@ -211,7 +211,7 @@ Large, soft, and consistent. Big cards use a 28px radius and small cards 18px; e
 - **Style:** fixed 48px glass bar; brand left, section links centered, the theme toggle right (with the menu button below 768px). Links are 12px medium pills in full-contrast text; on hover they take a Hairline wash at 60%.
 - **Current section:** no visual treatment. The link for the section under the reading line still carries `aria-current="location"` for assistive technology, but it looks like every other link. Nothing is current over the hero.
 - **Hover:** every control in the bar takes the same Hairline wash at 60%, including the brand and the menu button. The brand's pill cancels its own 8px side padding with a negative margin, so the name stays on the same left edge as the hero and every section.
-- **Mobile:** a hamburger opens a solid panel under the bar that drops 8px in over 200ms (plain fade under reduced motion), scrolls when short, and closes on Escape or any press outside the header.
+- **Mobile:** a hamburger opens a solid panel under the bar that drops 8px in over 200ms (plain fade under reduced motion), scrolls when short, and closes on Escape or any press outside the header. Its links rise in behind the panel, 40ms apart and 260ms each; under reduced motion they appear with the panel and do not move. Links sit at Slate Muted and take full-contrast Ink on hover, the same treatment the footer links use.
 
 ### Chips
 - **Style:** pill, page-tone fill, 12px secondary text, 4px by 12px padding. Skill chips in the dialog use a 1px Hairline border and 14px text with the brand logo.

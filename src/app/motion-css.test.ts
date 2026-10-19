@@ -30,6 +30,19 @@ describe("reduced-motion CSS", () => {
     );
   });
 
+  // Behaviour under test: the mobile menu's links enter in sequence, and stop moving under reduced motion.
+  // Module: the animation rules in src/app/globals.css. Existing coverage: this file already covers .menu-in and
+  // menu-fade; it does not cover a per-item stagger. User instruction, verbatim: "add stagger (or whatever its
+  // called) animations for navbar header dropdown in mobile / responsive".
+  test("the mobile menu links rise in one after the next, and hold still under reduced motion", () => {
+    expect(css).toMatch(/@keyframes menu-item-in\b/);
+    expect(css).toMatch(
+      /\.menu-in \.menu-item\s*\{[^}]*animation:[^;}]*menu-item-in[^}]*animation-delay:\s*calc\([^)]*var\(--i/
+    );
+    // Under reduced motion the panel keeps its fade and the links do not move at all.
+    expect(reducedBlock()).toMatch(/\.menu-item\s*\{[^}]*animation:\s*none/);
+  });
+
   test("the Skills card keeps the 100ms press and adds its own 200ms lift, instead of one rule overriding the other", () => {
     expect(css).toMatch(
       /\.press-lift\s*\{[^}]*transition:\s*transform\s+100ms[^;}]*,\s*translate\s+200ms/
