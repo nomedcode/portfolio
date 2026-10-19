@@ -218,14 +218,18 @@ html {
     color: var(--c-subtle);
     margin-inline: 0.5rem;
   }
-  /* The six section links need ~444px on one line and a phone gives them 312px, so the group wraps. CSS cannot see
-     a line start, so a wrapped line would begin with a stray separator; below 640px the group takes a plain gap. */
+  /* The six section links need ~444px on one line and a phone gives them 312px, so the row wraps. CSS cannot see
+     a line start, so a wrapped line would begin with a stray separator. The nav turns into a two-column grid on a
+     phone (max-sm:grid in Footer.tsx) so every pair is a row; here the separator is switched to the even items only,
+     which is the left-hand link of each pair. */
   @media (max-width: 639.98px) {
-    .dot-separated-nav {
-      column-gap: 1.5rem;
-    }
     .dot-separated-nav > *:not(:first-child)::before {
       content: none;
+      margin-inline: 0;
+    }
+    .dot-separated-nav > *:nth-child(even)::before {
+      content: "·";
+      margin-inline: 0.5rem;
     }
   }
   .gallery-scroll {
