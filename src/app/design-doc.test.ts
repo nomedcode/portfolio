@@ -3,7 +3,7 @@ import path from "node:path";
 import { describe, expect, test } from "vitest";
 
 const root = path.resolve(__dirname, "../..");
-const design = readFileSync(path.join(root, "DESIGN.md"), "utf8");
+const design = readFileSync(path.join(root, "docs/DESIGN.md"), "utf8");
 const css = readFileSync(path.resolve(__dirname, "globals.css"), "utf8");
 
 const frontmatter = design.match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1] ?? "";
