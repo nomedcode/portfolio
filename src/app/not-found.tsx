@@ -1,11 +1,28 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { profile } from "@/lib/content";
 
-// The root layout's metadata is the home page's; without this the 404 inherited its title, its canonical and an
-// `index, follow` that contradicted the noindex Next adds for the route.
+// Next merges segment metadata shallowly, so any key this file omits is inherited from the home page wholesale.
+// The 404 therefore has to restate openGraph and twitter in full, and clear the canonical it used to inherit.
+const description =
+  "That address does not exist here. The page may have moved, or the link may be mistyped.";
+
 export const metadata: Metadata = {
   title: "Page not found",
   robots: { index: false, follow: false },
+  alternates: { canonical: null },
+  openGraph: {
+    type: "website",
+    siteName: profile.fullName,
+    title: "Page not found",
+    description,
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Page not found",
+    description,
+  },
 };
 
 // The static export's own 404 page: a missing URL lands inside the design instead of on a bare server default.

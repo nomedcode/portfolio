@@ -24,4 +24,20 @@ describe("404 page", () => {
     expect(metadata.title).toBe("Page not found");
     expect(metadata.robots).toMatchObject({ index: false, follow: false });
   });
+
+  // Metadata merges shallowly, so a segment that omits openGraph/twitter inherits the home page's wholesale —
+  // which is what made a shared 404 link unfurl as the homepage.
+  test("describes itself in social metadata rather than unfurling as the home page", () => {
+    const og = metadata.openGraph as Record<string, unknown>;
+    const tw = metadata.twitter as Record<string, unknown>;
+    expect(og.title).toBe("Page not found");
+    expect(tw.title).toBe("Page not found");
+    expect(og.description).toEqual(expect.stringMatching(/does not exist/i));
+    expect(tw.description).toBe(og.description);
+  });
+
+  // There is no canonical URL for an address that does not exist, and the inherited one named the home page.
+  test("claims no canonical URL", () => {
+    expect(metadata.alternates?.canonical).toBeNull();
+  });
 });
