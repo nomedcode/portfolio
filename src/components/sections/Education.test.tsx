@@ -52,4 +52,12 @@ describe("Education", () => {
       expect(screen.getByText(c)).toBeInTheDocument();
     }
   });
+
+  // The longest course name cannot fit a phone-width pill on one line, so it wraps. Unbalanced, the pill
+  // fills the row while the first line stays short and it reads as a stretched input box.
+  test("balances the wrapped lines of a coursework chip", () => {
+    render(<Education />);
+    const [first] = education[0].coursework;
+    expect(screen.getByText(first)).toHaveClass("text-balance");
+  });
 });
