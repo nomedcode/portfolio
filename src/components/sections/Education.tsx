@@ -35,7 +35,7 @@ export function Education() {
                     {e.coursework.map((c) => (
                       <li
                         key={c}
-                        className="max-w-56 rounded-full bg-page px-3 py-1 text-balance text-xs text-muted"
+                        className="rounded-full bg-page px-3 py-1 text-balance text-xs text-muted max-[469px]:max-w-56"
                       >
                         {c}
                       </li>

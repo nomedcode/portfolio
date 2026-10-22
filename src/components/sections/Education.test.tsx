@@ -62,10 +62,13 @@ describe("Education", () => {
   });
 
   // A wrapped flex item takes the container width, so balancing alone still left the pill flush to the row.
-  // Capping it makes the pill hug its text; every other course name is shorter than the cap.
-  test("caps a coursework chip so it hugs its text instead of filling the row", () => {
+  // The cap must be scoped to narrow viewports: applied everywhere it forces a wrap on desktop, where the
+  // row is wide enough for one line, and flex stretch then makes every chip match the tallest.
+  test("caps a coursework chip only below the width where it wraps", () => {
     render(<Education />);
     const [first] = education[0].coursework;
-    expect(screen.getByText(first)).toHaveClass("max-w-56");
+    const chip = screen.getByText(first);
+    expect(chip).toHaveClass("max-[469px]:max-w-56");
+    expect(chip).not.toHaveClass("max-w-56");
   });
 });
