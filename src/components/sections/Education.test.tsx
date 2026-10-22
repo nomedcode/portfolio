@@ -60,4 +60,12 @@ describe("Education", () => {
     const [first] = education[0].coursework;
     expect(screen.getByText(first)).toHaveClass("text-balance");
   });
+
+  // A wrapped flex item takes the container width, so balancing alone still left the pill flush to the row.
+  // Capping it makes the pill hug its text; every other course name is shorter than the cap.
+  test("caps a coursework chip so it hugs its text instead of filling the row", () => {
+    render(<Education />);
+    const [first] = education[0].coursework;
+    expect(screen.getByText(first)).toHaveClass("max-w-56");
+  });
 });
