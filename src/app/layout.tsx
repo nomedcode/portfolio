@@ -5,9 +5,9 @@ import { THEME_COLOR, themeColorScript } from "@/lib/themeChrome";
 import { themeInitScript } from "@/lib/themeInit";
 import "./globals.css";
 
-// The font stack puts the OS face first, so Inter is only the primary face off Apple platforms. Preloading it
-// spent 48 KB on every Apple device for a file they never render; it still loads on demand where it is used.
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter", preload: false });
+// Preloaded so the first paint does not render the Arial fallback and then morph: source order is not fetch
+// order, so without preload the 48 KB arrives after layout and `font-display: swap` shows the swap.
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter", preload: true });
 
 export const metadata = siteMetadata;
 
